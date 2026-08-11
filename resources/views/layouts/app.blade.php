@@ -29,10 +29,10 @@
         <link rel="stylesheet" href="{{ asset('assets/template/beck/dist/css/app.css') }}">
         <link rel="stylesheet" href="{{ asset('assets/file/alert/animet.css') }}">
         <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="{{ asset('assets/css/sidebar.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/sidebar.css') }}?v={{ time() }}">
         
         <!-- Dashboard CSS -->
-        <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}?v={{ time() }}">
         
         <!-- Google Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
