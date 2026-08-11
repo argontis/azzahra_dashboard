@@ -25,3 +25,10 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+/_legacy_ci
+/.agents
+/azzahra_dashboard-main/
+*.py
+*.txt
+*.md
+!README.md
