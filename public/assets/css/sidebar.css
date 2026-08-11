@@ -15,8 +15,6 @@ body {
 .app-layout {
     display: flex;
     min-height: 100vh;
-    padding-left: 260px;
-    transition: padding-left 0.3s ease;
 }
 
 /* Elegant Sidebar */   
@@ -644,7 +642,10 @@ body {
 /* Main Content */
 .main-content {
     flex: 1;
+    padding-left: 260px;
     width: 100%;
+    box-sizing: border-box;
+    transition: padding-left 0.3s ease;
 }
 
 /* Updated collapsed state handled above */
@@ -1132,7 +1133,7 @@ body {
     }
 }
 
-.sidebar.collapsed ~ .app-layout {
+.sidebar.collapsed ~ .main-content {
     padding-left: 80px;
 }
 
