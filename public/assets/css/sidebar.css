@@ -15,6 +15,8 @@ body {
 .app-layout {
     display: flex;
     min-height: 100vh;
+    padding-left: 260px;
+    transition: padding-left 0.3s ease;
 }
 
 /* Elegant Sidebar */   
@@ -642,9 +644,7 @@ body {
 /* Main Content */
 .main-content {
     flex: 1;
-    margin-left: 260px;
-    width: calc(100% - 260px);
-    transition: margin-left 0.3s ease, width 0.3s ease;
+    width: 100%;
 }
 
 /* Updated collapsed state handled above */
@@ -1132,9 +1132,8 @@ body {
     }
 }
 
-.sidebar.collapsed ~ .main-content {
-    margin-left: 80px;
-    width: calc(100% - 80px);
+.sidebar.collapsed ~ .app-layout {
+    padding-left: 80px;
 }
 
 @media (max-width: 768px) {
