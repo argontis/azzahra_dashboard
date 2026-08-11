@@ -569,10 +569,6 @@
 @endsection
 
 <style>
-.content-area {
-    margin-top: 4rem;
-}
-
 .weekly-btn.active,
 .tech-btn.active {
     background-color: #6366f1;

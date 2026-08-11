@@ -9,7 +9,7 @@ class Mou extends Model
 {
     use HasFactory;
 
-    protected $table = 'mous';
+    protected $table = 'mou';
     protected $primaryKey = 'mou_id';
 
     protected $fillable = [
@@ -18,7 +18,6 @@ class Mou extends Model
         'tanggal',
         'customer',
         'intro_text',
-        'terms',
         'grand_total',
         'kry_kode',
     ];

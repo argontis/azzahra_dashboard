@@ -11,17 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mous', function (Blueprint $table) {
-            $table->id('mou_id');
-            $table->string('file_name');
-            $table->string('lokasi')->nullable();
-            $table->date('tanggal')->nullable();
-            $table->string('customer')->nullable();
-            $table->text('intro_text')->nullable();
-            $table->text('terms')->nullable();
-            $table->decimal('grand_total', 15, 2)->default(0);
-            $table->string('kry_kode')->nullable();
-            $table->timestamps();
+        Schema::create('mou', function (Blueprint $table) {
+            $table->increments('mou_id');
+            $table->string('file_name', 255);
+            $table->text('intro_text');
+            $table->string('lokasi', 50);
+            $table->date('tanggal');
+            $table->string('customer', 255);
+            $table->decimal('grand_total', 15, 2)->default(0.00);
+            $table->string('kry_kode', 20)->nullable();
+            $table->dateTime('created_at');
+            
+            $table->index('kry_kode');
         });
     }
 
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mous');
+        Schema::dropIfExists('mou');
     }
 };
