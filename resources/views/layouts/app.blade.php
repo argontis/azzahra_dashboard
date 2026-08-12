@@ -29,13 +29,29 @@
         <link rel="stylesheet" href="{{ asset('assets/template/beck/dist/css/app.css') }}">
         <link rel="stylesheet" href="{{ asset('assets/file/alert/animet.css') }}">
         <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="{{ asset('assets/css/sidebar.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/sidebar.css') }}?v={{ time() }}">
         
         <!-- Dashboard CSS -->
-        <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}?v={{ time() }}">
         
         <!-- Google Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        
+        <style>
+            /* HARDCODED LAYOUT FIX */
+            body.app { padding-left: 0 !important; margin: 0 !important; }
+            .app-layout { padding-left: 0 !important; margin-left: 0 !important; }
+            .main-content { 
+                padding-left: 260px !important; 
+                margin-left: 0 !important;
+                width: 100% !important; 
+                box-sizing: border-box !important; 
+            }
+            .sidebar { left: 0 !important; }
+            @media (max-width: 1024px) {
+                .main-content { padding-left: 0 !important; }
+            }
+        </style>
         
         <!-- JS Pola -->
          <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
