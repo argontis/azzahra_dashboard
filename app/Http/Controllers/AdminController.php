@@ -20,11 +20,7 @@ class AdminController extends Controller
         $today = Carbon::today();
         
         // Basic metrics (similar to M_admin legacy)
-        $baru = OrderList::join('costomer', 'order_list.cos_kode', '=', 'costomer.id_costomer')
-            ->leftJoin('karyawan', 'order_list.kry_kode', '=', 'karyawan.kry_kode')
-            ->whereDate('order_list.created_at', $today)
-            ->get();
-            
+        $baru = Transaksi::where('trans_status', 'Baru')->count();
         $konf = Transaksi::where('trans_status', 'Diproses')->count();
         $discount = DB::table('vocer')->where('voc_status', 'ON')->count();
         
@@ -39,7 +35,7 @@ class AdminController extends Controller
         $total_tunai = TransaksiDetail::where('dtl_jenis_bayar', 'TUNAI')->where('dtl_status', 'PELUNASAN')->whereDate('dtl_tanggal', $today)->sum('dtl_jml_bayar');
         
         $total_voucher = DB::table('vocer')->where('voc_status', 'ON')->sum('voc_jumlah');
-        $users_baru = Customer::whereDate('created_at', $today)->get();
+        $users_baru = Customer::whereDate('created_at', $today)->count();
         $revenue_today = TransaksiDetail::whereDate('dtl_tanggal', $today)->whereIn('dtl_status', ['DP', 'PELUNASAN'])->sum('dtl_jml_bayar');
         
         $total_customers = Customer::count();
@@ -62,10 +58,8 @@ class AdminController extends Controller
             $tunai_percentage = round(($tunai / $total_methods) * 100);
         }
 
-        $title = 'Dashboard';
-
         return view('admin.dashboard', compact(
-            'title', 'baru', 'konf', 'discount', 'bca', 'mandiri', 'bri', 'tunai',
+            'baru', 'konf', 'discount', 'bca', 'mandiri', 'bri', 'tunai',
             'total_bca', 'total_mandiri', 'total_bri', 'total_tunai', 'total_voucher',
             'users_baru', 'revenue_today', 'total_customers', 'dp_pending', 'total_pending_transfers',
             'service_completion_rate', 'high_pending', 'urgent_confirmations',
@@ -250,8 +244,7 @@ class AdminController extends Controller
         $tot_tranfer = $payments->where('dtl_jenis_bayar', 'TRANFER')->sum('dtl_jml_bayar');
         $jml_tunai = $payments->where('dtl_jenis_bayar', 'TUNAI')->count();
         $tot_tunai = $payments->where('dtl_jenis_bayar', 'TUNAI')->sum('dtl_jml_bayar');
-        $jml_setor = $payments->where('dtl_stt_stor', 'Menunggu')->where('dtl_jenis_bayar', 'TRANFER')->count();
-        $blm_setor = $payments->where('dtl_stt_stor', 'Menunggu')->where('dtl_jenis_bayar', 'TRANFER')->sum('dtl_jml_bayar');
+        $jml_setor = $payments->where('dtl_stt_stor', 'Sudah')->count();
 
         $all_have_cabang = true;
         foreach ($payments as $p) {
@@ -276,7 +269,7 @@ class AdminController extends Controller
             'payments', 'dp_payments', 'lunas_payments', 'menunggu_payments', 'menunggu_total', 'menunggu_count',
             'jml_DP_bca', 'tot_DP_bca', 'jml_DP_bri', 'tot_DP_bri', 'jml_DP_tunai', 'tot_DP_tunai',
             'jml_lns_tunai', 'tot_lns_tunai', 'jml_lns_bca', 'tot_lns_bca', 'jml_lns_bri', 'tot_lns_bri',
-            'jml_tranfer', 'tot_tranfer', 'jml_tunai', 'tot_tunai', 'jml_setor', 'blm_setor', 'payments_by_cabang', 'all_have_cabang'
+            'jml_tranfer', 'tot_tranfer', 'jml_tunai', 'tot_tunai', 'jml_setor', 'payments_by_cabang', 'all_have_cabang'
         );
     }
 

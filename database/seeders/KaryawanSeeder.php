@@ -29,7 +29,7 @@ class KaryawanSeeder extends Seeder
                     'kry_level' => $role['level'],
                     'kry_telp' => '081234567890',
                     'kry_join_date' => date('Y-m-d'),
-                    'kry_status' => 'Aktif',
+                    'kry_status' => 1,
                 ]
             );
         }

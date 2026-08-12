@@ -13,9 +13,10 @@ class MouSeeder extends Seeder
     public function run(): void
     {
         // Insert sample Mou
-        $mouId = \Illuminate\Support\Facades\DB::table('mou')->insertGetId([
+        $mouId = \Illuminate\Support\Facades\DB::table('mous')->insertGetId([
             'file_name' => 'Penawaran Layanan IT',
             'intro_text' => 'Bersama surat ini, kami menawarkan jasa pemasangan infrastruktur jaringan.',
+            'terms' => 'Pembayaran 50% di muka, 50% setelah selesai.',
             'lokasi' => 'Tegal',
             'tanggal' => date('Y-m-d'),
             'customer' => 'PT. Inovasi Teknologi',
