@@ -23,7 +23,7 @@ class AdminController extends Controller
             ->leftJoin('karyawan', 'order_list.kry_kode', '=', 'karyawan.kry_kode')
             ->whereDate('order_list.created_at', $today)
             ->get();
-            
+
         $konf = Transaksi::where('trans_status', 'Diproses')->count();
         $discount = DB::table('vocer')->where('voc_status', 'ON')->count();
 
@@ -452,26 +452,5 @@ class AdminController extends Controller
             'recent_customers', 'recent_users',
             'konf_pending', 'voucher_aktif', 'customer_baru_hari_ini', 'user_baru_hari_ini'
         ));
-    }
-    public function export_dashboard(Request $request)
-    {
-        $weekly_period = $request->query('weekly_period', '7D');
-        $technician_period = $request->query('technician_period', '7D');
-        $section = $request->query('section', 'all');
-
-        // Contoh: Mengambil data riil dari database (sesuaikan dengan kebutuhanmu)
-        // $data_transaksi = Transaksi::all(); 
-        // $data_karyawan = Karyawan::all();
-
-        // 1. Tampilkan ke HTML (Bisa di-print ke PDF manual lewat browser)
-        return view('admin.export_dashboard_view', compact('weekly_period', 'technician_period', 'section'));
-
-        /* 
-        // ATAU 2. Download langsung sebagai PDF menggunakan DOMPDF
-        // Jika DOMPDF tidak bisa membaca Tailwind, ganti view di atas dengan CSS biasa
-        
-        $pdf = Pdf::loadView('admin.export_dashboard_view', compact('weekly_period', 'technician_period', 'section'));
-        return $pdf->download('Laporan_Dashboard_'.$section.'.pdf');
-        */
     }
 }

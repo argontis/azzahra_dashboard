@@ -21,7 +21,7 @@ return new class extends Migration
             $table->decimal('grand_total', 15, 2)->default(0.00);
             $table->string('kry_kode', 20)->nullable();
             $table->dateTime('created_at');
-            
+
             $table->index('kry_kode');
         });
     }

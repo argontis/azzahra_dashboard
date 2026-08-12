@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Karyawan;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class KaryawanSeeder extends Seeder
 {
@@ -17,14 +18,14 @@ class KaryawanSeeder extends Seeder
             ['username' => 'test_hr', 'level' => 'HR', 'nama' => 'Test HR'],
             ['username' => 'test_teknisi', 'level' => 'Teknisi', 'nama' => 'Test Teknisi'],
             ['username' => 'test_kasir', 'level' => 'Kasir', 'nama' => 'Test Kasir'],
-            ['username' => 'test_cs', 'level' => 'Customer Service', 'nama' => 'Test CS']
+            ['username' => 'test_cs', 'level' => 'Customer Service', 'nama' => 'Test CS'],
         ];
 
         foreach ($roles as $role) {
-            \App\Models\Karyawan::updateOrCreate(
+            Karyawan::updateOrCreate(
                 ['kry_username' => $role['username']],
                 [
-                    'kry_pswd' => \Illuminate\Support\Facades\Hash::make('password123'),
+                    'kry_pswd' => Hash::make('password123'),
                     'kry_nama' => $role['nama'],
                     'kry_level' => $role['level'],
                     'kry_telp' => '081234567890',

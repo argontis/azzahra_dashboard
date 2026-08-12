@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Faker\Factory;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DummyDataSeeder extends Seeder
 {
@@ -12,13 +13,13 @@ class DummyDataSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = \Faker\Factory::create('id_ID');
+        $faker = Factory::create('id_ID');
 
         // 1. Data Master - Produk
         for ($i = 1; $i <= 5; $i++) {
-            \Illuminate\Support\Facades\DB::table('produk')->insert([
-                'kode_barang' => 'PRD' . str_pad($i, 3, '0', STR_PAD_LEFT),
-                'nama_produk' => 'Produk ' . $faker->word,
+            DB::table('produk')->insert([
+                'kode_barang' => 'PRD'.str_pad($i, 3, '0', STR_PAD_LEFT),
+                'nama_produk' => 'Produk '.$faker->word,
                 'deskripsi' => $faker->sentence,
                 'harga' => $faker->randomFloat(2, 50000, 500000),
                 'created_at' => now(),
@@ -27,7 +28,7 @@ class DummyDataSeeder extends Seeder
 
         // 2. Data Master - Costomer
         for ($i = 1; $i <= 5; $i++) {
-            \Illuminate\Support\Facades\DB::table('costomer')->insert([
+            DB::table('costomer')->insert([
                 'cos_nama' => $faker->name,
                 'cos_alamat' => $faker->address,
                 'cos_hp' => $faker->phoneNumber,
@@ -43,9 +44,9 @@ class DummyDataSeeder extends Seeder
 
         // 3. Data Master - Vouchers
         for ($i = 1; $i <= 5; $i++) {
-            \Illuminate\Support\Facades\DB::table('vouchers')->insert([
+            DB::table('vouchers')->insert([
                 'voucher_code' => strtoupper($faker->bothify('VOUCHER-####')),
-                'description' => 'Diskon ' . $i,
+                'description' => 'Diskon '.$i,
                 'discount_percent' => $faker->randomFloat(2, 5, 20),
                 'start_date' => now(),
                 'end_date' => now()->addDays(30),
@@ -56,16 +57,18 @@ class DummyDataSeeder extends Seeder
         }
 
         // Get FK references
-        $customers = \Illuminate\Support\Facades\DB::table('costomer')->pluck('id_costomer')->toArray();
-        $karyawans = \Illuminate\Support\Facades\DB::table('karyawan')->pluck('kry_kode')->toArray();
+        $customers = DB::table('costomer')->pluck('id_costomer')->toArray();
+        $karyawans = DB::table('karyawan')->pluck('kry_kode')->toArray();
 
-        if (empty($customers) || empty($karyawans)) return;
+        if (empty($customers) || empty($karyawans)) {
+            return;
+        }
 
         // 4. Transaksi & Operasional
         for ($i = 1; $i <= 5; $i++) {
             $cos_kode = $faker->randomElement($customers);
             $kry_kode = $faker->randomElement($karyawans);
-            $trans_kode = \Illuminate\Support\Facades\DB::table('transaksi')->insertGetId([
+            $trans_kode = DB::table('transaksi')->insertGetId([
                 'cos_kode' => $cos_kode,
                 'kry_kode' => $kry_kode,
                 'trans_status' => $faker->randomElement(['Baru', 'Diproses', 'Selesai']),
@@ -76,7 +79,7 @@ class DummyDataSeeder extends Seeder
                 'created_at' => now(),
             ]);
 
-            \Illuminate\Support\Facades\DB::table('transaksi_detail')->insert([
+            DB::table('transaksi_detail')->insert([
                 'trans_kode' => $trans_kode,
                 'kry_kode' => $kry_kode,
                 'dtl_jml_bayar' => 50000,
@@ -87,7 +90,7 @@ class DummyDataSeeder extends Seeder
                 'created_at' => now(),
             ]);
 
-            \Illuminate\Support\Facades\DB::table('tindakan')->insert([
+            DB::table('tindakan')->insert([
                 'trans_kode' => $trans_kode,
                 'tdkn_barang' => 'Pengecekan dan Service',
                 'tdkn_harga' => 50000,
@@ -96,7 +99,7 @@ class DummyDataSeeder extends Seeder
                 'created_at' => now(),
             ]);
 
-            \Illuminate\Support\Facades\DB::table('vocer')->insert([
+            DB::table('vocer')->insert([
                 'trans_kode' => $trans_kode,
                 'voc_jumlah' => 10000,
                 'voc_tanggal' => now()->format('Y-m-d'),
@@ -104,14 +107,14 @@ class DummyDataSeeder extends Seeder
                 'created_at' => now(),
             ]);
 
-            \Illuminate\Support\Facades\DB::table('transaksi_return')->insert([
+            DB::table('transaksi_return')->insert([
                 'trans_kode' => $trans_kode,
                 'ret_jml' => 10000,
                 'ret_tanggal' => now()->format('Y-m-d'),
                 'created_at' => now(),
             ]);
 
-            \Illuminate\Support\Facades\DB::table('order_list')->insert([
+            DB::table('order_list')->insert([
                 'trans_kode' => $trans_kode,
                 'cos_kode' => $cos_kode,
                 'kry_kode' => $kry_kode,
@@ -122,7 +125,7 @@ class DummyDataSeeder extends Seeder
                 'created_at' => now(),
             ]);
 
-            \Illuminate\Support\Facades\DB::table('ketersediaan_sparepart')->insert([
+            DB::table('ketersediaan_sparepart')->insert([
                 'trans_kode' => $trans_kode,
                 'cos_nama' => 'Budi',
                 'barang_nama' => 'RAM 8GB',
@@ -130,14 +133,14 @@ class DummyDataSeeder extends Seeder
                 'ketersediaan' => 'tidak_ada',
                 'created_at' => now(),
             ]);
-            
-            \Illuminate\Support\Facades\DB::table('order_part_markings')->insert([
+
+            DB::table('order_part_markings')->insert([
                 'trans_kode' => $trans_kode,
                 'is_ordered' => 'yes',
                 'created_at' => now(),
             ]);
 
-            \Illuminate\Support\Facades\DB::table('order_part_approvals')->insert([
+            DB::table('order_part_approvals')->insert([
                 'trans_kode' => $trans_kode,
                 'type' => 'oow',
                 'approval_status' => 'pending',
@@ -149,29 +152,29 @@ class DummyDataSeeder extends Seeder
         for ($i = 1; $i <= 5; $i++) {
             $kry_kode = $faker->randomElement($karyawans);
 
-            \Illuminate\Support\Facades\DB::table('absensi')->insert([
+            DB::table('absensi')->insert([
                 'tanggal' => now()->format('Y-m-d'),
                 'id_karyawan' => $kry_kode,
-                'nama_karyawan' => 'Karyawan ' . $i,
+                'nama_karyawan' => 'Karyawan '.$i,
                 'status' => 'Hadir',
                 'jam_masuk' => '08:00:00',
                 'jam_pulang' => '17:00:00',
                 'created_at' => now(),
             ]);
 
-            \Illuminate\Support\Facades\DB::table('absensi_wfh')->insert([
+            DB::table('absensi_wfh')->insert([
                 'tanggal' => now()->format('Y-m-d'),
                 'id_karyawan' => $kry_kode,
-                'nama_karyawan' => 'Karyawan WFH ' . $i,
+                'nama_karyawan' => 'Karyawan WFH '.$i,
                 'status' => 'Hadir',
                 'jam_masuk' => '08:00:00',
                 'jam_pulang' => '17:00:00',
                 'created_at' => now(),
             ]);
 
-            \Illuminate\Support\Facades\DB::table('kpi')->insert([
+            DB::table('kpi')->insert([
                 'id_karyawan' => $kry_kode,
-                'nama_karyawan' => 'Karyawan ' . $i,
+                'nama_karyawan' => 'Karyawan '.$i,
                 'kedisiplinan' => 80,
                 'kualitas_kerja' => 85,
                 'produktivitas' => 90,
@@ -182,18 +185,18 @@ class DummyDataSeeder extends Seeder
                 'created_at' => now(),
             ]);
 
-            \Illuminate\Support\Facades\DB::table('arsip')->insert([
+            DB::table('arsip')->insert([
                 'tipe' => 'Invoice',
-                'nama' => 'Arsip ' . $i,
+                'nama' => 'Arsip '.$i,
                 'tanggal' => now()->format('Y-m-d'),
                 'no_hp' => $faker->phoneNumber,
                 'alamat' => $faker->address,
                 'created_at' => now(),
             ]);
 
-            \Illuminate\Support\Facades\DB::table('laporan_mingguan')->insert([
+            DB::table('laporan_mingguan')->insert([
                 'id_karyawan' => $kry_kode,
-                'nama_karyawan' => 'Karyawan ' . $i,
+                'nama_karyawan' => 'Karyawan '.$i,
                 'periode' => 'Minggu 1',
                 'target_mingguan' => 'Service 10 Unit',
                 'tugas_dilakukan' => 'Service 8 Unit',
@@ -201,8 +204,8 @@ class DummyDataSeeder extends Seeder
                 'created_at' => now(),
             ]);
 
-            \Illuminate\Support\Facades\DB::table('pencatatan')->insert([
-                'nama_barang' => 'Sparepart ' . $i,
+            DB::table('pencatatan')->insert([
+                'nama_barang' => 'Sparepart '.$i,
                 'qty' => 5,
                 'harga_satuan' => 10000,
                 'total' => 50000,

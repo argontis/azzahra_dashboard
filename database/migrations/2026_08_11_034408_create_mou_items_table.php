@@ -19,7 +19,7 @@ return new class extends Migration
             $table->decimal('qty', 10, 2)->default(0.00);
             $table->decimal('harga', 15, 2)->default(0.00);
             $table->decimal('total', 15, 2)->default(0.00);
-            
+
             $table->index('mou_id');
         });
     }

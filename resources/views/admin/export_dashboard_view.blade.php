@@ -275,12 +275,76 @@
      ===================================================== --}}
     @if ($section === 'all' || $section === 'payment')
         <div class="report-section">
-            <h2>Payment Methods</h2>
+            <h2>Payment Methods Overview</h2>
             <?php
             $bca_pct = $bank_percentages['BCA'] ?? 0;
             $mandiri_pct = $bank_percentages['MANDIRI'] ?? 0;
             $bri_pct = $bank_percentages['BRI'] ?? 0;
+            $tunai_pct = $tunai_percentage ?? 0;
+            $voucher_pct = $voucher_usage_percentage ?? 0;
+            $pending_val = $total_pending_transfers ?? 0;
             ?>
+
+            <!-- Diagram Batang (Bar Chart) -->
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 20px;">
+                <div style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px;">
+                    <span>📊 Diagram Batang Metode Pembayaran</span>
+                    <span style="font-size: 13px; font-weight: 500; color: #64748b;">Persentase (%) & Total Pending</span>
+                </div>
+
+                <div style="display: flex; height: 220px; align-items: flex-end; gap: 20px; padding: 0 10px 10px 10px; border-bottom: 2px solid #cbd5e1; position: relative;">
+                    <!-- Grid lines -->
+                    <div style="position: absolute; top: 0; left: 0; right: 0; border-top: 1px dashed #e2e8f0; pointer-events: none;">
+                        <span style="position: absolute; right: 8px; top: -10px; font-size: 10px; color: #94a3b8; font-weight: 600;">100%</span>
+                    </div>
+                    <div style="position: absolute; top: 50%; left: 0; right: 0; border-top: 1px dashed #e2e8f0; pointer-events: none;">
+                        <span style="position: absolute; right: 8px; top: -10px; font-size: 10px; color: #94a3b8; font-weight: 600;">50%</span>
+                    </div>
+
+                    <!-- Bar 1: BCA -->
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative; z-index: 2;">
+                        <div style="font-size: 12px; font-weight: 700; color: #2563eb; margin-bottom: 6px;">{{ $bca_pct }}%</div>
+                        <div style="width: 100%; max-width: 48px; height: {{ max(min($bca_pct, 100), 4) }}%; background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 6px 6px 0 0;"></div>
+                        <div style="margin-top: 10px; font-size: 12px; font-weight: 600; color: #334155;">Bank BCA</div>
+                    </div>
+
+                    <!-- Bar 2: Mandiri -->
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative; z-index: 2;">
+                        <div style="font-size: 12px; font-weight: 700; color: #4f46e5; margin-bottom: 6px;">{{ $mandiri_pct }}%</div>
+                        <div style="width: 100%; max-width: 48px; height: {{ max(min($mandiri_pct, 100), 4) }}%; background: linear-gradient(180deg, #6366f1 0%, #4338ca 100%); border-radius: 6px 6px 0 0;"></div>
+                        <div style="margin-top: 10px; font-size: 12px; font-weight: 600; color: #334155;">Mandiri</div>
+                    </div>
+
+                    <!-- Bar 3: BRI -->
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative; z-index: 2;">
+                        <div style="font-size: 12px; font-weight: 700; color: #0d9488; margin-bottom: 6px;">{{ $bri_pct }}%</div>
+                        <div style="width: 100%; max-width: 48px; height: {{ max(min($bri_pct, 100), 4) }}%; background: linear-gradient(180deg, #14b8a6 0%, #0f766e 100%); border-radius: 6px 6px 0 0;"></div>
+                        <div style="margin-top: 10px; font-size: 12px; font-weight: 600; color: #334155;">Bank BRI</div>
+                    </div>
+
+                    <!-- Bar 4: Tunai -->
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative; z-index: 2;">
+                        <div style="font-size: 12px; font-weight: 700; color: #059669; margin-bottom: 6px;">{{ $tunai_pct }}%</div>
+                        <div style="width: 100%; max-width: 48px; height: {{ max(min($tunai_pct, 100), 4) }}%; background: linear-gradient(180deg, #10b981 0%, #047857 100%); border-radius: 6px 6px 0 0;"></div>
+                        <div style="margin-top: 10px; font-size: 12px; font-weight: 600; color: #334155;">Tunai</div>
+                    </div>
+
+                    <!-- Bar 5: Pending -->
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative; z-index: 2;">
+                        <div style="font-size: 12px; font-weight: 700; color: #d97706; margin-bottom: 6px;">{{ $pending_val }}</div>
+                        <div style="width: 100%; max-width: 48px; height: {{ $pending_val > 0 ? min($pending_val * 15, 100) : 4 }}%; background: linear-gradient(180deg, #f59e0b 0%, #b45309 100%); border-radius: 6px 6px 0 0;"></div>
+                        <div style="margin-top: 10px; font-size: 12px; font-weight: 600; color: #334155;">Pending</div>
+                    </div>
+
+                    <!-- Bar 6: Voucher -->
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative; z-index: 2;">
+                        <div style="font-size: 12px; font-weight: 700; color: #8b5cf6; margin-bottom: 6px;">{{ $voucher_pct }}%</div>
+                        <div style="width: 100%; max-width: 48px; height: {{ max(min($voucher_pct, 100), 4) }}%; background: linear-gradient(180deg, #a855f7 0%, #6b21a8 100%); border-radius: 6px 6px 0 0;"></div>
+                        <div style="margin-top: 10px; font-size: 12px; font-weight: 600; color: #334155;">Voucher</div>
+                    </div>
+                </div>
+            </div>
+
             <table>
                 <thead>
                     <tr>

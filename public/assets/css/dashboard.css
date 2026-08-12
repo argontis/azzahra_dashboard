@@ -88,27 +88,37 @@ body {
 .page-header {
     animation: slideDown 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     background: linear-gradient(135deg, #0041c3 0%, #001a4d 100%);
-    /* Responsive padding */
-    padding: clamp(16px, 2.5vw, 28px) clamp(20px, 3vw, 40px);
+    padding: 16px 32px !important;
     margin-bottom: 0;
     border: none;
     overflow: visible;
     box-shadow: 0 8px 32px rgba(0, 65, 195, 0.25);
     backdrop-filter: blur(10px);
-    position: sticky;
+    position: fixed !important;
+    top: 0 !important;
+    left: 260px !important;
+    right: 0 !important;
+    width: auto !important;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     flex-wrap: wrap;
-    gap: clamp(12px, 2vw, 20px);
+    gap: 12px;
     box-sizing: border-box;
     clear: both;
     float: none;
-    top: 0;
-    width: 100%;
-    z-index: 999;
-    /* Minimum height untuk konsistensi */
-    min-height: clamp(80px, 12vh, 120px);
+    z-index: 999 !important;
+}
+
+.content-area {
+    margin-top: 138px !important;
+    padding-top: 12px !important;
+}
+
+@media (max-width: 1024px) {
+    .page-header {
+        left: 0 !important;
+    }
 }
 
 
@@ -154,10 +164,10 @@ body {
 }
 
 .page-title {
-    font-size: 2.5rem;
+    font-size: 2rem !important;
     font-weight: 800;
     color: white;
-    margin-bottom: var(--spacing-xs);
+    margin-bottom: 2px !important;
     text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     letter-spacing: -0.025em;
     background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
@@ -182,23 +192,32 @@ body {
 /* Export Buttons Responsive */
 .export-buttons {
     display: flex;
-    gap: clamp(4px, 0.8vw, 8px);
+    gap: 8px;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 .export-btn {
-    display: flex;
-    align-items: center;
-    gap: clamp(4px, 0.5vw, 6px);
-    padding: clamp(6px, 1vw, 10px) clamp(8px, 1.2vw, 14px);
-    font-size: clamp(0.7rem, 1vw, 0.875rem);
-    white-space: nowrap;
-    transition: all 0.2s ease;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 7px 14px !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    height: 38px !important;
+    border-radius: 8px !important;
+    white-space: nowrap !important;
+    transition: all 0.2s ease !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
 }
 
-.export-btn i {
-    width: clamp(14px, 1.5vw, 18px);
-    height: clamp(14px, 1.5vw, 18px);
+.export-btn:hover {
+    background: rgba(255, 255, 255, 0.28) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 .header-actions {
     display: flex;

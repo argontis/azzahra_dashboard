@@ -38,7 +38,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
         
         <style>
-            /* HARDCODED LAYOUT FIX */
+            /* DYNAMIC LAYOUT FIX */
             body.app { padding-left: 0 !important; margin: 0 !important; }
             .app-layout { padding-left: 0 !important; margin-left: 0 !important; }
             .main-content { 
@@ -46,10 +46,18 @@
                 margin-left: 0 !important;
                 width: 100% !important; 
                 box-sizing: border-box !important; 
+                transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            }
+            .sidebar.collapsed ~ .main-content {
+                padding-left: 80px !important;
             }
             .sidebar { left: 0 !important; }
+            .sidebar-toggle { display: none !important; }
             @media (max-width: 1024px) {
-                .main-content { padding-left: 0 !important; }
+                .main-content,
+                .sidebar.collapsed ~ .main-content { 
+                    padding-left: 0 !important; 
+                }
             }
         </style>
         
@@ -91,10 +99,6 @@
                 </div>
                 <div class="logo-name">
                     <h1>Azzahra Computer</h1>
-                    
-                </div>
-                <div class="sidebar-toggle" onclick="toggleSidebar()">
-                    <i data-feather="chevron-left"></i>
                 </div>
             </div>
 

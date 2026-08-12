@@ -249,80 +249,119 @@
 @if($section === 'all' || $section === 'payment')
 <div class="section-title">Payment Methods Overview</div>
 <div class="report-card">
+    <!-- Diagram Batang (Bar Chart) -->
+    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 20px;">
+        <div style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px;">
+            <span>📊 Diagram Batang Metode Pembayaran</span>
+            <span style="font-size: 13px; font-weight: 500; color: #64748b;">Persentase (%) & Total Pending</span>
+        </div>
+
+        <div style="display: flex; height: 230px; align-items: flex-end; gap: 20px; padding: 0 10px 10px 10px; border-bottom: 2px solid #cbd5e1; position: relative;">
+            
+            <!-- Grid lines background -->
+            <div style="position: absolute; top: 0; left: 0; right: 0; border-top: 1px dashed #e2e8f0; pointer-events: none;">
+                <span style="position: absolute; right: 8px; top: -10px; font-size: 10px; color: #94a3b8; font-weight: 600;">100%</span>
+            </div>
+            <div style="position: absolute; top: 25%; left: 0; right: 0; border-top: 1px dashed #f1f5f9; pointer-events: none;">
+                <span style="position: absolute; right: 8px; top: -10px; font-size: 10px; color: #94a3b8;">75%</span>
+            </div>
+            <div style="position: absolute; top: 50%; left: 0; right: 0; border-top: 1px dashed #e2e8f0; pointer-events: none;">
+                <span style="position: absolute; right: 8px; top: -10px; font-size: 10px; color: #94a3b8; font-weight: 600;">50%</span>
+            </div>
+            <div style="position: absolute; top: 75%; left: 0; right: 0; border-top: 1px dashed #f1f5f9; pointer-events: none;">
+                <span style="position: absolute; right: 8px; top: -10px; font-size: 10px; color: #94a3b8;">25%</span>
+            </div>
+
+            <!-- Bar 1: Bank BCA -->
+            @php $bca_h = max(min($bca_pct, 100), 4); @endphp
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative; z-index: 2;">
+                <div style="font-size: 12px; font-weight: 700; color: #2563eb; margin-bottom: 6px;">{{ $bca_pct }}%</div>
+                <div style="width: 100%; max-width: 52px; height: {{ $bca_h }}%; background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 6px 6px 0 0; box-shadow: 0 4px 6px rgba(37,99,235,0.25); min-height: 6px;"></div>
+                <div style="margin-top: 10px; font-size: 12px; font-weight: 600; color: #334155; text-align: center;">Bank BCA</div>
+            </div>
+
+            <!-- Bar 2: Bank Mandiri -->
+            @php $mandiri_h = max(min($mandiri_pct, 100), 4); @endphp
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative; z-index: 2;">
+                <div style="font-size: 12px; font-weight: 700; color: #4f46e5; margin-bottom: 6px;">{{ $mandiri_pct }}%</div>
+                <div style="width: 100%; max-width: 52px; height: {{ $mandiri_h }}%; background: linear-gradient(180deg, #6366f1 0%, #4338ca 100%); border-radius: 6px 6px 0 0; box-shadow: 0 4px 6px rgba(79,70,229,0.25); min-height: 6px;"></div>
+                <div style="margin-top: 10px; font-size: 12px; font-weight: 600; color: #334155; text-align: center;">Bank Mandiri</div>
+            </div>
+
+            <!-- Bar 3: Bank BRI -->
+            @php $bri_h = max(min($bri_pct, 100), 4); @endphp
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative; z-index: 2;">
+                <div style="font-size: 12px; font-weight: 700; color: #0d9488; margin-bottom: 6px;">{{ $bri_pct }}%</div>
+                <div style="width: 100%; max-width: 52px; height: {{ $bri_h }}%; background: linear-gradient(180deg, #14b8a6 0%, #0f766e 100%); border-radius: 6px 6px 0 0; box-shadow: 0 4px 6px rgba(13,148,136,0.25); min-height: 6px;"></div>
+                <div style="margin-top: 10px; font-size: 12px; font-weight: 600; color: #334155; text-align: center;">Bank BRI</div>
+            </div>
+
+            <!-- Bar 4: Tunai -->
+            @php $tunai_h = max(min($tunai_pct, 100), 4); @endphp
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative; z-index: 2;">
+                <div style="font-size: 12px; font-weight: 700; color: #059669; margin-bottom: 6px;">{{ $tunai_pct }}%</div>
+                <div style="width: 100%; max-width: 52px; height: {{ $tunai_h }}%; background: linear-gradient(180deg, #10b981 0%, #047857 100%); border-radius: 6px 6px 0 0; box-shadow: 0 4px 6px rgba(5,150,105,0.25); min-height: 6px;"></div>
+                <div style="margin-top: 10px; font-size: 12px; font-weight: 600; color: #334155; text-align: center;">Tunai</div>
+            </div>
+
+            <!-- Bar 5: Payment Pending -->
+            @php $pending_h = $total_pending_transfers > 0 ? min($total_pending_transfers * 15, 100) : 4; @endphp
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative; z-index: 2;">
+                <div style="font-size: 12px; font-weight: 700; color: #d97706; margin-bottom: 6px;">{{ $total_pending_transfers }}</div>
+                <div style="width: 100%; max-width: 52px; height: {{ $pending_h }}%; background: linear-gradient(180deg, #f59e0b 0%, #b45309 100%); border-radius: 6px 6px 0 0; box-shadow: 0 4px 6px rgba(217,119,6,0.25); min-height: 6px;"></div>
+                <div style="margin-top: 10px; font-size: 12px; font-weight: 600; color: #334155; text-align: center;">Pending</div>
+            </div>
+
+            <!-- Bar 6: Voucher Used -->
+            @php $voucher_h = max(min($voucher_pct, 100), 4); @endphp
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative; z-index: 2;">
+                <div style="font-size: 12px; font-weight: 700; color: #8b5cf6; margin-bottom: 6px;">{{ $voucher_pct }}%</div>
+                <div style="width: 100%; max-width: 52px; height: {{ $voucher_h }}%; background: linear-gradient(180deg, #a855f7 0%, #6b21a8 100%); border-radius: 6px 6px 0 0; shadow: 0 4px 6px rgba(139,92,246,0.25); min-height: 6px;"></div>
+                <div style="margin-top: 10px; font-size: 12px; font-weight: 600; color: #334155; text-align: center;">Voucher</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Ringkasan Data Pembayaran -->
     <table style="margin-bottom:0;">
         <thead>
             <tr>
                 <th style="width:220px;">Metode Pembayaran</th>
-                <th style="width:100px;" class="right">Nilai</th>
-                <th>Progress</th>
+                <th style="width:120px;" class="right">Nilai / Persentase</th>
+                <th>Keterangan</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td><strong>Bank BCA</strong></td>
                 <td class="right" style="color:#2563eb;font-weight:600;">{{ $bca_pct }}%</td>
-                <td>
-                    <div class="progress-wrap">
-                        <div class="progress-bar-bg">
-                            <div class="progress-bar-fill" style="width:{{ min($bca_pct,100) }}%; background:#2563eb;"></div>
-                        </div>
-                    </div>
-                </td>
+                <td>Transfer Bank BCA</td>
             </tr>
             <tr>
                 <td><strong>Bank Mandiri</strong></td>
-                <td class="right" style="color:#2563eb;font-weight:600;">{{ $mandiri_pct }}%</td>
-                <td>
-                    <div class="progress-wrap">
-                        <div class="progress-bar-bg">
-                            <div class="progress-bar-fill" style="width:{{ min($mandiri_pct,100) }}%; background:#2563eb;"></div>
-                        </div>
-                    </div>
-                </td>
+                <td class="right" style="color:#4f46e5;font-weight:600;">{{ $mandiri_pct }}%</td>
+                <td>Transfer Bank Mandiri</td>
             </tr>
             <tr>
                 <td><strong>Bank BRI</strong></td>
-                <td class="right" style="color:#2563eb;font-weight:600;">{{ $bri_pct }}%</td>
-                <td>
-                    <div class="progress-wrap">
-                        <div class="progress-bar-bg">
-                            <div class="progress-bar-fill" style="width:{{ min($bri_pct,100) }}%; background:#2563eb;"></div>
-                        </div>
-                    </div>
-                </td>
+                <td class="right" style="color:#0d9488;font-weight:600;">{{ $bri_pct }}%</td>
+                <td>Transfer Bank BRI</td>
             </tr>
             <tr>
                 <td><strong>Tunai</strong></td>
-                <td class="right" style="color:#2563eb;font-weight:600;">{{ $tunai_pct }}%</td>
-                <td>
-                    <div class="progress-wrap">
-                        <div class="progress-bar-bg">
-                            <div class="progress-bar-fill" style="width:{{ min($tunai_pct,100) }}%; background:#2563eb;"></div>
-                        </div>
-                    </div>
-                </td>
+                <td class="right" style="color:#059669;font-weight:600;">{{ $tunai_pct }}%</td>
+                <td>Pembayaran Cash / Tunai</td>
             </tr>
             <tr>
                 <td><strong>Payment Pending</strong></td>
-                <td class="right" style="color:#2563eb;font-weight:600;">{{ $total_pending_transfers }}</td>
-                <td>
-                    <div class="progress-wrap">
-                        <div class="progress-bar-bg">
-                            <div class="progress-bar-fill" style="width:100%; background:#2563eb;"></div>
-                        </div>
-                    </div>
-                </td>
+                <td class="right" style="color:#d97706;font-weight:600;">{{ $total_pending_transfers }}</td>
+                <td>Menunggu Verifikasi Stor</td>
             </tr>
             <tr>
                 <td><strong>Voucher Used</strong></td>
-                <td class="right" style="color:#2563eb;font-weight:600;">{{ $voucher_pct }}%</td>
-                <td>
-                    <div class="progress-wrap">
-                        <div class="progress-bar-bg">
-                            <div class="progress-bar-fill" style="width:{{ min($voucher_pct,100) }}%; background:#2563eb;"></div>
-                        </div>
-                    </div>
-                </td>
+                <td class="right" style="color:#8b5cf6;font-weight:600;">{{ $voucher_pct }}%</td>
+                <td>Penggunaan Vocer Diskon</td>
             </tr>
         </tbody>
     </table>
