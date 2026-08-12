@@ -499,10 +499,10 @@
             <div class="recent-section recent-customers">
                 <div class="section-header">
                     <h3 class="section-title">Recent Customers</h3>
-                    <span class="section-count">{{ $baru ?? '0' }} new</span>
+                    <span class="section-count">{{ count($baru) }} new</span>
                 </div>
 
-                <?php if ($baru > 0): ?>
+                <?php if (count($baru) > 0): ?>
                     <div class="activity-list">
                         @foreach ($baru as $row)
                             <div class="activity-item">
@@ -512,10 +512,10 @@
                                     </div>
                                 </div>
                                 <div class="activity-content">
-                                    <div class="activity-title">{{ html_escape($row->cos_nama) ?? '0' }}</div>
+                                    <div class="activity-title">{{ $row->cos_nama ?? '0' }}</div>
                                     <div class="activity-description">Customer baru dikonfirmasi</div>
                                 </div>
-                                <div class="activity-time">{{ html_escape($row->cos_jam) ?? '0' }}</div>
+                                <div class="activity-time">{{ $row->created_at ?? '0' }}</div>
                             </div>
                         @endforeach
                     </div>
@@ -531,10 +531,10 @@
             <div class="recent-section recent-users">
                 <div class="section-header">
                     <h3 class="section-title">Recent Users</h3>
-                    <span class="section-count">{{ $users_baru ?? '0' }} new</span>
+                    <span class="section-count">{{ count($users_baru) }} new</span>
                 </div>
 
-                <?php if ($users_baru > 0): ?>
+                <?php if (count($users_baru) > 0): ?>
                     <div class="activity-list">
                         @foreach ($users_baru as $row)
                             <div class="activity-item">
@@ -544,10 +544,10 @@
                                     </div>
                                 </div>
                                 <div class="activity-content">
-                                    <div class="activity-title">{{ html_escape($row->cos_nama) ?? '0' }}</div>
+                                    <div class="activity-title">{{ $row->cos_nama ?? '0' }}</div>
                                     <div class="activity-description">User baru terdaftar</div>
                                 </div>
-                                <div class="activity-time">{{ html_escape($row->cos_jam) ?? '0' }}</div>
+                                <div class="activity-time">{{ $row->created_at ?? '0' }}</div>
                             </div>
                         @endforeach
                     </div>

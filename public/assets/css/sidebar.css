@@ -642,7 +642,10 @@ body {
 /* Main Content */
 .main-content {
     flex: 1;
-    transition: margin-left 0.3s ease;
+    padding-left: 260px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: padding-left 0.3s ease;
 }
 
 /* Updated collapsed state handled above */
@@ -654,12 +657,10 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: fixed;
+    position: sticky;
     top: 0;
-    left: 260px;
-    width: calc(100% - 260px);
+    width: 100%;
     z-index: 999;
-    transition: left 0.3s ease, width 0.3s ease;
 }
 
 .header-title h1 {
@@ -748,15 +749,12 @@ body {
 
 /* Content Area */
 .content, .content-area {
-    margin-left: 260px;
-    padding: 77px 32px 32px;
+    padding: 20px 32px 32px;
     background: #fafbfc;
     min-height: calc(100vh - 77px);
-    transition: margin-left 0.3s ease;
 }
 /* Content area diberi jarak dari header */
 .content-area {
-    margin-top: 100px; /* header height + extra space */
     padding: 20px;
 }
 
@@ -1135,14 +1133,8 @@ body {
     }
 }
 
-.sidebar.collapsed ~ .main-content .page-header {
-    left: 120px;
-    width: calc(100% - 120px);
-}
-
-.sidebar.collapsed ~ .main-content .content,
-.sidebar.collapsed ~ .main-content .content-area {
-    margin-left: 80px;
+.sidebar.collapsed ~ .main-content {
+    padding-left: 80px;
 }
 
 @media (max-width: 768px) {

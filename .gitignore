@@ -32,3 +32,4 @@ Thumbs.db
 *.txt
 *.md
 !README.md
+!laporan.md
