@@ -2,28 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Models\Customer;
+use App\Models\OrderList;
+use App\Models\Tindakan;
 use App\Models\Transaksi;
 use App\Models\TransaksiDetail;
-use App\Models\Tindakan;
-use App\Models\OrderList;
-use App\Models\KetersediaanSparepart;
-use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
     public function index()
     {
         $today = Carbon::today();
-        
+
         // Basic metrics (similar to M_admin legacy)
         $baru = Transaksi::where('trans_status', 'Baru')->count();
         $konf = Transaksi::where('trans_status', 'Diproses')->count();
         $discount = DB::table('vocer')->where('voc_status', 'ON')->count();
-        
+
         $bca = TransaksiDetail::where('dtl_jenis_bayar', 'TRANFER')->where('dtl_bank', 'BCA')->where('dtl_stt_stor', 'Menunggu')->count();
         $mandiri = TransaksiDetail::where('dtl_jenis_bayar', 'TRANFER')->where('dtl_bank', 'MANDIRI')->where('dtl_stt_stor', 'Menunggu')->count();
         $bri = TransaksiDetail::where('dtl_jenis_bayar', 'TRANFER')->where('dtl_bank', 'BRI')->where('dtl_stt_stor', 'Menunggu')->count();
@@ -33,11 +32,11 @@ class AdminController extends Controller
         $total_mandiri = TransaksiDetail::where('dtl_jenis_bayar', 'TRANFER')->where('dtl_bank', 'MANDIRI')->where('dtl_stt_stor', 'Menunggu')->sum('dtl_jml_bayar');
         $total_bri = TransaksiDetail::where('dtl_jenis_bayar', 'TRANFER')->where('dtl_bank', 'BRI')->where('dtl_stt_stor', 'Menunggu')->sum('dtl_jml_bayar');
         $total_tunai = TransaksiDetail::where('dtl_jenis_bayar', 'TUNAI')->where('dtl_status', 'PELUNASAN')->whereDate('dtl_tanggal', $today)->sum('dtl_jml_bayar');
-        
+
         $total_voucher = DB::table('vocer')->where('voc_status', 'ON')->sum('voc_jumlah');
         $users_baru = Customer::whereDate('created_at', $today)->count();
         $revenue_today = TransaksiDetail::whereDate('dtl_tanggal', $today)->whereIn('dtl_status', ['DP', 'PELUNASAN'])->sum('dtl_jml_bayar');
-        
+
         $total_customers = Customer::count();
         $dp_pending = Transaksi::where('trans_status', 'Pelunasan')->count();
         $total_pending_transfers = TransaksiDetail::where('dtl_jenis_bayar', 'TRANFER')->where('dtl_stt_stor', 'Menunggu')->count();
@@ -50,7 +49,7 @@ class AdminController extends Controller
         $bank_percentages = [];
         $tunai_percentage = 0;
         $voucher_usage_percentage = 0; // Or whatever calculation is needed
-        
+
         if ($total_methods > 0) {
             $bank_percentages['BCA'] = round(($bca / $total_methods) * 100);
             $bank_percentages['MANDIRI'] = round(($mandiri / $total_methods) * 100);
@@ -70,6 +69,7 @@ class AdminController extends Controller
     public function customer()
     {
         $customers = Customer::orderBy('id_costomer', 'desc')->paginate(20);
+
         return view('admin.customer', ['title' => 'Customer', 'custom' => $customers]);
     }
 
@@ -80,6 +80,7 @@ class AdminController extends Controller
             ->leftJoin('karyawan', 'transaksi.kry_kode', '=', 'karyawan.kry_kode')
             ->where('transaksi.trans_status', 'Baru')
             ->get();
+
         return view('admin.cus-baru', ['title' => 'Transaksi Baru', 'trans' => $trans]);
     }
 
@@ -90,6 +91,7 @@ class AdminController extends Controller
             ->leftJoin('karyawan', 'transaksi.kry_kode', '=', 'karyawan.kry_kode')
             ->where('transaksi.trans_status', 'Pelunasan')
             ->get();
+
         return view('admin.cus_proses', ['title' => 'Transaksi Proses (Pelunasan)', 'trans' => $trans]);
     }
 
@@ -100,6 +102,7 @@ class AdminController extends Controller
             ->leftJoin('karyawan', 'transaksi.kry_kode', '=', 'karyawan.kry_kode')
             ->where('transaksi.trans_status', 'Diproses')
             ->get();
+
         return view('admin.cus-konf', ['title' => 'Transaksi Konfirmasi', 'trans' => $trans]);
     }
 
@@ -113,7 +116,7 @@ class AdminController extends Controller
             ->where('transaksi_detail.dtl_jenis_bayar', 'TRANFER')
             ->where('transaksi_detail.dtl_stt_stor', 'Menunggu')
             ->get();
-        
+
         return view('admin.cus_konf_bank', ['title' => 'Konfirmasi Bank Transfer', 'trans' => $trans]);
     }
 
@@ -126,7 +129,7 @@ class AdminController extends Controller
             'title' => 'Customer Konfirmasi',
             'proses' => array_merge($transaksi->toArray(), $transaksi->customer->toArray()),
             'trans' => $transaksi,
-            'data' => $tindakan
+            'data' => $tindakan,
         ]);
     }
 
@@ -137,7 +140,7 @@ class AdminController extends Controller
         $tindakan = $request->input('tindakan');
         $qty = $request->input('qty');
         $subtot = $request->input('subtot');
-        
+
         DB::beginTransaction();
         try {
             $total = 0;
@@ -145,26 +148,28 @@ class AdminController extends Controller
                 $sub = str_replace('.', '', $subtot[$index]);
                 Tindakan::where('tdkn_kode', $id_tindakan)->update([
                     'tdkn_qty' => $qty[$index],
-                    'tdkn_subtot' => $sub
+                    'tdkn_subtot' => $sub,
                 ]);
                 $total += $sub;
             }
 
             Transaksi::where('trans_kode', $kd_trans)->update([
                 'trans_total' => $total,
-                'trans_status' => 'Konfirmasi'
+                'trans_status' => 'Konfirmasi',
             ]);
 
             OrderList::where('trans_kode', $kd_trans)->update([
                 'trans_total' => $total,
-                'trans_status' => 'waitingOrder'
+                'trans_status' => 'waitingOrder',
             ]);
 
             DB::commit();
+
             return redirect()->route('admin.cus_konf')->with('sukses', 'DI KONFIRMASI');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('gagal', 'Terjadi Kesalahan: ' . $e->getMessage());
+
+            return back()->with('gagal', 'Terjadi Kesalahan: '.$e->getMessage());
         }
     }
 
@@ -175,7 +180,7 @@ class AdminController extends Controller
 
         TransaksiDetail::where('dtl_kode', $kode)->update([
             'dtl_jml_bayar' => $jml,
-            'dtl_stt_stor' => 'Disetorkan'
+            'dtl_stt_stor' => 'Disetorkan',
         ]);
 
         return redirect()->route('admin.cus_konf_bank')->with('sukses', 'DI SETORKAN');
@@ -185,14 +190,14 @@ class AdminController extends Controller
     {
         $today = Carbon::today()->toDateString();
         $payments = TransaksiDetail::with('transaksi.customer')->whereDate('dtl_tanggal', $today)->get();
-        
+
         $menunggu = TransaksiDetail::where('dtl_stt_stor', 'Menunggu')->whereDate('dtl_tanggal', $today);
-        
+
         return view('admin.lap-perhari', [
             'title' => 'Laporan Harian',
             'payments' => $payments,
             'menunggu_total' => $menunggu->sum('dtl_jml_bayar'),
-            'menunggu_count' => $menunggu->count()
+            'menunggu_count' => $menunggu->count(),
         ]);
     }
 
@@ -205,15 +210,15 @@ class AdminController extends Controller
             ->whereDate('transaksi_detail.dtl_tanggal', '>=', $tgl_awal)
             ->whereDate('transaksi_detail.dtl_tanggal', '<=', $tgl_akhir)
             ->get();
-            
+
         $dp_payments = $payments->where('dtl_status', 'DP')->values();
         $lunas_payments = $payments->where('dtl_status', 'PELUNASAN')->values();
-        
+
         $lunas_codes = $lunas_payments->pluck('cos_kode')->toArray();
         $dp_payments = $dp_payments->reject(function ($p) use ($lunas_codes) {
             return in_array($p->cos_kode, $lunas_codes);
         })->values();
-        
+
         $menunggu_payments = $payments->where('dtl_stt_stor', 'Menunggu')->values();
 
         $menunggu = DB::table('transaksi_detail')
@@ -228,7 +233,7 @@ class AdminController extends Controller
 
         $jml_DP_bca = $payments->where('dtl_status', 'DP')->where('dtl_metode', 'bca')->count();
         $tot_DP_bca = $payments->where('dtl_status', 'DP')->where('dtl_metode', 'bca')->sum('dtl_jml_bayar');
-        $jml_DP_bri = $payments->where('dtl_status', 'DP')->where('dtl_metode', 'bri')->count(); 
+        $jml_DP_bri = $payments->where('dtl_status', 'DP')->where('dtl_metode', 'bri')->count();
         $tot_DP_bri = $payments->where('dtl_status', 'DP')->where('dtl_metode', 'bri')->sum('dtl_jml_bayar');
         $jml_DP_tunai = $payments->where('dtl_status', 'DP')->where('dtl_metode', 'tunai')->count();
         $tot_DP_tunai = $payments->where('dtl_status', 'DP')->where('dtl_metode', 'tunai')->sum('dtl_jml_bayar');
@@ -256,7 +261,7 @@ class AdminController extends Controller
         $payments_by_cabang = null;
         if ($all_have_cabang) {
             $payments_by_cabang = [
-                'Tegal' => [], 'Cibubur' => [], 'Kampus Saintek' => [], 'Kampus PKTJ' => []
+                'Tegal' => [], 'Cibubur' => [], 'Kampus Saintek' => [], 'Kampus PKTJ' => [],
             ];
             foreach ($payments as $p) {
                 if (isset($payments_by_cabang[$p->cabang])) {
@@ -282,7 +287,7 @@ class AdminController extends Controller
         $data['title'] = 'Laporan Transaksi';
         $data['tgl_awal'] = $tgl_awal;
         $data['tgl_akhir'] = $tgl_akhir;
-        
+
         $data['jml_bca'] = $data['jml_lns_bca'];
         $data['tot_bca'] = $data['tot_lns_bca'];
         $data['jml_bri'] = $data['jml_lns_bri'];
@@ -291,7 +296,7 @@ class AdminController extends Controller
         $data['tot_mandiri'] = $data['tot_lns_bri'];
         $data['count_tunai'] = $data['jml_lns_tunai'];
         $data['total_tunai'] = $data['tot_lns_tunai'];
-        
+
         // Pass legacy properties for the foreach arrays
         $data['dp'] = $data['dp_payments'];
         $data['lunas'] = $data['lunas_payments'];
@@ -299,14 +304,15 @@ class AdminController extends Controller
 
         return view('admin.laporan', $data);
     }
-    
+
     public function export_pdf_lap_perhari()
     {
         $today = Carbon::today()->toDateString();
         $payments = TransaksiDetail::with('transaksi.customer')->whereDate('dtl_tanggal', $today)->get();
-        
+
         $pdf = Pdf::loadView('admin.laporan_pdf', compact('payments', 'today'));
-        return $pdf->download('Laporan_Harian_Admin_' . $today . '.pdf');
+
+        return $pdf->download('Laporan_Harian_Admin_'.$today.'.pdf');
     }
 
     public function export_pdf_laporan(Request $request)
@@ -318,8 +324,126 @@ class AdminController extends Controller
             ->whereDate('dtl_tanggal', '>=', $tgl_awal)
             ->whereDate('dtl_tanggal', '<=', $tgl_akhir)
             ->get();
-            
+
         $pdf = Pdf::loadView('admin.laporan_pdf_range', compact('payments', 'tgl_awal', 'tgl_akhir'));
-        return $pdf->download('Laporan_Admin_' . $tgl_awal . '_to_' . $tgl_akhir . '.pdf');
+
+        return $pdf->download('Laporan_Admin_'.$tgl_awal.'_to_'.$tgl_akhir.'.pdf');
+    }
+
+    public function export_dashboard(Request $request)
+    {
+        $today = Carbon::today();
+        $weeklyPeriodParam = $request->input('weekly_period', '7D');
+        $technicianPeriodParam = $request->input('technician_period', '7D');
+        $section = $request->input('section', 'all');
+
+        // Determine date ranges
+        $weeklyDays = match ($weeklyPeriodParam) {
+            '1M' => 30,
+            '3M' => 90,
+            '1Y' => 365,
+            default => 7,
+        };
+        $techDays = match ($technicianPeriodParam) {
+            '1M' => 30,
+            '1Y' => 365,
+            'all' => 3650,
+            default => 7,
+        };
+
+        $weeklyStart = Carbon::now()->subDays($weeklyDays)->startOfDay();
+        $techStart = Carbon::now()->subDays($techDays)->startOfDay();
+
+        // ── Performance Metrics ──
+        $revenue_today = TransaksiDetail::whereDate('dtl_tanggal', $today)
+            ->whereIn('dtl_status', ['DP', 'PELUNASAN'])
+            ->sum('dtl_jml_bayar');
+
+        $pembayaran_lunas = TransaksiDetail::where('dtl_status', 'PELUNASAN')->count();
+        $total_customers = Customer::count();
+        $dp_pending = Transaksi::where('trans_status', 'Pelunasan')->count();
+
+        // ── Payment Methods ──
+        $bca = TransaksiDetail::where('dtl_jenis_bayar', 'TRANFER')->where('dtl_bank', 'BCA')->where('dtl_stt_stor', 'Menunggu')->count();
+        $mandiri = TransaksiDetail::where('dtl_jenis_bayar', 'TRANFER')->where('dtl_bank', 'MANDIRI')->where('dtl_stt_stor', 'Menunggu')->count();
+        $bri = TransaksiDetail::where('dtl_jenis_bayar', 'TRANFER')->where('dtl_bank', 'BRI')->where('dtl_stt_stor', 'Menunggu')->count();
+        $tunai = TransaksiDetail::where('dtl_jenis_bayar', 'TUNAI')->where('dtl_status', 'PELUNASAN')->whereDate('dtl_tanggal', $today)->count();
+        $total_pending_transfers = TransaksiDetail::where('dtl_jenis_bayar', 'TRANFER')->where('dtl_stt_stor', 'Menunggu')->count();
+        $discount_active = DB::table('vocer')->where('voc_status', 'ON')->count();
+
+        $total_methods = $bca + $mandiri + $bri + $tunai;
+        $bca_pct = $total_methods > 0 ? round(($bca / $total_methods) * 100, 1) : 0;
+        $mandiri_pct = $total_methods > 0 ? round(($mandiri / $total_methods) * 100, 1) : 0;
+        $bri_pct = $total_methods > 0 ? round(($bri / $total_methods) * 100, 1) : 0;
+        $tunai_pct = $total_methods > 0 ? round(($tunai / $total_methods) * 100, 1) : 0;
+        $voucher_pct = $total_methods > 0 ? round(($discount_active / max($total_methods, 1)) * 100, 1) : 0;
+
+        // ── Weekly Revenue Performance ──
+        $weekly_revenue = DB::table('transaksi_detail')
+            ->selectRaw('DATE(dtl_tanggal) as day, SUM(dtl_jml_bayar) as total')
+            ->whereIn('dtl_status', ['DP', 'PELUNASAN'])
+            ->where('dtl_tanggal', '>=', $weeklyStart)
+            ->groupBy('day')
+            ->orderBy('day')
+            ->get();
+
+        // ── Weekly Transaction Performance ──
+        $weekly_transactions = DB::table('transaksi_detail')
+            ->selectRaw('DATE(dtl_tanggal) as day, COUNT(*) as total')
+            ->where('dtl_tanggal', '>=', $weeklyStart)
+            ->groupBy('day')
+            ->orderBy('day')
+            ->get();
+
+        // ── Weekly New Customers ──
+        $weekly_customers = DB::table('costomer')
+            ->selectRaw('DATE(created_at) as day, COUNT(*) as total')
+            ->where('created_at', '>=', $weeklyStart)
+            ->groupBy('day')
+            ->orderBy('day')
+            ->get();
+
+        // ── Top Technicians ──
+        $technician_stats = DB::table('transaksi')
+            ->join('karyawan', 'transaksi.kry_kode', '=', 'karyawan.kry_kode')
+            ->selectRaw('karyawan.kry_nama as technician_name, COUNT(*) as services_completed')
+            ->where('transaksi.updated_at', '>=', $techStart)
+            ->whereNotNull('transaksi.kry_kode')
+            ->groupBy('karyawan.kry_nama')
+            ->orderByDesc('services_completed')
+            ->limit(10)
+            ->get();
+
+        // ── Recent Customers ──
+        $recent_customers = DB::table('costomer')
+            ->orderByDesc('created_at')
+            ->limit(10)
+            ->get();
+
+        // ── Recent Users ──
+        $recent_users = DB::table('users')
+            ->orderByDesc('created_at')
+            ->limit(10)
+            ->get();
+
+        // ── Activity Summary ──
+        $konf_pending = Transaksi::where('trans_status', 'Diproses')->count();
+        $voucher_aktif = DB::table('vocer')->where('voc_status', 'ON')->count();
+        $customer_baru_hari_ini = Customer::whereDate('created_at', $today)->count();
+        $user_baru_hari_ini = DB::table('users')->whereDate('created_at', $today)->count();
+
+        $generated_at = Carbon::now('Asia/Jakarta')->format('d F Y H:i:s');
+        $generated_by = auth()->user()->name ?? 'Admin';
+
+        return view('admin.export_dashboard', compact(
+            'section', 'generated_at', 'generated_by',
+            'revenue_today', 'pembayaran_lunas', 'total_customers', 'dp_pending',
+            'bca', 'mandiri', 'bri', 'tunai', 'total_pending_transfers',
+            'bca_pct', 'mandiri_pct', 'bri_pct', 'tunai_pct', 'voucher_pct', 'discount_active',
+            'weekly_revenue', 'weekly_transactions', 'weekly_customers',
+            'technician_stats', 'technicianPeriodParam', 'weeklyPeriodParam',
+            'recent_customers', 'recent_users',
+            'konf_pending', 'voucher_aktif', 'customer_baru_hari_ini', 'user_baru_hari_ini'
+        ));
     }
 }
