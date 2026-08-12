@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/', function () {
     return redirect('/Auth');
@@ -118,7 +119,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/export_pdf_laporan', [App\Http\Controllers\AdminController::class, 'export_pdf_laporan'])->name('admin.export_pdf_laporan');
         Route::get('/export_excel_lap_perhari', [App\Http\Controllers\ExportController::class, 'lap_perhari_excel'])->name('admin.export_excel_lap_perhari');
         Route::get('/export_excel_laporan', [App\Http\Controllers\ExportController::class, 'lap_excel'])->name('admin.export_excel_laporan');
-
+        Route::get('/export_dashboard', [App\Http\Controllers\AdminController::class, 'export_dashboard'])->name('admin.export_dashboard');
         // Order Routes
         Route::get('/order/{filter?}', [App\Http\Controllers\OrderController::class, 'index'])->name('admin.order.index');
         Route::post('/order/update_status', [App\Http\Controllers\OrderController::class, 'update_status'])->name('admin.order.update_status');
