@@ -87,6 +87,7 @@
         font-size: 0.75rem;
         font-weight: 600;
     }
+
 </style>
 
 <div class="page-header">
@@ -145,10 +146,10 @@
                         <thead class="bg-light">
                             <tr>
                                 <th class="border-0" style="font-weight: 600; color: #4b5563;">No</th>
-                                <th class="border-0" style="font-weight: 600; color: #4b5563;">Kode</th>
                                 <th class="border-0" style="font-weight: 600; color: #4b5563;">Nama</th>
                                 <th class="border-0" style="font-weight: 600; color: #4b5563;">Jabatan</th>
                                 <th class="border-0" style="font-weight: 600; color: #4b5563;">Telepon</th>
+                                <th class="border-0" style="font-weight: 600; color: #4b5563;">Alamat</th>
                                 <th class="border-0" style="font-weight: 600; color: #4b5563;">Status</th>
                                 <th class="border-0" style="font-weight: 600; color: #4b5563;">Tanggal Masuk</th>
                                 <th class="border-0 text-center" style="font-weight: 600; color: #4b5563;">Aksi</th>
@@ -162,13 +163,13 @@
                                     ?>
                                     <tr>
                                         <td><?= $no++; ?></td>
-                                        <td class="font-weight-bold text-dark"><?= htmlspecialchars($row->kry_kode); ?></td>
                                         <td class="text-muted"><?= htmlspecialchars($row->kry_nama); ?></td>
                                         <td class="text-muted"><?= htmlspecialchars($row->kry_level); ?></td>
                                         <td class="text-muted"><?= htmlspecialchars($row->kry_telp ?? '-'); ?></td>
+                                        <td class="text-muted"><?= htmlspecialchars($row->kry_alamat ?? '-'); ?></td>
                                         <td>
                                             <?php $status = isset($row->kry_status) ? $row->kry_status : 'Aktif'; ?>
-                                            <span class="badge" style="background-color: <?= $status == 'Aktif' ? '#10b981' : '#ef4444' ?>; color: white; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem;">
+                                            <span class="badge" style="background-color: <?= $status == 'Aktif' ? '#10b981' : ($status == 'Cuti' ? '#f59e0b' : '#ef4444') ?>; color: white; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem;">
                                                 <?= htmlspecialchars($status); ?>
                                             </span>
                                         </td>
@@ -307,7 +308,7 @@
 
 
 <!-- Modal Input/Edit Karyawan -->
-<div class="modal" id="modalKaryawan" style="display: none;">
+<div class="modal" id="modalKaryawan">
     <div class="modal__content modal__content--lg p-5 intro-y box" style="max-height: 85vh; overflow-y: auto;">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-medium" id="modalTitle">Tambah Karyawan</h2>
@@ -316,15 +317,11 @@
             </a>
         </div>
         <form action="" method="POST" id="karyawanForm">
-            <input type="hidden" name="action" value="save" id="formAction">
+            @csrf
+            <input type="hidden" name="kry_kode" id="kry_kode">
 
             <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="font-medium text-sm">Kode Karyawan <span class="text-red-500">*</span></label>
-                    <input type="text" name="kry_kode" id="kry_kode" class="form-control w-full mt-1" required
-                           placeholder="Contoh: KRY001">
-                </div>
-                <div class="col-md-6 mb-3">
+                <div class="col-md-12 mb-3">
                     <label class="font-medium text-sm">Nama Lengkap <span class="text-red-500">*</span></label>
                     <input type="text" name="kry_nama" id="kry_nama" class="form-control w-full mt-1" required
                            placeholder="Masukkan nama lengkap">
@@ -377,141 +374,160 @@
     </div>
 </div>
 
-@endsection
 
 <script>
-    $(document).ready(function () {
-        // Initialize Feather Icons
-        feather.replace();
-
-        // Initialize DataTable
-        $('#tableKaryawan').DataTable({
-            language: {
-                search: "Cari:",
-                lengthMenu: "Tampilkan _MENU_ data",
-                info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
-                paginate: {
-                    first: "Pertama",
-                    last: "Terakhir",
-                    next: "Selanjutnya",
-                    previous: "Sebelumnya"
-                },
-                emptyTable: "Tidak ada data",
-                zeroRecords: "Data tidak ditemukan"
-            },
-            order: [[1, 'asc']]
-        });
-
-        // Monthly Performance DataTable will be initialized when tab is shown
-        let monthlyPerformanceTableInitialized = false;
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
 
         // Tab functionality
-        $('.tab-button').on('click', function(e) {
-            e.preventDefault();
-            const tabName = $(this).data('tab');
+        document.querySelectorAll('.tab-button').forEach(function(button) {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const tabName = this.getAttribute('data-tab');
 
-            // Hide all tab contents
-            $('.tab-content').removeClass('active');
-
-            // Show selected tab
-            $('#' + tabName).addClass('active');
-
-            // Initialize DataTable for Monthly Performance if not already
-            if (tabName === 'performa' && !$.fn.DataTable.isDataTable('#tableMonthlyPerformance')) {
-                $('#tableMonthlyPerformance').DataTable({
-                    language: {
-                        search: "Cari:",
-                        lengthMenu: "Tampilkan _MENU_ data",
-                        info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
-                        paginate: {
-                            first: "Pertama",
-                            last: "Terakhir",
-                            next: "Selanjutnya",
-                            previous: "Sebelumnya"
-                        },
-                        emptyTable: "Tidak ada data",
-                        zeroRecords: "Data tidak ditemukan"
-                    },
-                    order: [[0, 'asc']]
+                document.querySelectorAll('.tab-content').forEach(function(content) {
+                    content.classList.remove('active');
                 });
-            }
 
-            // Update tab buttons
-            $('.tab-button').removeClass('active');
-            $(this).addClass('active');
-        });
-
-        // Delete Confirmation
-        $('.onclick-confirm').on('click', function (e) {
-            e.preventDefault();
-            const href = $(this).attr('href');
-            Swal.fire({
-                title: 'Hapus karyawan ini?',
-                text: "Data yang dihapus tidak dapat dikembalikan!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = href;
+                const targetTab = document.getElementById(tabName);
+                if (targetTab) {
+                    targetTab.classList.add('active');
                 }
+
+                document.querySelectorAll('.tab-button').forEach(function(btn) {
+                    btn.classList.remove('active');
+                });
+                this.classList.add('active');
             });
         });
+    });
 
-        // Edit Button Click
-        $('.edit-btn').on('click', function() {
-            const data = $(this).data();
-            $('#modalTitle').text('Edit Karyawan');
-            $('#formAction').val('update');
-            $('#submitText').text('Update Data');
-            $('#karyawanForm').attr('action', '<?= url('HR/update_karyawan'); ?>');
+    function showModalKaryawan() {
+        const modal = document.getElementById('modalKaryawan');
+        if (modal) {
+            modal.classList.add('show');
+            modal.style.marginTop = '0px';
+            modal.style.marginLeft = '0px';
+            modal.style.visibility = 'visible';
+            modal.style.opacity = '1';
+            modal.style.display = 'block';
+            document.body.classList.add('overflow-y-hidden');
+        }
+    }
 
-            $('#kry_kode').val(data.kode).prop('readonly', true);
-            $('#kry_nama').val(data.nama);
-            $('#kry_level').val(data.level);
-            $('#kry_telp').val(data.tlp);
-            $('#kry_alamat').val(data.alamat);
-            $('#kry_status').val(data.status);
-            $('#kry_join_date').val(data.tglMasuk);
+    function hideModalKaryawan() {
+        const modal = document.getElementById('modalKaryawan');
+        if (modal) {
+            modal.classList.remove('show');
+            modal.style.marginTop = '';
+            modal.style.marginLeft = '';
+            modal.style.visibility = '';
+            modal.style.opacity = '';
+            modal.style.display = 'none';
+            document.body.classList.remove('overflow-y-hidden');
+        }
+    }
 
-            $('#modalKaryawan').show();
-            $('body').addClass('overflow-y-hidden').css('padding-right', '17px');
-        });
+    // Global Click Event Handler (handles buttons, icons, and text clicks)
+    document.addEventListener('click', function(e) {
+        // 1. Tambah Karyawan Button Click
+        const addBtn = e.target.closest('.add-karyawan-btn');
+        if (addBtn) {
+            e.preventDefault();
+            const form = document.getElementById('karyawanForm');
+            
+            if (document.getElementById('modalTitle')) document.getElementById('modalTitle').innerText = 'Tambah Karyawan';
+            if (document.getElementById('formAction')) document.getElementById('formAction').value = 'save';
+            if (document.getElementById('submitText')) document.getElementById('submitText').innerText = 'Simpan Data';
+            if (form) form.action = '<?= url('HR/save_karyawan'); ?>';
 
-        // Add Button Click
-        $('.add-karyawan-btn').on('click', function() {
-            $('#modalTitle').text('Tambah Karyawan');
-            $('#formAction').val('save');
-            $('#submitText').text('Simpan Data');
-            $('#karyawanForm').attr('action', '<?= url('HR/save_karyawan'); ?>');
-
-            $('#kry_kode').val('').prop('readonly', false);
-            $('#kry_nama').val('');
-            $('#kry_level').val('');
-            $('#kry_telp').val('');
-            $('#kry_alamat').val('');
-            $('#kry_status').val('Aktif');
-            $('#kry_join_date').val('');
-
-            $('#modalKaryawan').show();
-            $('body').addClass('overflow-y-hidden').css('padding-right', '17px');
-        });
-
-        // Modal Close
-        $('#modalKaryawan [data-dismiss="modal"]').on('click', function() {
-            $('#modalKaryawan').hide();
-            $('body').removeClass('overflow-y-hidden').css('padding-right', '');
-        });
-
-        $('#modalKaryawan').on('click', function(e) {
-            if (e.target === this) {
-                $(this).hide();
-                $('body').removeClass('overflow-y-hidden').css('padding-right', '');
+            const kodeInput = document.getElementById('kry_kode');
+            if (kodeInput) {
+                kodeInput.value = '';
+                kodeInput.readOnly = false;
             }
-        });
+            if (document.getElementById('kry_nama')) document.getElementById('kry_nama').value = '';
+            if (document.getElementById('kry_level')) document.getElementById('kry_level').value = '';
+            if (document.getElementById('kry_telp')) document.getElementById('kry_telp').value = '';
+            if (document.getElementById('kry_alamat')) document.getElementById('kry_alamat').value = '';
+            if (document.getElementById('kry_status')) document.getElementById('kry_status').value = 'Aktif';
+            if (document.getElementById('kry_join_date')) document.getElementById('kry_join_date').value = '';
 
+            showModalKaryawan();
+            return;
+        }
+
+        // 2. Edit Karyawan Button Click
+        const editBtn = e.target.closest('.edit-btn');
+        if (editBtn) {
+            e.preventDefault();
+            const form = document.getElementById('karyawanForm');
+
+            if (document.getElementById('modalTitle')) document.getElementById('modalTitle').innerText = 'Edit Karyawan';
+            if (document.getElementById('formAction')) document.getElementById('formAction').value = 'update';
+            if (document.getElementById('submitText')) document.getElementById('submitText').innerText = 'Update Data';
+            if (form) form.action = '<?= url('HR/update_karyawan'); ?>';
+
+            const ds = editBtn.dataset;
+            const kodeInput = document.getElementById('kry_kode');
+            if (kodeInput) {
+                kodeInput.value = ds.kode || '';
+                kodeInput.readOnly = true;
+            }
+            if (document.getElementById('kry_nama')) document.getElementById('kry_nama').value = ds.nama || '';
+            if (document.getElementById('kry_level')) document.getElementById('kry_level').value = ds.level || '';
+            if (document.getElementById('kry_telp')) document.getElementById('kry_telp').value = ds.tlp || '';
+            if (document.getElementById('kry_alamat')) document.getElementById('kry_alamat').value = ds.alamat || '';
+            if (document.getElementById('kry_status')) document.getElementById('kry_status').value = ds.status || 'Aktif';
+            if (document.getElementById('kry_join_date')) document.getElementById('kry_join_date').value = ds.tglMasuk || '';
+
+            showModalKaryawan();
+            return;
+        }
+
+        // 3. Delete Confirmation Button Click
+        const deleteBtn = e.target.closest('.onclick-confirm');
+        if (deleteBtn) {
+            e.preventDefault();
+            const href = deleteBtn.getAttribute('href');
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'Hapus karyawan ini?',
+                    text: "Data yang dihapus tidak dapat dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = href;
+                    }
+                });
+            } else {
+                if (confirm('Hapus karyawan ini? Data yang dihapus tidak dapat dikembalikan!')) {
+                    window.location.href = href;
+                }
+            }
+            return;
+        }
+
+        // 4. Modal Close Button
+        const dismissBtn = e.target.closest('[data-dismiss="modal"]');
+        if (dismissBtn) {
+            e.preventDefault();
+            hideModalKaryawan();
+            return;
+        }
+
+        // 5. Modal Backdrop Click
+        const modal = document.getElementById('modalKaryawan');
+        if (modal && e.target === modal) {
+            hideModalKaryawan();
+        }
     });
 </script>
+@endsection

@@ -68,6 +68,9 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('HR')->middleware('role:HR,Admin')->group(function () {
         Route::get('/', [HrController::class, 'index'])->name('hr.index');
         Route::get('/karyawan', [HrController::class, 'karyawan'])->name('hr.karyawan');
+        Route::post('/save_karyawan', [HrController::class, 'save_karyawan'])->name('hr.save_karyawan');
+        Route::post('/update_karyawan', [HrController::class, 'update_karyawan'])->name('hr.update_karyawan');
+        Route::get('/delete_karyawan/{kode}', [HrController::class, 'delete_karyawan'])->name('hr.delete_karyawan');
 
         Route::get('/absensi', [HrController::class, 'absensi'])->name('hr.absensi');
         Route::post('/absensi', [HrController::class, 'save_absensi'])->name('hr.save_absensi');
@@ -122,6 +125,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/cus_konf', [AdminController::class, 'cus_konf'])->name('admin.cus_konf');
         Route::get('/cus_proses', [AdminController::class, 'cus_proses'])->name('admin.cus_proses');
         Route::get('/cus_konf_bank', [AdminController::class, 'cus_konf_bank'])->name('admin.cus_konf_bank');
+        Route::get('/cus_discount', [AdminController::class, 'cus_discount'])->name('admin.cus_discount');
         Route::get('/konfirmasi/{kode}', [AdminController::class, 'konfirmasi'])->name('admin.konfirmasi');
         Route::post('/update_konf', [AdminController::class, 'update_konf'])->name('admin.update_konf');
         Route::post('/setoran', [AdminController::class, 'setoran'])->name('admin.setoran');

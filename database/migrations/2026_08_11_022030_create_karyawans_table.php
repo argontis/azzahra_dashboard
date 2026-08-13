@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('kry_nama');
             $table->string('kry_level')->default('Kasir'); // Admin, Kasir, Customer Service, Teknisi, HR
             $table->string('kry_telp')->nullable();
+            $table->text('kry_alamat')->nullable();
             $table->date('kry_join_date')->nullable();
             $table->string('kry_status')->default('Aktif');
             $table->timestamps();

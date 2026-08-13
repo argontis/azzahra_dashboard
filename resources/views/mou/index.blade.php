@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `mou_items` (
                     Daftar Mou
                 </h2>
                 <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
-                    <a href="<?= url('Mou/create_form');?>" class="btn-buat-mou" style="cursor: pointer !important; position: relative !important; z-index: 9999 !important; pointer-events: auto !important; text-decoration: none;">
+                    <a href="{{ route('admin.mou.create_form') }}" class="btn-buat-mou" style="cursor: pointer !important; position: relative !important; z-index: 9999 !important; pointer-events: auto !important; text-decoration: none;">
                         Buat Mou
                     </a>
                 </div>
@@ -128,10 +128,10 @@ CREATE TABLE IF NOT EXISTS `mou_items` (
                                 <td class="border-b"><?= htmlspecialchars($mou->kry_nama ?: '-') ?></td>
                                 <td class="border-b">
                                     <div class="flex space-x-2">
-                                        <a href="<?= url('Mou/download/' . $mou->mou_id) ?>" class="button button--sm text-white bg-theme-1" style="display: inline-block; white-space: nowrap;" target="_blank">
+                                        <a href="{{ route('admin.mou.download', $mou->mou_id) }}" class="button button--sm text-white bg-theme-1" style="display: inline-block; white-space: nowrap;" target="_blank">
                                             <i data-feather="download" class="w-4 h-4" style="display: inline; margin-right: 4px; vertical-align: middle;"></i><span style="vertical-align: middle;">Download</span>
                                         </a>
-                                        <a href="<?= url('Mou/edit_form/' . $mou->mou_id) ?>" class="button button--sm text-white bg-blue-500" style="display: inline-block; white-space: nowrap;">
+                                        <a href="{{ route('admin.mou.edit_form', $mou->mou_id) }}" class="button button--sm text-white bg-blue-500" style="display: inline-block; white-space: nowrap;">
                                             <i data-feather="edit" class="w-4 h-4" style="display: inline; margin-right: 4px; vertical-align: middle;"></i><span style="vertical-align: middle;">Edit</span>
                                         </a>
                                         <button onclick="deleteMou(<?= $mou->mou_id ?>)" class="button button--sm text-white bg-red-500" style="display: inline-block; white-space: nowrap;">

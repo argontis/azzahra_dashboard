@@ -126,6 +126,17 @@ class AdminController extends Controller
         return view('admin.cus_konf_bank', ['title' => 'Konfirmasi Bank Transfer', 'trans' => $trans]);
     }
 
+    public function cus_discount()
+    {
+        $trans = DB::table('transaksi')
+            ->leftJoin('costomer', 'transaksi.cos_kode', '=', 'costomer.id_costomer')
+            ->leftJoin('karyawan', 'transaksi.kry_kode', '=', 'karyawan.kry_kode')
+            ->where('transaksi.trans_discount', '>', 0)
+            ->get();
+
+        return view('admin.cus_discount', ['title' => 'Transaksi-Discount', 'trans' => $trans]);
+    }
+
     public function konfirmasi($kode)
     {
         $transaksi = Transaksi::with(['customer', 'karyawan'])->where('trans_kode', $kode)->firstOrFail();

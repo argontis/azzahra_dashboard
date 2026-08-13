@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Karyawan;
 use App\Models\Absensi;
-use App\Models\Kpi;
 use App\Models\Arsip;
+use App\Models\Karyawan;
+use App\Models\Kpi;
 use App\Models\LaporanMingguan;
 use App\Models\Pencatatan;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class HrController extends Controller
 {
@@ -19,7 +20,7 @@ class HrController extends Controller
     public function index(Request $request)
     {
         $periode = $request->query('periode', 'hari_ini');
-        
+
         $start_date = null;
         $end_date = null;
         $today = date('Y-m-d');
@@ -37,7 +38,7 @@ class HrController extends Controller
         }
 
         $absensi_data = Absensi::whereBetween('tanggal', [$start_date, $end_date])->get();
-        
+
         $stats = [
             'hadir' => $absensi_data->whereIn('status', ['HADIR'])->count(),
             'izin' => $absensi_data->whereIn('status', ['IZIN', 'SAKIT', 'CUTI'])->count(),
@@ -48,7 +49,7 @@ class HrController extends Controller
         return view('hr.overview', [
             'title' => 'HR Dashboard',
             'selected_periode' => $periode,
-            'stats' => $stats
+            'stats' => $stats,
         ]);
     }
 
@@ -58,10 +59,66 @@ class HrController extends Controller
     public function karyawan()
     {
         $karyawan_list = Karyawan::orderBy('kry_nama', 'asc')->get();
+
         return view('hr.karyawan', [
             'title' => 'Data Karyawan',
-            'karyawan_list' => $karyawan_list
+            'karyawan_list' => $karyawan_list,
         ]);
+    }
+
+    public function save_karyawan(Request $request)
+    {
+        $request->validate([
+            'kry_nama' => 'required',
+            'kry_level' => 'required',
+        ]);
+
+        $baseUsername = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $request->kry_nama));
+        if (empty($baseUsername)) {
+            $baseUsername = 'karyawan';
+        }
+        $username = $baseUsername.rand(100, 999);
+
+        Karyawan::create([
+            'kry_username' => $username,
+            'kry_pswd' => Hash::make('123456'),
+            'kry_nama' => $request->kry_nama,
+            'kry_level' => $request->kry_level,
+            'kry_telp' => $request->kry_telp,
+            'kry_alamat' => $request->kry_alamat,
+            'kry_status' => $request->kry_status ?? 'Aktif',
+            'kry_join_date' => $request->kry_join_date ?? date('Y-m-d'),
+        ]);
+
+        return back()->with('sukses', 'Karyawan berhasil ditambahkan');
+    }
+
+    public function update_karyawan(Request $request)
+    {
+        $request->validate([
+            'kry_kode' => 'required',
+            'kry_nama' => 'required',
+            'kry_level' => 'required',
+        ]);
+
+        $karyawan = Karyawan::where('kry_kode', $request->kry_kode)->firstOrFail();
+        $karyawan->update([
+            'kry_nama' => $request->kry_nama,
+            'kry_level' => $request->kry_level,
+            'kry_telp' => $request->kry_telp,
+            'kry_alamat' => $request->kry_alamat,
+            'kry_status' => $request->kry_status ?? 'Aktif',
+            'kry_join_date' => $request->kry_join_date,
+        ]);
+
+        return back()->with('sukses', 'Data karyawan berhasil diperbarui');
+    }
+
+    public function delete_karyawan(string $kode)
+    {
+        Karyawan::where('kry_kode', $kode)->delete();
+
+        return back()->with('sukses', 'Karyawan berhasil dihapus');
     }
 
     // ==========================================
@@ -70,19 +127,19 @@ class HrController extends Controller
     public function absensi(Request $request)
     {
         $tanggal = $request->query('tanggal', date('Y-m-d'));
-        
+
         $absensi_list = Absensi::with('karyawan')
             ->where('tanggal', $tanggal)
             ->orderBy('jam_masuk', 'asc')
             ->get();
-            
+
         $karyawan_list = Karyawan::orderBy('kry_nama', 'asc')->get();
 
         return view('hr.absensi', [
             'title' => 'Absensi Karyawan',
             'selected_date' => $tanggal,
             'absensi_list' => $absensi_list,
-            'karyawan_list' => $karyawan_list
+            'karyawan_list' => $karyawan_list,
         ]);
     }
 
@@ -91,7 +148,7 @@ class HrController extends Controller
         $request->validate([
             'tanggal' => 'required|date',
             'id_karyawan' => 'required',
-            'status' => 'required'
+            'status' => 'required',
         ]);
 
         $karyawan = Karyawan::where('kry_kode', $request->id_karyawan)->firstOrFail();
@@ -99,7 +156,7 @@ class HrController extends Controller
         Absensi::updateOrCreate(
             [
                 'tanggal' => $request->tanggal,
-                'id_karyawan' => $request->id_karyawan
+                'id_karyawan' => $request->id_karyawan,
             ],
             [
                 'nama_karyawan' => $karyawan->kry_nama,
@@ -107,7 +164,7 @@ class HrController extends Controller
                 'status' => $request->status,
                 'jam_masuk' => $request->jam_masuk,
                 'jam_pulang' => $request->jam_pulang,
-                'keterangan' => $request->keterangan
+                'keterangan' => $request->keterangan,
             ]
         );
 
@@ -117,6 +174,7 @@ class HrController extends Controller
     public function delete_absensi($id)
     {
         Absensi::findOrFail($id)->delete();
+
         return back()->with('sukses', 'Absensi dihapus');
     }
 
@@ -126,18 +184,18 @@ class HrController extends Controller
     public function kpi(Request $request)
     {
         $periode = $request->query('periode', date('Y-m-d'));
-        
+
         $kpi_list = Kpi::with('karyawan')
             ->where('periode', $periode)
             ->get();
-            
+
         $karyawan_list = Karyawan::orderBy('kry_nama', 'asc')->get();
 
         return view('hr.kpi', [
             'title' => 'KPI Karyawan',
             'selected_periode' => $periode,
             'kpi_list' => $kpi_list,
-            'karyawan_list' => $karyawan_list
+            'karyawan_list' => $karyawan_list,
         ]);
     }
 
@@ -153,7 +211,7 @@ class HrController extends Controller
         ]);
 
         $karyawan = Karyawan::where('kry_kode', $request->id_karyawan)->firstOrFail();
-        
+
         $dis = $request->kedisiplinan;
         $kua = $request->kualitas_kerja;
         $prod = $request->produktivitas;
@@ -162,15 +220,19 @@ class HrController extends Controller
         $avg = $total / 4;
 
         $cat = 'Kurang';
-        if ($avg >= 4.5) $cat = 'Sangat Baik';
-        elseif ($avg >= 3.5) $cat = 'Baik';
-        elseif ($avg >= 2.5) $cat = 'Cukup';
+        if ($avg >= 4.5) {
+            $cat = 'Sangat Baik';
+        } elseif ($avg >= 3.5) {
+            $cat = 'Baik';
+        } elseif ($avg >= 2.5) {
+            $cat = 'Cukup';
+        }
 
         Kpi::updateOrCreate(
             [
                 'id_karyawan' => $request->id_karyawan,
                 'periode' => $request->periode,
-                'siklus' => 'harian'
+                'siklus' => 'harian',
             ],
             [
                 'nama_karyawan' => $karyawan->kry_nama,
@@ -183,7 +245,7 @@ class HrController extends Controller
                 'total' => $total,
                 'rata_rata' => $avg,
                 'kategori' => $cat,
-                'catatan' => $request->catatan
+                'catatan' => $request->catatan,
             ]
         );
 
@@ -193,6 +255,7 @@ class HrController extends Controller
     public function delete_kpi($id)
     {
         Kpi::findOrFail($id)->delete();
+
         return back()->with('sukses', 'KPI dihapus');
     }
 
@@ -207,7 +270,7 @@ class HrController extends Controller
         return view('hr.arsip', [
             'title' => 'Arsip Dokumen',
             'arsip_dreame' => $arsip_dreame,
-            'arsip_laptop' => $arsip_laptop
+            'arsip_laptop' => $arsip_laptop,
         ]);
     }
 
@@ -216,16 +279,18 @@ class HrController extends Controller
         $request->validate([
             'tipe' => 'required',
             'nama' => 'required',
-            'tanggal' => 'required|date'
+            'tanggal' => 'required|date',
         ]);
 
         Arsip::create($request->all());
+
         return back()->with('sukses', 'Arsip berhasil ditambahkan');
     }
 
     public function delete_arsip($id)
     {
         Arsip::findOrFail($id)->delete();
+
         return back()->with('sukses', 'Arsip dihapus');
     }
 
@@ -234,8 +299,8 @@ class HrController extends Controller
     // ==========================================
     public function laporan_mingguan(Request $request)
     {
-        $periode = $request->query('periode', date('Y') . '-W' . date('W'));
-        
+        $periode = $request->query('periode', date('Y').'-W'.date('W'));
+
         $laporan_list = LaporanMingguan::with('karyawan')->where('periode', $periode)->get();
         $karyawan_list = Karyawan::orderBy('kry_nama', 'asc')->get();
 
@@ -243,7 +308,7 @@ class HrController extends Controller
             'title' => 'Laporan Mingguan',
             'selected_periode' => $periode,
             'laporan_list' => $laporan_list,
-            'karyawan_list' => $karyawan_list
+            'karyawan_list' => $karyawan_list,
         ]);
     }
 
@@ -254,7 +319,7 @@ class HrController extends Controller
         LaporanMingguan::updateOrCreate(
             [
                 'id_karyawan' => $request->id_karyawan,
-                'periode' => $request->periode
+                'periode' => $request->periode,
             ],
             [
                 'nama_karyawan' => $karyawan->kry_nama,
@@ -263,7 +328,7 @@ class HrController extends Controller
                 'tugas_dilakukan' => $request->tugas_dilakukan,
                 'hasil' => $request->hasil,
                 'kendala' => $request->kendala,
-                'solusi' => $request->solusi
+                'solusi' => $request->solusi,
             ]
         );
 
@@ -273,6 +338,7 @@ class HrController extends Controller
     public function delete_laporan_mingguan($id)
     {
         LaporanMingguan::findOrFail($id)->delete();
+
         return back()->with('sukses', 'Laporan Mingguan dihapus');
     }
 
@@ -282,21 +348,21 @@ class HrController extends Controller
     public function pencatatan(Request $request)
     {
         $tanggal = $request->query('tanggal', date('Y-m-d'));
-        
+
         $pencatatan_list = Pencatatan::where('tanggal', $tanggal)->get()->groupBy('batch_id');
 
         return view('hr.pencatatan', [
             'title' => 'Pencatatan Barang',
             'selected_date' => $tanggal,
-            'pencatatan_list' => $pencatatan_list
+            'pencatatan_list' => $pencatatan_list,
         ]);
     }
 
     public function save_pencatatan(Request $request)
     {
-        $batch_id = 'BATCH_' . time() . '_' . rand(1000, 9999);
+        $batch_id = 'BATCH_'.time().'_'.rand(1000, 9999);
         $tanggal = $request->input('tanggal');
-        
+
         $nama_barangs = $request->input('nama_barang', []);
         $qtys = $request->input('qty', []);
         $harga_satuans = $request->input('harga_satuan', []);
@@ -306,15 +372,17 @@ class HrController extends Controller
         $gambar_path = null;
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $filename = time().'_'.$file->getClientOriginalName();
             $file->move(public_path('uploads/barang'), $filename);
-            $gambar_path = 'uploads/barang/' . $filename;
+            $gambar_path = 'uploads/barang/'.$filename;
         }
 
         DB::beginTransaction();
         try {
             foreach ($nama_barangs as $index => $nama) {
-                if (empty($nama)) continue;
+                if (empty($nama)) {
+                    continue;
+                }
                 $qty = $qtys[$index] ?? 1;
                 $harga = $harga_satuans[$index] ?? 0;
                 $total = $qty * $harga;
@@ -327,13 +395,15 @@ class HrController extends Controller
                     'total' => $total,
                     'tanggal' => $tanggal,
                     'gambar' => $gambar_path,
-                    'kategori_global' => $kategori_global
+                    'kategori_global' => $kategori_global,
                 ]);
             }
             DB::commit();
+
             return back()->with('sukses', 'Pencatatan berhasil disimpan');
         } catch (\Exception $e) {
             DB::rollBack();
+
             return back()->with('gagal', 'Terjadi kesalahan saat menyimpan data');
         }
     }
@@ -341,6 +411,7 @@ class HrController extends Controller
     public function delete_pencatatan($id)
     {
         Pencatatan::where('batch_id', $id)->delete();
+
         return back()->with('sukses', 'Batch Pencatatan dihapus');
     }
 }

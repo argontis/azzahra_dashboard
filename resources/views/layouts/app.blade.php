@@ -310,8 +310,8 @@
                             <span class="nav-badge">{{ $konf }}</span>
                         @endif
                     </a>
-                     <a href="{{ url('Admin/voucher') }}" class="nav-link {{ $title == 'Discount' ? 'active' : '' }}">
-                        <div class="nav-icon"><i data-feather="message-square"></i></div>
+                     <a href="{{ url('Admin/cus_discount') }}" class="nav-link {{ $title == 'Transaksi-Discount' || $title == 'Discount' ? 'active' : '' }}">
+                        <div class="nav-icon"><i data-feather="percent"></i></div>
                         <span class="nav-text">Discount</span>
                     </a>
                 </div>
@@ -653,6 +653,34 @@
             // Initialize feather icons
             if (typeof feather !== 'undefined') {
                 feather.replace();
+            }
+
+            // === Preserve Sidebar Scroll Position ===
+            const navMenu = document.querySelector('.nav-menu');
+            if (navMenu) {
+                // Restore scroll position on page load
+                const savedScroll = sessionStorage.getItem('sidebarScrollPosition');
+                if (savedScroll !== null) {
+                    navMenu.scrollTop = parseInt(savedScroll, 10);
+                } else {
+                    // If no saved position, scroll active link into view
+                    const activeLink = navMenu.querySelector('.nav-link.active, .dropdown-menu-item.active');
+                    if (activeLink) {
+                        activeLink.scrollIntoView({ block: 'nearest', behavior: 'instant' });
+                    }
+                }
+
+                // Save scroll position whenever sidebar is scrolled
+                navMenu.addEventListener('scroll', () => {
+                    sessionStorage.setItem('sidebarScrollPosition', navMenu.scrollTop);
+                });
+
+                // Also save scroll position when any sidebar link is clicked
+                navMenu.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        sessionStorage.setItem('sidebarScrollPosition', navMenu.scrollTop);
+                    });
+                });
             }
         });
     </script>

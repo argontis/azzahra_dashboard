@@ -32,7 +32,8 @@
                     <p class="text-gray-600 text-sm">Harap isi dengan teliti dan berhati hati</p>
                 </div>
 
-                <form id="mouFormPage" method="post" action="<?= url('Mou/edit/' . $mou['mou_id']) ?>">
+                <form id="mouFormPage" method="post" action="{{ route('admin.mou.edit', $mou->mou_id) }}">
+                    @csrf
                     <input type="hidden" name="items" id="itemsHidden">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>

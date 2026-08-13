@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\OrderList;
-use App\Models\OrderPartMarking;
-use App\Models\Transaksi;
-use App\Models\Tindakan;
-use App\Models\Customer;
-use App\Models\TransaksiDetail;
 use App\Models\Karyawan;
+use App\Models\OrderList;
+use App\Models\Tindakan;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
@@ -23,10 +19,10 @@ class OrderController extends Controller
             'title' => 'Order',
             'filter' => $filter,
         ];
-        
+
         $search = $request->input('search');
         $per_page = 10;
-        
+
         if ($filter == 'pending') {
             // Get orders in waitingOrder status
             $orders = DB::table('order_list')
@@ -42,7 +38,7 @@ class OrderController extends Controller
                 ->where('order_list.trans_status', 'waitingOrder')
                 ->orderBy('tindakan.tdkn_kode', 'ASC')
                 ->get();
-            
+
             $data['orders'] = $orders;
             $data['table_title'] = 'Pending Orders';
             $data['karyawan'] = Karyawan::all();
@@ -56,7 +52,7 @@ class OrderController extends Controller
                 ->where('order_list.trans_status', 'waitingApproval')
                 ->orderBy('order_list.trans_tanggal', 'DESC')
                 ->get();
-                
+
             $data['orders'] = $orders;
             $data['table_title'] = 'Waiting Approval Orders';
             $data['show_modal'] = false;
@@ -67,7 +63,7 @@ class OrderController extends Controller
                 ->where('order_list.trans_status', 'pending')
                 ->orderBy('order_list.trans_tanggal', 'DESC')
                 ->get();
-                
+
             $data['orders'] = $orders;
             $data['table_title'] = 'Confirm Orders';
             $data['karyawan'] = Karyawan::all();
@@ -75,65 +71,65 @@ class OrderController extends Controller
         } elseif ($filter == 'repairing') {
             $query1 = DB::table('order_list')
                 ->select(
-                    'order_list.trans_kode', 'order_list.cos_kode', 'order_list.trans_total', 
-                    'order_list.trans_tanggal', 'costomer.cos_nama', 'costomer.cos_hp', 
-                    'transaksis.trans_status as payment_status', DB::raw("'order_list' as source_table"), 
-                    DB::raw("COALESCE(order_list.device, '-') as device"), 'costomer.cos_tipe as merek', 
+                    'order_list.trans_kode', 'order_list.cos_kode', 'order_list.trans_total',
+                    'order_list.trans_tanggal', 'costomer.cos_nama', 'costomer.cos_hp',
+                    'transaksi.trans_status as payment_status', DB::raw("'order_list' as source_table"),
+                    DB::raw("COALESCE(order_list.device, '-') as device"), 'costomer.cos_tipe as merek',
                     'order_list.seri', 'costomer.cos_keluhan as ket_keluhan'
                 )
                 ->leftJoin('costomer', 'order_list.cos_kode', '=', 'costomer.id_costomer')
-                ->leftJoin('transaksis', 'order_list.trans_kode', '=', 'transaksis.trans_kode')
+                ->leftJoin('transaksi', 'order_list.trans_kode', '=', 'transaksi.trans_kode')
                 ->where('order_list.trans_status', 'repairing');
-                
-            if (!empty($search)) {
-                $query1->where(function($q) use ($search) {
+
+            if (! empty($search)) {
+                $query1->where(function ($q) use ($search) {
                     $q->where('order_list.trans_kode', 'like', "%{$search}%")
-                      ->orWhere('costomer.cos_nama', 'like', "%{$search}%");
+                        ->orWhere('costomer.cos_nama', 'like', "%{$search}%");
                 });
             }
-            
+
             $orders = $query1->paginate($per_page);
-            
+
             $data['orders'] = $orders;
             $data['table_title'] = 'Repairing Orders';
             $data['show_modal'] = false;
             $data['search'] = $search;
         } elseif ($filter == 'completed') {
             $query = DB::table('order_list')
-                ->select('order_list.*', 'costomer.cos_nama', 'costomer.cos_hp', 'transaksis.trans_status as payment_status')
+                ->select('order_list.*', 'costomer.cos_nama', 'costomer.cos_hp', 'transaksi.trans_status as payment_status')
                 ->leftJoin('costomer', 'order_list.cos_kode', '=', 'costomer.id_costomer')
-                ->leftJoin('transaksis', 'order_list.trans_kode', '=', 'transaksis.trans_kode')
+                ->leftJoin('transaksi', 'order_list.trans_kode', '=', 'transaksi.trans_kode')
                 ->where('order_list.trans_status', 'service_completed');
-                
-            if (!empty($search)) {
-                $query->where(function($q) use ($search) {
+
+            if (! empty($search)) {
+                $query->where(function ($q) use ($search) {
                     $q->where('order_list.trans_kode', 'like', "%{$search}%")
-                      ->orWhere('costomer.cos_nama', 'like', "%{$search}%");
+                        ->orWhere('costomer.cos_nama', 'like', "%{$search}%");
                 });
             }
-            
+
             $orders = $query->orderBy('order_list.trans_tanggal', 'DESC')->paginate($per_page);
-            
+
             $data['orders'] = $orders;
             $data['table_title'] = 'Completed Orders';
             $data['show_modal'] = false;
             $data['search'] = $search;
         } elseif ($filter == 'failed') {
             $query = DB::table('order_list')
-                ->select('order_list.*', 'costomer.cos_nama', 'costomer.cos_hp', 'transaksis.trans_status as payment_status')
+                ->select('order_list.*', 'costomer.cos_nama', 'costomer.cos_hp', 'transaksi.trans_status as payment_status')
                 ->leftJoin('costomer', 'order_list.cos_kode', '=', 'costomer.id_costomer')
-                ->leftJoin('transaksis', 'order_list.trans_kode', '=', 'transaksis.trans_kode')
+                ->leftJoin('transaksi', 'order_list.trans_kode', '=', 'transaksi.trans_kode')
                 ->where('order_list.trans_status', 'service_failed');
-                
-            if (!empty($search)) {
-                $query->where(function($q) use ($search) {
+
+            if (! empty($search)) {
+                $query->where(function ($q) use ($search) {
                     $q->where('order_list.trans_kode', 'like', "%{$search}%")
-                      ->orWhere('costomer.cos_nama', 'like', "%{$search}%");
+                        ->orWhere('costomer.cos_nama', 'like', "%{$search}%");
                 });
             }
-            
+
             $orders = $query->orderBy('order_list.trans_tanggal', 'DESC')->paginate($per_page);
-            
+
             $data['orders'] = $orders;
             $data['table_title'] = 'Failed Orders';
             $data['show_modal'] = false;
@@ -142,36 +138,37 @@ class OrderController extends Controller
             // Get order part marking
             $query = DB::table('order_part_markings')
                 ->select(
-                    'order_list.trans_kode', 'order_list.cos_kode', 'order_list.device', 'order_list.merek', 
-                    'order_list.seri', 'order_list.ket_keluhan', 'costomer.cos_nama', 'costomer.cos_status', 
-                    'order_part_markings.is_ordered', 'order_part_markings.rma_number', 
+                    'order_list.trans_kode', 'order_list.cos_kode', 'order_list.device', 'order_list.merek',
+                    'order_list.seri', 'order_list.ket_keluhan', 'costomer.cos_nama', 'costomer.cos_status',
+                    'order_part_markings.is_ordered', 'order_part_markings.rma_number',
                     'order_part_markings.end_warranty_date', DB::raw('"part_marking" as source_type')
                 )
                 ->join('order_list', 'order_part_markings.trans_kode', '=', 'order_list.trans_kode')
                 ->leftJoin('costomer', 'order_list.cos_kode', '=', 'costomer.id_costomer')
                 ->where('order_part_markings.is_ordered', 'yes');
-                
-            if (!empty($search)) {
-                $query->where(function($q) use ($search) {
+
+            if (! empty($search)) {
+                $query->where(function ($q) use ($search) {
                     $q->where('order_list.trans_kode', 'like', "%{$search}%")
-                      ->orWhere('costomer.cos_nama', 'like', "%{$search}%");
+                        ->orWhere('costomer.cos_nama', 'like', "%{$search}%");
                 });
             }
-            
+
             $orders = $query->orderBy('order_list.trans_tanggal', 'DESC')->paginate($per_page);
-            
+
             // Add tindakan to each order
             $ordersCollection = collect($orders->items());
             $ordersCollection->transform(function ($item, $key) {
                 $tindakans = DB::table('tindakan')
-                    ->join('transaksis', 'tindakan.trans_kode', '=', 'transaksis.trans_kode')
+                    ->join('transaksi', 'tindakan.trans_kode', '=', 'transaksi.trans_kode')
                     ->select('tindakan.tdkn_barang', 'tindakan.tdkn_qty')
-                    ->where('transaksis.cos_kode', $item->cos_kode)
+                    ->where('transaksi.cos_kode', $item->cos_kode)
                     ->get();
                 $item->tindakan = $tindakans;
+
                 return $item;
             });
-            
+
             $data['orders'] = $orders;
             $data['table_title'] = 'Order Part Status';
             $data['show_modal'] = false;
@@ -186,7 +183,7 @@ class OrderController extends Controller
             ->whereIn('order_list.trans_status', ['waitingOrder', 'waitingApproval', 'pending'])
             ->orderBy('order_list.created_at', 'DESC')
             ->get();
-            
+
         return view('order.index', $data);
     }
 
@@ -196,6 +193,7 @@ class OrderController extends Controller
         $status = $request->input('status');
 
         OrderList::where('trans_kode', $trans_kode)->update(['trans_status' => $status]);
+
         return redirect()->route('admin.order.index')->with('sukses', 'Status berhasil diupdate');
     }
 
@@ -204,13 +202,13 @@ class OrderController extends Controller
         $trans_kode = trim($request->input('trans_kode'));
         $kry_kode = $request->input('kry_kode');
 
-        if (!$trans_kode || !$kry_kode) {
+        if (! $trans_kode || ! $kry_kode) {
             return redirect()->route('admin.order.index', 'pending')->with('gagal', 'Transaksi atau karyawan belum dipilih.');
         }
 
         $res = OrderList::where('trans_kode', $trans_kode)->update([
             'trans_status' => 'confirm',
-            'kry_kode' => $kry_kode
+            'kry_kode' => $kry_kode,
         ]);
 
         if ($res) {
@@ -226,7 +224,7 @@ class OrderController extends Controller
         $tdkn_kode = trim($request->input('tdkn_kode'));
         $subtot = str_replace('.', '', trim($request->input('subtot')));
 
-        if (!$trans_kode || !$tdkn_kode || !is_numeric($subtot)) {
+        if (! $trans_kode || ! $tdkn_kode || ! is_numeric($subtot)) {
             return redirect()->route('admin.order.index', 'waiting')->with('gagal', 'Data tidak valid.');
         }
 
@@ -240,11 +238,12 @@ class OrderController extends Controller
     {
         $trans_kode = trim($request->input('trans_kode'));
 
-        if (!$trans_kode) {
+        if (! $trans_kode) {
             return redirect()->route('admin.order.index', 'repairing')->with('gagal', 'trans_kode tidak ditemukan.');
         }
 
         OrderList::where('trans_kode', $trans_kode)->update(['trans_status' => 'service_completed']);
+
         return redirect()->route('admin.order.index', 'completed')->with('sukses', 'Service berhasil ditandai sebagai selesai.');
     }
 
@@ -252,11 +251,12 @@ class OrderController extends Controller
     {
         $trans_kode = trim($request->input('trans_kode'));
 
-        if (!$trans_kode) {
+        if (! $trans_kode) {
             return redirect()->route('admin.order.index', 'repairing')->with('gagal', 'trans_kode tidak ditemukan.');
         }
 
         OrderList::where('trans_kode', $trans_kode)->update(['trans_status' => 'service_failed']);
+
         return redirect()->route('admin.order.index', 'failed')->with('sukses', 'Service berhasil ditandai sebagai gagal.');
     }
 
@@ -266,7 +266,7 @@ class OrderController extends Controller
         $tdkn_kode = trim($request->input('tdkn_kode'));
         $subtot = str_replace('.', '', trim($request->input('subtot')));
 
-        if (!$trans_kode || !$tdkn_kode || !is_numeric($subtot)) {
+        if (! $trans_kode || ! $tdkn_kode || ! is_numeric($subtot)) {
             return redirect()->route('admin.order.index', 'waiting')->with('gagal', 'Data tidak valid.');
         }
 
@@ -281,7 +281,7 @@ class OrderController extends Controller
         $trans_kode = $request->input('trans_kode');
         $sisa = $request->input('sisa');
 
-        if (!$trans_kode) {
+        if (! $trans_kode) {
             return redirect()->route('admin.order.index', 'pending')->with('gagal', 'trans_kode tidak ditemukan.');
         }
 

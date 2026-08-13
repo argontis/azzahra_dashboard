@@ -3,12 +3,10 @@
 @section('content')
 <div class="content">
     <header class="page-header mb-5">
-    <div class="header-title">
-        <h1><i data-feather="layout" class="w-6 h-6 inline-block mr-2"></i>{{ $title ?? 'Admin Dashboard' }}</h1>
-    </div>            
-</header>
-
-    </div>
+        <div class="header-title">
+            <h1><i data-feather="layout" class="w-6 h-6 inline-block mr-2"></i>{{ $title ?? 'Admin Dashboard' }}</h1>
+        </div>
+    </header>
     <div class="intro-y box p-5 mt-5">
         <div class="overflow-x-auto">
             <table class="table table-report table-report--bordered display datatable w-full">
