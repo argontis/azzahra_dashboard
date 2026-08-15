@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 @section('content')
         <!-- Header -->
@@ -27,7 +26,16 @@
 
         <!-- Content -->
         <div class="content-area">
-            <?php if (isset($table_exists) && !$table_exists): ?>
+            @php
+                $tableExists = true;
+                try {
+                    \Illuminate\Support\Facades\Schema::hasTable('mou');
+                } catch (\Exception $e) {
+                    $tableExists = false;
+                }
+            @endphp
+
+            @if(!$tableExists)
             <div class="intro-y box overflow-hidden mt-5">
                 <div class="px-5 py-10 text-center">
                     <div class="text-red-600 mb-4">
@@ -35,65 +43,20 @@
                     </div>
                     <h3 class="text-lg font-medium mb-2">Tabel Database Belum Dibuat</h3>
                     <p class="text-gray-600 mb-4">
-                        Silakan jalankan SQL berikut di database Anda untuk membuat tabel yang diperlukan:
-                    </p>
-                    <div class="bg-gray-100 p-4 rounded text-left mb-4" style="max-width: 800px; margin: 0 auto; max-height: 400px; overflow-y: auto;">
-                        <pre class="text-sm overflow-x-auto" style="white-space: pre-wrap; word-wrap: break-word;"><?php
-                        $sql_file = APPPATH . '../mou_database.sql';
-                        if (file_exists($sql_file)) {
-                            echo htmlspecialchars(file_get_contents($sql_file));
-                        } else {
-                            echo "CREATE TABLE IF NOT EXISTS `mou` (
-  `mou_id` int(11) NOT NULL AUTO_INCREMENT,
-  `file_name` varchar(255) NOT NULL,
-  'intro_text' text NOT NULL, 
-  `lokasi` varchar(50) NOT NULL,
-  `tanggal` date NOT NULL,
-  `customer` varchar(255) NOT NULL,
-  `grand_total` decimal(15,2) NOT NULL DEFAULT '0.00',
-  `kry_kode` varchar(20) DEFAULT NULL,
-  `created_at` datetime NOT NULL,
-  PRIMARY KEY (`mou_id`),
-  KEY `kry_kode` (`kry_kode`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
-CREATE TABLE IF NOT EXISTS `mou_items` (
-  `item_id` int(11) NOT NULL AUTO_INCREMENT,
-  `mou_id` int(11) NOT NULL,
-  `item_no` int(11) NOT NULL,
-  `spesifikasi` text NOT NULL,
-  `qty` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `harga` decimal(15,2) NOT NULL DEFAULT '0.00',
-  `total` decimal(15,2) NOT NULL DEFAULT '0.00',
-  PRIMARY KEY (`item_id`),
-  KEY `mou_id` (`mou_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;";
-                        }
-                        ?></pre>
-                    </div>
-                    <p class="text-gray-600 text-sm">
-                        <strong>Cara menjalankan:</strong><br>
-                        1. Buka phpMyAdmin<br>
-                        2. Pilih database <strong>azzahra</strong><br>
-                        3. Klik tab <strong>SQL</strong><br>
-                        4. Copy SQL di atas dan paste ke textarea<br>
-                        5. Klik <strong>Go</strong> atau <strong>Execute</strong><br>
-                        6. Refresh halaman ini setelah selesai<br><br>
-
-                        Note: Tambahkan 1 kolom 'intro_text' di tabel 'mou' jika belum ada dan <br>tambahkan ttd.jpeg di folder assets/images 
-                        dan footer.png
+                        Silakan buat tabel `mou` dan `mou_items` di database Anda.
                     </p>
                 </div>
             </div>
-            <?php else: ?>
+            @else
             <div class="intro-y flex flex-col sm:flex-row items-center justify-between mt-8">
                 <h2 class="text-lg font-medium">
                     Daftar Mou
                 </h2>
                 <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
-                    <a href="{{ route('admin.mou.create_form') }}" class="btn-buat-mou" style="cursor: pointer !important; position: relative !important; z-index: 9999 !important; pointer-events: auto !important; text-decoration: none;">
-                        Buat Mou
-                    </a>
+                    <!-- Menggunakan event listener langsung di script bawah agar aman dari konflik -->
+                    <button type="button" id="triggerOpenModal" class="btn-buat-mou" onclick="openCreateModal();">
+    Buat Mou
+</button>
                 </div>
             </div>
 
@@ -113,37 +76,35 @@ CREATE TABLE IF NOT EXISTS `mou_items` (
                             </tr>
                         </thead>
                         <tbody>
-                            <?php
-                            $no = (request()->segment(3) ? request()->segment(3) : 0) + 1;
-                            if ($mou_list && count($mou_list) > 0):
-                                foreach ($mou_list as $mou):
-                            ?>
-                            <tr>
-                                <td class="border-b"><?= $no++ ?></td>
-                                <td class="border-b"><?= htmlspecialchars($mou->file_name) ?></td>
-                                <td class="border-b"><?= htmlspecialchars($mou->customer) ?></td>
-                                <td class="border-b"><?= htmlspecialchars($mou->lokasi) ?></td>
-                                <td class="border-b"><?= date('d/m/Y', strtotime($mou->tanggal)) ?></td>
-                                <td class="border-b">Rp. <?= number_format($mou->grand_total, 0, ',', '.') ?>,-</td>
-                                <td class="border-b"><?= htmlspecialchars($mou->kry_nama ?: '-') ?></td>
-                                <td class="border-b">
-                                    <div class="flex space-x-2">
-                                        <a href="{{ route('admin.mou.download', $mou->mou_id) }}" class="button button--sm text-white bg-theme-1" style="display: inline-block; white-space: nowrap;" target="_blank">
-                                            <i data-feather="download" class="w-4 h-4" style="display: inline; margin-right: 4px; vertical-align: middle;"></i><span style="vertical-align: middle;">Download</span>
-                                        </a>
-                                        <a href="{{ route('admin.mou.edit_form', $mou->mou_id) }}" class="button button--sm text-white bg-blue-500" style="display: inline-block; white-space: nowrap;">
-                                            <i data-feather="edit" class="w-4 h-4" style="display: inline; margin-right: 4px; vertical-align: middle;"></i><span style="vertical-align: middle;">Edit</span>
-                                        </a>
-                                        <button onclick="deleteMou(<?= $mou->mou_id ?>)" class="button button--sm text-white bg-red-500" style="display: inline-block; white-space: nowrap;">
-                                            <i data-feather="trash-2" class="w-4 h-4" style="display: inline; margin-right: 4px; vertical-align: middle;"></i><span style="vertical-align: middle;">Delete</span>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <?php
-                                endforeach;
-                            else:
-                            ?>
+                            @php
+                                $no = 1;
+                            @endphp
+                            @if(isset($mou_list) && count($mou_list) > 0)
+                                @foreach ($mou_list as $mou)
+                                <tr>
+                                    <td class="border-b">{{ $no++ }}</td>
+                                    <td class="border-b">{{ e($mou->file_name) }}</td>
+                                    <td class="border-b">{{ e($mou->customer) }}</td>
+                                    <td class="border-b">{{ e($mou->lokasi) }}</td>
+                                    <td class="border-b">{{ date('d/m/Y', strtotime($mou->tanggal)) }}</td>
+                                    <td class="border-b">Rp. {{ number_format($mou->grand_total, 0, ',', '.') }},-</td>
+                                    <td class="border-b">{{ e($mou->kry_nama ?? '-') }}</td>
+                                    <td class="border-b">
+                                        <div class="flex space-x-2">
+                                            <a href="{{ route('admin.mou.download', $mou->mou_id) }}" class="button button--sm text-white bg-theme-1" style="display: inline-block; white-space: nowrap;" target="_blank">
+                                                <i data-feather="download" class="w-4 h-4" style="display: inline; margin-right: 4px; vertical-align: middle;"></i><span style="vertical-align: middle;">Download</span>
+                                            </a>
+                                            <a href="{{ route('admin.mou.edit_form', $mou->mou_id) }}" class="button button--sm text-white bg-blue-500" style="display: inline-block; white-space: nowrap;">
+                                                <i data-feather="edit" class="w-4 h-4" style="display: inline; margin-right: 4px; vertical-align: middle;"></i><span style="vertical-align: middle;">Edit</span>
+                                            </a>
+                                            <button type="button" onclick="deleteMou({{ $mou->mou_id }})" class="button button--sm text-white bg-red-500" style="display: inline-block; white-space: nowrap;">
+                                                <i data-feather="trash-2" class="w-4 h-4" style="display: inline; margin-right: 4px; vertical-align: middle;"></i><span style="vertical-align: middle;">Delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            @else
                             <tr>
                                 <td colspan="8" class="text-center border-b py-8">
                                     <div class="text-gray-500">
@@ -153,17 +114,12 @@ CREATE TABLE IF NOT EXISTS `mou_items` (
                                     </div>
                                 </td>
                             </tr>
-                            <?php endif; ?>
+                            @endif
                         </tbody>
                     </table>
                 </div>
-                <?php if (isset($links) && !empty($links)): ?>
-                <div class="px-5 py-3 border-t">
-                    <?= $links ?>
-                </div>
-                <?php endif; ?>
             </div>
-            <?php endif; ?>
+            @endif
         </div>
     </main>
 </div>
@@ -171,19 +127,19 @@ CREATE TABLE IF NOT EXISTS `mou_items` (
 <!-- Overlay for mobile -->
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
 
-<!-- Modal Create Mou -->
-<div class="modal" id="createMouModal" style="display: none;">
+<!-- Modal Create Mou (Menggunakan class active untuk menampilkan) -->
+<div class="modal" id="createMouModal">
     <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
         <div class="modal-header">
             <h2 class="text-lg font-medium">Buat Mou Baru</h2>
-            <button type="button" class="close" id="btnCloseModal" onclick="closeCreateModal()">&times;</button>
+            <button type="button" class="close" id="btnCloseModal">&times;</button>
         </div>
         <div class="modal-body">
             <form id="mouForm">
+                @csrf
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Nama File / Transaksi *</label>
-                    <input type="text" name="file_name" id="file_name" class="input w-full border"
-                           placeholder="Contoh: Servis Laptop Asus 12-12-2025" required>
+                    <input type="text" name="file_name" id="file_name" class="input w-full border" placeholder="Contoh: Servis Laptop Asus 12-12-2025" required>
                     <small class="text-gray-500">Nama ini akan digunakan sebagai nama file PDF yang diunduh</small>
                 </div>
 
@@ -200,14 +156,12 @@ CREATE TABLE IF NOT EXISTS `mou_items` (
 
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Tanggal *</label>
-                    <input type="date" name="tanggal" id="tanggal" class="input w-full border"
-                           value="<?= date('Y-m-d') ?>" required>
+                    <input type="date" name="tanggal" id="tanggal" class="input w-full border" value="{{ date('Y-m-d') }}" required>
                 </div>
 
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Nama Customer *</label>
-                    <input type="text" name="customer" id="customer" class="input w-full border"
-                           placeholder="Masukkan nama customer" required>
+                    <input type="text" name="customer" id="customer" class="input w-full border" placeholder="Masukkan nama customer" required>
                 </div>
 
                 <div class="mb-4">
@@ -236,13 +190,13 @@ CREATE TABLE IF NOT EXISTS `mou_items` (
                             </tfoot>
                         </table>
                     </div>
-                    <button type="button" id="btnTambahItem" class="button text-white bg-theme-1 mt-2" onclick="addItem(); return false;">
+                    <button type="button" id="btnTambahItem" class="button text-white bg-theme-1 mt-2">
                         <i data-feather="plus" class="w-4 h-4 mr-2"></i> Tambah Item
                     </button>
                 </div>
 
                 <div class="flex justify-end mt-4">
-                    <button type="button" id="btnBatalMou" class="button border mr-2" onclick="closeCreateModal(); return false;">Batal</button>
+                    <button type="button" id="btnBatalMou" class="button border mr-2">Batal</button>
                     <button type="submit" class="button text-white bg-theme-1">Simpan & Download PDF</button>
                 </div>
             </form>
@@ -251,36 +205,56 @@ CREATE TABLE IF NOT EXISTS `mou_items` (
 </div>
 
 <script>
-const DEFAULT_DATE = '<?= date('Y-m-d') ?>';
-const $ = (id) => document.getElementById(id);
+const getElem = (id) => document.getElementById(id);
 
-// ---------- MODAL ----------
+// ==========================================
+// 1. FUNGSI GLOBAL (Bisa dipanggil dari mana saja)
+// ==========================================
 function openCreateModal() {
-    const modal = $('createMouModal');
-    if (!modal) return false;
-    modal.style.display = 'block';
+    const modal = getElem('createMouModal');
+    if (!modal) {
+        console.error("Modal element tidak ditemukan!");
+        return false;
+    }
+    
+    // Tambahkan class agar modal tampil
+    modal.classList.add('modal-show');
     document.body.style.overflow = 'hidden';
 
-    const form = $('mouForm');
+    // Reset form dan set nilai default
+    const form = getElem('mouForm');
     if (form) form.reset();
-    const tgl = $('tanggal'); if (tgl) tgl.value = DEFAULT_DATE;
-    const body = $('itemsTableBody'); if (body) body.innerHTML = '';
-    const gt = $('grandTotal'); if (gt) gt.textContent = 'Rp. 0,-';
+    
+    const tgl = getElem('tanggal'); 
+    if (tgl) tgl.value = '{{ date("Y-m-d") }}';
+    
+    const body = getElem('itemsTableBody'); 
+    if (body) body.innerHTML = '';
+    
+    const gt = getElem('grandTotal'); 
+    if (gt) gt.textContent = 'Rp. 0,-';
 
+    // Tambah baris item pertama secara otomatis
     addItem();
-    if (typeof feather !== 'undefined') setTimeout(() => feather.replace(), 50);
+
+    // Render ulang Feather Icons jika ada
+    if (typeof feather !== 'undefined') {
+        setTimeout(() => feather.replace(), 50);
+    }
     return false;
 }
 
 function closeCreateModal() {
-    const modal = $('createMouModal');
-    if (modal) modal.style.display = 'none';
+    const modal = getElem('createMouModal');
+    if (modal) {
+        modal.classList.remove('modal-show');
+    }
     document.body.style.overflow = '';
 }
 
-// ---------- ITEMS ----------
+// ---------- ITEMS DYNAMIC FUNCTIONS ----------
 function addItem() {
-    const tbody = $('itemsTableBody');
+    const tbody = getElem('itemsTableBody');
     if (!tbody) return;
     const n = tbody.querySelectorAll('tr').length + 1;
     const row = document.createElement('tr');
@@ -299,14 +273,14 @@ function addItem() {
 }
 
 function removeItem(id) {
-    const row = $('itemRow' + id);
+    const row = getElem('itemRow' + id);
     if (row) row.remove();
     updateItemNumbers();
     calculateGrandTotal();
 }
 
 function updateItemNumbers() {
-    const rows = $('itemsTableBody')?.querySelectorAll('tr') || [];
+    const rows = getElem('itemsTableBody')?.querySelectorAll('tr') || [];
     rows.forEach((row, idx) => {
         const n = idx + 1;
         row.id = 'itemRow' + n;
@@ -323,7 +297,7 @@ function formatCurrency(input) {
 }
 
 function calculateTotal(id) {
-    const row = $('itemRow' + id);
+    const row = getElem('itemRow' + id);
     if (!row) return;
     const qty = parseFloat(row.querySelector('.qty-input')?.value || '0') || 0;
     const hargaStr = (row.querySelector('.harga-input')?.value || '').replace(/[^\d]/g, '');
@@ -335,7 +309,7 @@ function calculateTotal(id) {
 }
 
 function calculateGrandTotal() {
-    const rows = $('itemsTableBody')?.querySelectorAll('tr') || [];
+    const rows = getElem('itemsTableBody')?.querySelectorAll('tr') || [];
     let grand = 0;
     rows.forEach(row => {
         const cell = row.querySelector('.total-cell');
@@ -344,18 +318,52 @@ function calculateGrandTotal() {
             grand += v;
         }
     });
-    const el = $('grandTotal'); if (el) el.textContent = 'Rp. ' + grand.toLocaleString('id-ID') + ',-';
+    const el = getElem('grandTotal'); if (el) el.textContent = 'Rp. ' + grand.toLocaleString('id-ID') + ',-';
 }
 
-// ---------- FORM & BINDINGS ----------
+// ==========================================
+// 2. EVENT BINDINGS
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    const form = $('mouForm');
+    const modal = getElem('createMouModal');
+    const btnOpen = getElem('triggerOpenModal');
+    const btnClose = getElem('btnCloseModal');
+    const btnBatal = getElem('btnBatalMou');
+    const btnTambah = getElem('btnTambahItem');
+    const form = getElem('mouForm');
+
+    // Hubungkan tombol Buka Modal lewat JS secara aman DAN tambahkan atribut onclick langsung sebagai backup
+    if (btnOpen) {
+        btnOpen.setAttribute('onclick', 'openCreateModal(); return false;');
+        btnOpen.addEventListener('click', (e) => {
+            e.preventDefault();
+            openCreateModal();
+        });
+    }
+
+    if (btnClose) btnClose.addEventListener('click', closeCreateModal);
+    if (btnBatal) btnBatal.addEventListener('click', closeCreateModal);
+
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeCreateModal();
+        }
+    });
+
+    if (btnTambah) {
+        btnTambah.addEventListener('click', (e) => {
+            e.preventDefault();
+            addItem();
+        });
+    }
+
+    // Submit Form AJAX
     if (form) {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             const formData = new FormData(this);
             const items = [];
-            const rows = $('itemsTableBody')?.querySelectorAll('tr') || [];
+            const rows = getElem('itemsTableBody')?.querySelectorAll('tr') || [];
             rows.forEach(row => {
                 const spesifikasi = row.querySelector('input[name="spesifikasi[]"]')?.value;
                 const qty = row.querySelector('input[name="qty[]"]')?.value;
@@ -370,42 +378,31 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = true;
             submitBtn.innerHTML = 'Memproses...';
 
-            fetch('<?= url("Mou/create") ?>', { method: 'POST', body: formData })
-                .then(r => r.ok ? r.json() : r.text().then(t => { throw new Error(t || 'Gagal'); }))
-                .then(data => {
-                    if (data.status === 'success') {
-                        const done = () => { if (data.pdf_url) window.open(data.pdf_url, '_blank'); closeCreateModal(); location.reload(); };
-                        if (typeof Swal !== 'undefined') Swal.fire({icon:'success',title:'Berhasil!',text:'Mou berhasil dibuat!',confirmButtonColor:'#1e40af'}).then(done);
-                        else { alert('Mou berhasil dibuat!'); done(); }
-                    } else {
-                        const msg = data.message || 'Gagal membuat Mou';
-                        if (typeof Swal !== 'undefined') Swal.fire({icon:'error',title:'Error!',text:msg,confirmButtonColor:'#dc2626'}); else alert(msg);
-                    }
-                })
-                .catch(err => {
-                    const msg = err.message || 'Terjadi kesalahan saat membuat Mou';
+            fetch('{{ route("admin.mou.create") }}', { 
+                method: 'POST', 
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(r => r.ok ? r.json() : r.text().then(t => { throw new Error(t || 'Gagal'); }))
+            .then(data => {
+                if (data.status === 'success') {
+                    const done = () => { if (data.pdf_url) window.open(data.pdf_url, '_blank'); closeCreateModal(); location.reload(); };
+                    if (typeof Swal !== 'undefined') Swal.fire({icon:'success',title:'Berhasil!',text:'Mou berhasil dibuat!',confirmButtonColor:'#1e40af'}).then(done);
+                    else { alert('Mou berhasil dibuat!'); done(); }
+                } else {
+                    const msg = data.message || 'Gagal membuat Mou';
                     if (typeof Swal !== 'undefined') Swal.fire({icon:'error',title:'Error!',text:msg,confirmButtonColor:'#dc2626'}); else alert(msg);
-                })
-                .finally(() => { submitBtn.disabled = false; submitBtn.innerHTML = originalText; });
+                }
+            })
+            .catch(err => {
+                const msg = err.message || 'Terjadi kesalahan saat membuat Mou';
+                if (typeof Swal !== 'undefined') Swal.fire({icon:'error',title:'Error!',text:msg,confirmButtonColor:'#dc2626'}); else alert(msg);
+            })
+            .finally(() => { submitBtn.disabled = false; submitBtn.innerHTML = originalText; });
         });
     }
-
-    const btnBuatMou = $('btnBuatMou'); if (btnBuatMou) btnBuatMou.onclick = () => { openCreateModal(); return false; };
-    const btnCloseModal = $('btnCloseModal'); if (btnCloseModal) btnCloseModal.onclick = () => { closeCreateModal(); return false; };
-    const btnBatalMou = $('btnBatalMou'); if (btnBatalMou) btnBatalMou.onclick = () => { closeCreateModal(); return false; };
-    const btnTambahItem = $('btnTambahItem'); if (btnTambahItem) btnTambahItem.onclick = () => { addItem(); return false; };
-
-    document.addEventListener('click', (ev) => {
-        const modal = $('createMouModal');
-        if (modal && ev.target === modal) closeCreateModal();
-    });
-    document.addEventListener('keydown', (ev) => {
-        if (ev.key === 'Escape') closeCreateModal();
-    });
-
-    // Pastikan overlay sidebar tidak menutup konten
-    const overlay = $('sidebarOverlay');
-    if (overlay) { overlay.style.display = 'none'; overlay.style.pointerEvents = 'none'; }
 });
 
 // Delete Mou function
@@ -422,10 +419,11 @@ function deleteMou(mouId) {
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch('<?= url("Mou/delete/") ?>' + mouId, {
+                fetch('{{ url("Admin/mou/delete") }}/' + mouId, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     }
                 })
                 .then(response => response.json())
@@ -448,8 +446,7 @@ function deleteMou(mouId) {
                         });
                     }
                 })
-                .catch(error => {
-                    console.error('Error:', error);
+                .catch(() => {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error!',
@@ -460,12 +457,12 @@ function deleteMou(mouId) {
             }
         });
     } else {
-        // Fallback to default confirm if Swal not available
         if (confirm('Apakah Anda yakin ingin menghapus Mou ini?')) {
-            fetch('<?= url("Mou/delete/") ?>' + mouId, {
+            fetch('{{ url("Admin/mou/delete") }}/' + mouId, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
             })
             .then(response => response.json())
@@ -477,8 +474,7 @@ function deleteMou(mouId) {
                     alert('Gagal menghapus Mou: ' + data.message);
                 }
             })
-            .catch(error => {
-                console.error('Error:', error);
+            .catch(() => {
                 alert('Terjadi kesalahan saat menghapus Mou');
             });
         }
@@ -492,13 +488,7 @@ function deleteMou(mouId) {
     pointer-events: none !important;
     opacity: 0 !important;
 }
-.btn-buat-mou {
-    z-index: 99999 !important;
-    pointer-events: auto !important;
-    cursor: pointer !important;
-}
 
-/* Tombol Buat Mou - Lebar, 1 baris */
 .btn-buat-mou {
     display: inline-block !important;
     width: auto !important;
@@ -528,33 +518,21 @@ function deleteMou(mouId) {
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
-.btn-buat-mou:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
-}
-
-.btn-buat-mou:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-}
-
-/* Modal Styles */
+/* Modal Custom Styles agar pasti tampil saat class modal-show aktif */
 .modal {
     display: none;
     position: fixed;
-    z-index: 1000;
+    z-index: 99999;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
     background-color: rgba(0,0,0,0.5);
-    animation: fadeIn 0.3s ease;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+.modal.modal-show {
+    display: block !important;
 }
 
 .modal-content {
@@ -563,20 +541,8 @@ function deleteMou(mouId) {
     padding: 0;
     border-radius: 12px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    animation: slideDown 0.3s ease;
     max-width: 900px;
     width: 90%;
-}
-
-@keyframes slideDown {
-    from {
-        transform: translateY(-50px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
 }
 
 .modal-header {
@@ -613,8 +579,7 @@ function deleteMou(mouId) {
     transition: all 0.2s ease;
 }
 
-.close:hover,
-.close:focus {
+.close:hover {
     color: #1e293b;
     background-color: #e2e8f0;
 }
@@ -624,24 +589,5 @@ function deleteMou(mouId) {
     max-height: calc(90vh - 120px);
     overflow-y: auto;
 }
-
-.modal-body::-webkit-scrollbar {
-    width: 8px;
-}
-
-.modal-body::-webkit-scrollbar-track {
-    background: #f1f5f9;
-    border-radius: 4px;
-}
-
-.modal-body::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 4px;
-}
-
-.modal-body::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
-}
 </style>
-
 @endsection

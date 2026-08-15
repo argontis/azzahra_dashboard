@@ -432,4 +432,20 @@ class HrController extends Controller
 
         return back()->with('sukses', 'Batch Pencatatan dihapus');
     }
+    public function rekap()
+    {
+        // Anda bisa menambahkan logika untuk mengambil data rekap dari database di sini nantinya
+
+        return view('hr.rekap', [
+            'title' => 'Rekap HR',
+        ]);
+    }
+    public function certificate_generator()
+    {
+        // Logika untuk generator sertifikat bisa ditambahkan di sini
+
+        return view('hr.certificate_generator', [
+            'title' => 'Generator Sertifikat',
+        ]);
+    }
 }

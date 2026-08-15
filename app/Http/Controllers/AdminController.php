@@ -84,9 +84,8 @@ class AdminController extends Controller
             ->leftJoin('karyawan', 'transaksi.kry_kode', '=', 'karyawan.kry_kode')
             ->where('transaksi.trans_status', 'Baru')
             ->get();
-
-        return view('admin.cus-baru', ['title' => 'Transaksi Baru', 'trans' => $trans]);
-    }
+        $trans = Transaksi::where('trans_status', 'Baru')->orderBy('tanggal', 'desc')->get();
+            }
 
     public function cus_proses()
     {

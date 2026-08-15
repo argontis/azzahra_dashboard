@@ -255,4 +255,22 @@ class ServiceController extends Controller
             return back()->with('gagal', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
+    public function pembayaran(Request $request, $filter = null)
+    {
+        // Anda dapat menyalin logika dari KasirController::pembayaran() 
+        // atau menyesuaikannya dengan kebutuhan Customer Service di sini.
+
+        return view('service.pembayaran', [
+            'title' => 'Pembayaran',
+            'filter' => $filter
+        ]);
+    }
+    public function laporan(Request $request)
+    {
+        // Anda dapat menambahkan query untuk mengambil data laporan CS di sini nantinya
+
+        return view('service.laporan', [
+            'title' => 'Laporan'
+        ]);
+    }
 }

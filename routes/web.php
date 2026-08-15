@@ -71,7 +71,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/save_karyawan', [HrController::class, 'save_karyawan'])->name('hr.save_karyawan');
         Route::post('/update_karyawan', [HrController::class, 'update_karyawan'])->name('hr.update_karyawan');
         Route::get('/delete_karyawan/{kode}', [HrController::class, 'delete_karyawan'])->name('hr.delete_karyawan');
-
+    
+        Route::get('/rekap', [HrController::class, 'rekap'])->name('hr.rekap');
         Route::get('/absensi', [HrController::class, 'absensi'])->name('hr.absensi');
         Route::post('/absensi', [HrController::class, 'save_absensi'])->name('hr.save_absensi');
         Route::post('/absensi/delete/{id}', [HrController::class, 'delete_absensi'])->name('hr.delete_absensi');
@@ -103,6 +104,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/save_trans', [ServiceController::class, 'save_trans'])->name('service.save_trans');
         Route::get('/batal_transaksi/{kode}', [ServiceController::class, 'batal_transaksi'])->name('service.batal_transaksi');
         Route::get('/return_pembayaran/{kode}', [ServiceController::class, 'return_pembayaran'])->name('service.return_pembayaran');
+        Route::get('/pembayaran/{filter?}', [ServiceController::class, 'pembayaran'])->name('service.pembayaran');
+        Route::get('/laporan', [ServiceController::class, 'laporan'])->name('service.laporan');
     });
 
     // ==========================================
@@ -158,6 +161,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/ketersediaan_sparepart/sampai/{id}', [KetersediaanSparepartController::class, 'barang_sampai'])->name('admin.ketersediaan_sparepart.barang_sampai');
 
         // Voucher Routes
+        // Voucher Routes
         Route::get('/voucher', [VoucherController::class, 'index'])->name('admin.voucher.index');
         Route::get('/voucher/search', [VoucherController::class, 'ajax_search'])->name('admin.voucher.search');
         Route::get('/voucher/add', [VoucherController::class, 'add'])->name('admin.voucher.add');
@@ -166,15 +170,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/voucher/update/{id}', [VoucherController::class, 'update'])->name('admin.voucher.update');
         Route::post('/voucher/delete/{id}', [VoucherController::class, 'delete'])->name('admin.voucher.delete');
 
-        // Mou
-        Route::get('/mou', [MouController::class, 'index'])->name('admin.mou.index');
-        Route::get('/mou/create', [MouController::class, 'create_form'])->name('admin.mou.create_form');
-        Route::post('/mou/create', [MouController::class, 'create'])->name('admin.mou.create');
-        Route::get('/mou/edit/{id}', [MouController::class, 'edit_form'])->name('admin.mou.edit_form');
-        Route::post('/mou/edit/{id}', [MouController::class, 'edit'])->name('admin.mou.edit');
-        Route::post('/mou/delete/{id}', [MouController::class, 'delete'])->name('admin.mou.delete');
-        Route::get('/mou/download/{id}', [MouController::class, 'download'])->name('admin.mou.download');
-
         // Cetak
         Route::get('/cetak/print_1/{param}', [CetakController::class, 'print_1'])->name('admin.cetak.print_1');
         Route::get('/cetak/download/{trans_kode}/{dtl_status?}', [CetakController::class, 'download'])->name('admin.cetak.download');
@@ -182,5 +177,20 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/cetak/print_4/{kode}', [CetakController::class, 'print_4'])->name('admin.cetak.print_4');
         Route::get('/cetak/print_5/{kode}', [CetakController::class, 'print_5'])->name('admin.cetak.print_5');
         Route::get('/cetak/print_6/{kode}', [CetakController::class, 'print_6'])->name('admin.cetak.print_6');
+    }); // <-- Batas akhir Group Admin khusus Admin
+
+    // ==========================================
+    // MODULE MOU (Diletakkan di luar group Admin khusus, 
+    // agar bisa diakses Admin, HR, Kasir, dan CS tanpa error 403/404)
+    // ==========================================
+    Route::prefix('Admin')->middleware('role:Admin,HR,Kasir,Customer Service')->group(function () {
+        Route::get('/mou', [MouController::class, 'index'])->name('admin.mou.index');
+        Route::get('/mou/create', [MouController::class, 'create_form'])->name('admin.mou.create_form');
+        Route::post('/mou/create', [MouController::class, 'create'])->name('admin.mou.create');
+        Route::get('/mou/edit/{id}', [MouController::class, 'edit_form'])->name('admin.mou.edit_form');
+        Route::post('/mou/edit/{id}', [MouController::class, 'edit'])->name('admin.mou.edit');
+        Route::post('/mou/delete/{id}', [MouController::class, 'delete'])->name('admin.mou.delete');
+        Route::get('/mou/download/{id}', [MouController::class, 'download'])->name('admin.mou.download');
     });
-});
+
+}); // <-- Batas akhir Route::middleware(['auth'])
