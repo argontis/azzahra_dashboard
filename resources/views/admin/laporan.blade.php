@@ -110,7 +110,8 @@ document.addEventListener('DOMContentLoaded', function() {
 										$sum_lunas_mandiri = array_sum(array_column($lunas_mandiri, 'dtl_jml_bayar'));
 										$sum_lunas_tunai = array_sum(array_column($lunas_tunai, 'dtl_jml_bayar'));
 										$sum_menunggu = array_sum(array_column($menunggu, 'dtl_jml_bayar'));
-									}}
+									?>
+
 									<tr>
 										<td class="border-b">
 											<div class="font-medium whitespace-no-wrap">DOWN PATMENT BANK BCA</div>

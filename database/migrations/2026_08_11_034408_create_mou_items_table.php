@@ -15,13 +15,12 @@ return new class extends Migration
             $table->id('item_id');
             $table->unsignedBigInteger('mou_id');
             $table->integer('item_no');
-            $table->string('spesifikasi');
-            $table->integer('qty');
-            $table->decimal('harga', 15, 2);
-            $table->decimal('total', 15, 2);
-            $table->timestamps();
-            
-            $table->foreign('mou_id')->references('mou_id')->on('mous')->onDelete('cascade');
+            $table->text('spesifikasi');
+            $table->decimal('qty', 10, 2)->default(0.00);
+            $table->decimal('harga', 15, 2)->default(0.00);
+            $table->decimal('total', 15, 2)->default(0.00);
+
+            $table->index('mou_id');
         });
     }
 

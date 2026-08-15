@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class MouSeeder extends Seeder
 {
@@ -13,7 +13,7 @@ class MouSeeder extends Seeder
     public function run(): void
     {
         // Insert sample Mou
-        $mouId = \Illuminate\Support\Facades\DB::table('mous')->insertGetId([
+        $mouId = DB::table('mou')->insertGetId([
             'file_name' => 'Penawaran Layanan IT',
             'intro_text' => 'Bersama surat ini, kami menawarkan jasa pemasangan infrastruktur jaringan.',
             'terms' => 'Pembayaran 50% di muka, 50% setelah selesai.',
@@ -26,7 +26,7 @@ class MouSeeder extends Seeder
         ]);
 
         // Insert sample Mou Items
-        \Illuminate\Support\Facades\DB::table('mou_items')->insert([
+        DB::table('mou_items')->insert([
             [
                 'mou_id' => $mouId,
                 'item_no' => 1,
@@ -42,7 +42,7 @@ class MouSeeder extends Seeder
                 'qty' => 1,
                 'harga' => 500000.00,
                 'total' => 500000.00,
-            ]
+            ],
         ]);
     }
 }

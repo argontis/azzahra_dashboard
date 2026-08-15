@@ -29,13 +29,37 @@
         <link rel="stylesheet" href="{{ asset('assets/template/beck/dist/css/app.css') }}">
         <link rel="stylesheet" href="{{ asset('assets/file/alert/animet.css') }}">
         <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="{{ asset('assets/css/sidebar.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/sidebar.css') }}?v={{ time() }}">
         
         <!-- Dashboard CSS -->
-        <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}?v={{ time() }}">
         
         <!-- Google Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        
+        <style>
+            /* DYNAMIC LAYOUT FIX */
+            body.app { padding-left: 0 !important; margin: 0 !important; }
+            .app-layout { padding-left: 0 !important; margin-left: 0 !important; }
+            .main-content { 
+                padding-left: 260px !important; 
+                margin-left: 0 !important;
+                width: 100% !important; 
+                box-sizing: border-box !important; 
+                transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            }
+            .sidebar.collapsed ~ .main-content {
+                padding-left: 80px !important;
+            }
+            .sidebar { left: 0 !important; }
+            .sidebar-toggle { display: none !important; }
+            @media (max-width: 1024px) {
+                .main-content,
+                .sidebar.collapsed ~ .main-content { 
+                    padding-left: 0 !important; 
+                }
+            }
+        </style>
         
         <!-- JS Pola -->
          <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -75,10 +99,6 @@
                 </div>
                 <div class="logo-name">
                     <h1>Azzahra Computer</h1>
-                    
-                </div>
-                <div class="sidebar-toggle" onclick="toggleSidebar()">
-                    <i data-feather="chevron-left"></i>
                 </div>
             </div>
 
@@ -290,8 +310,8 @@
                             <span class="nav-badge">{{ $konf }}</span>
                         @endif
                     </a>
-                     <a href="{{ url('Admin/voucher') }}" class="nav-link {{ $title == 'Discount' ? 'active' : '' }}">
-                        <div class="nav-icon"><i data-feather="message-square"></i></div>
+                     <a href="{{ url('Admin/cus_discount') }}" class="nav-link {{ $title == 'Transaksi-Discount' || $title == 'Discount' ? 'active' : '' }}">
+                        <div class="nav-icon"><i data-feather="percent"></i></div>
                         <span class="nav-text">Discount</span>
                     </a>
                 </div>
@@ -633,6 +653,34 @@
             // Initialize feather icons
             if (typeof feather !== 'undefined') {
                 feather.replace();
+            }
+
+            // === Preserve Sidebar Scroll Position ===
+            const navMenu = document.querySelector('.nav-menu');
+            if (navMenu) {
+                // Restore scroll position on page load
+                const savedScroll = sessionStorage.getItem('sidebarScrollPosition');
+                if (savedScroll !== null) {
+                    navMenu.scrollTop = parseInt(savedScroll, 10);
+                } else {
+                    // If no saved position, scroll active link into view
+                    const activeLink = navMenu.querySelector('.nav-link.active, .dropdown-menu-item.active');
+                    if (activeLink) {
+                        activeLink.scrollIntoView({ block: 'nearest', behavior: 'instant' });
+                    }
+                }
+
+                // Save scroll position whenever sidebar is scrolled
+                navMenu.addEventListener('scroll', () => {
+                    sessionStorage.setItem('sidebarScrollPosition', navMenu.scrollTop);
+                });
+
+                // Also save scroll position when any sidebar link is clicked
+                navMenu.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        sessionStorage.setItem('sidebarScrollPosition', navMenu.scrollTop);
+                    });
+                });
             }
         });
     </script>

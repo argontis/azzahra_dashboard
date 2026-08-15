@@ -10,6 +10,7 @@ class Karyawan extends Authenticatable
     use Notifiable;
 
     protected $table = 'karyawan';
+
     protected $primaryKey = 'kry_kode';
 
     protected $fillable = [
@@ -18,6 +19,7 @@ class Karyawan extends Authenticatable
         'kry_nama',
         'kry_level',
         'kry_telp',
+        'kry_alamat',
         'kry_join_date',
         'kry_status',
     ];

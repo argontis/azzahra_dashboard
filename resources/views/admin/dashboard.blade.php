@@ -11,35 +11,25 @@
                         {{ date('l, d F Y') ?? '0' }}
                     </p>
                 </div>
-            </div>
-            <div class="page-header-right">
-                <div class="header-actions">
-                    <div class="export-buttons">
-                        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('all')" title="Export All Sections">
-                            <i data-feather="download"></i>
-                            📊 All
-                        </button>
-                        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('performance')" title="Export Performance Metrics">
-                            <i data-feather="trending-up"></i>
-                            📈 Performance
-                        </button>
-                        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('weekly')" title="Export Weekly Performance">
-                            <i data-feather="bar-chart"></i>
-                            📊 Weekly
-                        </button>
-                        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('technicians')" title="Export Top Performers">
-                            <i data-feather="users"></i>
-                            👷 Technicians
-                        </button>
-                        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('payment')" title="Export Payment Methods">
-                            <i data-feather="credit-card"></i>
-                            💳 Payment
-                        </button>
-                        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('activity')" title="Export Recent Activity">
-                            <i data-feather="activity"></i>
-                            📋 Activity
-                        </button>
-                    </div>
+                <div class="export-buttons" style="margin-top: 10px;">
+                    <button class="btn btn-outline export-btn" onclick="exportDashboardReport('all')" title="Export All Sections">
+                        📊 All
+                    </button>
+                    <button class="btn btn-outline export-btn" onclick="exportDashboardReport('performance')" title="Export Performance Metrics">
+                        📈 Performance
+                    </button>
+                    <button class="btn btn-outline export-btn" onclick="exportDashboardReport('weekly')" title="Export Weekly Performance">
+                        📊 Weekly
+                    </button>
+                    <button class="btn btn-outline export-btn" onclick="exportDashboardReport('technicians')" title="Export Top Performers">
+                        👷 Technicians
+                    </button>
+                    <button class="btn btn-outline export-btn" onclick="exportDashboardReport('payment')" title="Export Payment Methods">
+                        💳 Payment
+                    </button>
+                    <button class="btn btn-outline export-btn" onclick="exportDashboardReport('activity')" title="Export Recent Activity">
+                        📋 Activity
+                    </button>
                 </div>
             </div>
         </div>

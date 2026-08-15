@@ -33,6 +33,7 @@
                 </div>
 
                 <form id="mouFormPage" method="post" action="{{ route('admin.mou.create') }}">
+                    @csrf
                     <input type="hidden" name="items" id="itemsHidden">
                     <input type="hidden" name="mou_id" value="<?= uniqid() ?>">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

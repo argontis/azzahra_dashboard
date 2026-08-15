@@ -1,318 +1,512 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Dashboard - Azzahra Computer</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Chart.js -->
+    <title>Dashboard Report - {{ ucfirst($section ?? 'all') }}</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- Feather Icons -->
-    <script src="https://unpkg.com/feather-icons"></script>
-
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        /* Kustomisasi Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        
-        /* Animasi Transisi Card */
-        .hover-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .hover-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.1); border-color: #e2e8f0; }
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f9fafb;
+            color: #1f2937;
+            margin: 0;
+            padding: 2rem;
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 1rem;
+        }
+
+        .report-header h1 {
+            margin: 0 0 0.25rem 0;
+            font-size: 1.5rem;
+        }
+
+        .report-meta {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .print-btn {
+            background: #6366f1;
+            color: #fff;
+            border: none;
+            padding: 0.6rem 1.1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .print-btn:hover {
+            background: #4f46e5;
+        }
+
+        .report-section {
+            background: #fff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .report-section h2 {
+            font-size: 1.125rem;
+            margin: 0 0 1rem 0;
+            color: #374151;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 0.6rem 0.75rem;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.9rem;
+        }
+
+        th {
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .kpi-box {
+            background: #f9fafb;
+            border-radius: 6px;
+            padding: 1rem;
+        }
+
+        .kpi-box .label {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .kpi-box .value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-top: 0.25rem;
+        }
+
+        .chart-wrap {
+            max-width: 700px;
+            height: 320px;
+        }
+
+        .empty-note {
+            color: #9ca3af;
+            font-size: 0.875rem;
+        }
+
+        @media print {
+            .print-btn {
+                display: none;
+            }
+
+            body {
+                background: #fff;
+                padding: 0;
+            }
+
+            .report-section {
+                box-shadow: none;
+                border: 1px solid #e5e7eb;
+            }
+        }
     </style>
 </head>
 
-<!-- Background diubah ke warna Soft Blue-Grey (#f0f4f8) yang sangat nyaman untuk mata -->
-<body class="flex h-screen overflow-hidden text-slate-700 antialiased bg-[#f0f4f8]">
+<body>
 
-    <!-- Sidebar Kiri (Putih Bersih) -->
-    <aside class="w-20 bg-white border-r border-slate-200/60 flex flex-col items-center py-6 z-20 flex-shrink-0 shadow-sm">
-        <!-- Logo -->
-        <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-md shadow-blue-500/30 mb-8 cursor-pointer hover:scale-105 transition-transform">
-            <i data-feather="cpu" class="w-6 h-6"></i>
+    <?php
+    // Ambil parameter dari URL, contoh:
+    // /Admin/export_dashboard?weekly_period=7D&technician_period=7D&section=payment
+    $section = request('section', 'all');
+    $weekly_period = request('weekly_period', '7D');
+    $technician_period = request('technician_period', '7D');
+    
+    $sectionTitles = [
+        'all' => 'Semua Section',
+        'performance' => 'Performance Metrics',
+        'weekly' => 'Weekly Performance',
+        'technicians' => 'Top Performers Teknisi',
+        'payment' => 'Payment Methods',
+        'activity' => 'Recent Activity',
+    ];
+    ?>
+
+    <div class="report-header">
+        <div>
+            <h1>Dashboard Report — {{ $sectionTitles[$section] ?? ucfirst($section) }}</h1>
+            <div class="report-meta">
+                Generated: {{ date('l, d F Y H:i') }} &middot;
+                Weekly period: {{ $weekly_period }} &middot;
+                Technician period: {{ $technician_period }}
+            </div>
         </div>
-        
-        <!-- Menu Icons -->
-        <nav class="flex flex-col gap-4 w-full px-3">
-            <a href="#" class="p-3 bg-blue-50 text-blue-600 rounded-xl flex justify-center relative group">
-                <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-blue-600 rounded-r-full"></div>
-                <i data-feather="grid" class="w-5 h-5"></i>
-            </a>
-            <a href="#" class="p-3 text-slate-400 hover:text-blue-600 hover:bg-slate-50 rounded-xl transition-colors flex justify-center"><i data-feather="users" class="w-5 h-5"></i></a>
-            <a href="#" class="p-3 text-slate-400 hover:text-blue-600 hover:bg-slate-50 rounded-xl transition-colors flex justify-center"><i data-feather="tool" class="w-5 h-5"></i></a>
-            <a href="#" class="p-3 text-slate-400 hover:text-blue-600 hover:bg-slate-50 rounded-xl transition-colors flex justify-center"><i data-feather="pie-chart" class="w-5 h-5"></i></a>
-            <a href="#" class="p-3 text-slate-400 hover:text-blue-600 hover:bg-slate-50 rounded-xl transition-colors flex justify-center mt-auto"><i data-feather="settings" class="w-5 h-5"></i></a>
-        </nav>
-    </aside>
-
-    <!-- Konten Utama -->
-    <div class="flex-1 flex flex-col overflow-hidden relative">
-        
-        <!-- Topbar Solid Biru (Sama dengan gambar referensi) -->
-        <header class="h-16 bg-blue-600 flex items-center justify-between px-8 z-10 sticky top-0 shadow-md">
-            <div class="flex items-center gap-4">
-                <h1 class="text-lg font-semibold text-white tracking-wide">Dashboard Overview</h1>
-            </div>
-            
-            <div class="flex items-center gap-6">
-                <!-- Search Bar -->
-                <div class="relative hidden md:block">
-                    <i data-feather="search" class="w-4 h-4 text-blue-200 absolute left-3 top-1/2 -translate-y-1/2"></i>
-                    <input type="text" placeholder="Cari transaksi, customer..." class="pl-10 pr-4 py-2 bg-blue-700/50 border-transparent rounded-full text-sm text-white placeholder-blue-200 focus:bg-white focus:text-slate-800 focus:placeholder-slate-400 outline-none transition-all w-64 shadow-inner">
-                </div>
-                
-                <!-- Notifikasi -->
-                <button class="relative p-2 text-blue-100 hover:text-white transition-colors">
-                    <i data-feather="bell" class="w-5 h-5"></i>
-                    <span class="absolute top-1 right-1 w-2 h-2 bg-rose-500 rounded-full border border-blue-600"></span>
-                </button>
-                
-                <!-- Profile -->
-                <div class="flex items-center gap-3 pl-4 border-l border-blue-500/50 cursor-pointer hover:opacity-80 transition">
-                    <div class="text-right hidden sm:block">
-                        <p class="text-sm font-semibold text-white">Admin Azzahra</p>
-                        <p class="text-xs text-blue-200">Super Admin</p>
-                    </div>
-                    <img src="https://ui-avatars.com/api/?name=Admin+Azzahra&background=ffffff&color=2563eb&bold=true" alt="Profile" class="w-9 h-9 rounded-full border-2 border-blue-400">
-                </div>
-            </div>
-        </header>
-
-        <!-- Area Scroll Content -->
-        <main class="flex-1 overflow-y-auto p-6 md:p-8">
-            
-            <!-- Greeting & Filter -->
-            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
-                <div>
-                    <h2 class="text-2xl font-extrabold text-slate-800 mb-1">Selamat Datang, Admin 👋</h2>
-                    <p class="text-sm text-slate-500">Berikut adalah ringkasan performa sistem hari ini.</p>
-                </div>
-                
-                <!-- Navigasi Tabs (Pill Style) -->
-                <div class="bg-white p-1 rounded-xl inline-flex text-sm font-medium border border-slate-200 shadow-sm">
-                    <button class="px-5 py-2 bg-blue-50 text-blue-600 rounded-lg shadow-sm border border-blue-100/50">Overview</button>
-                    <button class="px-5 py-2 text-slate-500 hover:text-slate-700 rounded-lg transition-colors">Laporan</button>
-                    <button class="px-5 py-2 text-slate-500 hover:text-slate-700 rounded-lg transition-colors">Karyawan</button>
-                </div>
-            </div>
-
-            <!-- Grid KPI Baris 1 -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <!-- Card 1: Revenue -->
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover-card group">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-sm font-semibold text-slate-500 mb-1">Pendapatan Hari Ini</p>
-                            <h3 class="text-2xl font-extrabold text-slate-800 group-hover:text-blue-600 transition-colors">Rp 3.5M</h3>
-                        </div>
-                        <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-                            <i data-feather="dollar-sign"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex items-center text-sm">
-                        <span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-md flex items-center gap-1"><i data-feather="trending-up" class="w-3 h-3"></i> 12%</span>
-                        <span class="text-slate-400 ml-2 font-medium">vs kemarin</span>
-                    </div>
-                </div>
-
-                <!-- Card 2: Service Done -->
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover-card group">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-sm font-semibold text-slate-500 mb-1">Service Selesai</p>
-                            <h3 class="text-3xl font-extrabold text-slate-800 group-hover:text-emerald-500 transition-colors">36</h3>
-                        </div>
-                        <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500">
-                            <i data-feather="check-circle"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex items-center text-sm">
-                        <span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-md flex items-center gap-1"><i data-feather="trending-up" class="w-3 h-3"></i> 5%</span>
-                        <span class="text-slate-400 ml-2 font-medium">vs kemarin</span>
-                    </div>
-                </div>
-
-                <!-- Card 3: Pending -->
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover-card group">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-sm font-semibold text-slate-500 mb-1">Menunggu Konfirmasi</p>
-                            <h3 class="text-3xl font-extrabold text-slate-800 group-hover:text-amber-500 transition-colors">14</h3>
-                        </div>
-                        <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500">
-                            <i data-feather="clock"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex items-center text-sm">
-                        <span class="bg-rose-100 text-rose-700 font-bold px-2 py-0.5 rounded-md flex items-center gap-1"><i data-feather="alert-circle" class="w-3 h-3"></i> Segera</span>
-                        <span class="text-slate-400 ml-2 font-medium">butuh tindakan</span>
-                    </div>
-                </div>
-
-                <!-- Card 4: Customers -->
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover-card group">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-sm font-semibold text-slate-500 mb-1">Customer Baru</p>
-                            <h3 class="text-3xl font-extrabold text-slate-800 group-hover:text-indigo-500 transition-colors">8</h3>
-                        </div>
-                        <div class="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-500">
-                            <i data-feather="user-plus"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex items-center text-sm">
-                        <span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-md flex items-center gap-1"><i data-feather="trending-up" class="w-3 h-3"></i> 2%</span>
-                        <span class="text-slate-400 ml-2 font-medium">vs kemarin</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Grid Charts Baris 2 -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Line Chart (Kiri) -->
-                <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-lg font-bold text-slate-800">Tren Transaksi & Service</h3>
-                        <button class="text-sm text-blue-600 font-semibold hover:text-blue-700">Lihat Detail &rarr;</button>
-                    </div>
-                    <div class="h-72">
-                        <canvas id="mainChart"></canvas>
-                    </div>
-                </div>
-                
-                <!-- Doughnut Chart (Kanan) -->
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col">
-                    <h3 class="text-lg font-bold text-slate-800 mb-2">Metode Pembayaran</h3>
-                    <p class="text-sm text-slate-500 mb-6">Distribusi transaksi bulan ini.</p>
-                    
-                    <div class="flex-1 flex items-center justify-center relative">
-                        <div class="w-48 h-48 relative">
-                            <canvas id="doughnutChart"></canvas>
-                            <!-- Teks di tengah Donut -->
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                <span class="text-2xl font-black text-slate-800">142</span>
-                                <span class="text-xs font-semibold text-slate-400">Total</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Legend Custom -->
-                    <div class="mt-6 flex justify-center gap-4 text-sm font-medium">
-                        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-500"></span> BCA</div>
-                        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-emerald-400"></span> Tunai</div>
-                        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-amber-400"></span> BRI</div>
-                    </div>
-                </div>
-            </div>
-
-        </main>
+        <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
     </div>
 
-    <!-- Inisialisasi Script -->
-    <script>
-        // Aktifkan Feather Icons
-        feather.replace();
+    {{-- =====================================================
+     PERFORMANCE METRICS
+     ===================================================== --}}
+    @if ($section === 'all' || $section === 'performance')
+        <div class="report-section">
+            <h2>Performance Metrics</h2>
+            <div class="kpi-grid">
+                <div class="kpi-box">
+                    <div class="label">Total Konfirmasi</div>
+                    <div class="value">{{ $konf ?? '0' }}</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="label">Total Customers</div>
+                    <div class="value">{{ $total_customers ?? '0' }}</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="label">Pembayaran Lunas</div>
+                    <div class="value">{{ $service_completion_rate ?? '0' }}</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="label">Pembayaran DP</div>
+                    <div class="value">{{ $dp_pending ?? '0' }}</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="label">Revenue Today</div>
+                    <div class="value">Rp {{ number_format($revenue_today ?? 0, 0, ',', '.') }}</div>
+                </div>
+            </div>
+        </div>
+    @endif
 
-        // Konfigurasi Default Font Chart.js
-        Chart.defaults.font.family = "'Inter', sans-serif";
-        Chart.defaults.color = '#64748b';
+    {{-- =====================================================
+     WEEKLY PERFORMANCE
+     ===================================================== --}}
+    @if ($section === 'all' || $section === 'weekly')
+        <div class="report-section">
+            <h2>Weekly Performance ({{ $weekly_period }})</h2>
+            @if (!empty($weekly_revenue))
+                <div class="chart-wrap">
+                    <canvas id="weeklyReportChart"></canvas>
+                </div>
+                <table style="margin-top:1rem;">
+                    <thead>
+                        <tr>
+                            <th>Hari</th>
+                            <th>Revenue (Rp)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($weekly_revenue as $row)
+                            <tr>
+                                <td>{{ date('D, d M', strtotime($row->day)) }}</td>
+                                <td>Rp {{ number_format($row->total, 0, ',', '.') }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @else
+                <p class="empty-note">Tidak ada data weekly performance untuk periode ini.</p>
+            @endif
+        </div>
+    @endif
 
-        // 1. LINE CHART (Tren Transaksi)
-        const ctxMain = document.getElementById('mainChart').getContext('2d');
-        
-        // Membuat efek Gradient di bawah garis
-        let gradientBlue = ctxMain.createLinearGradient(0, 0, 0, 300);
-        gradientBlue.addColorStop(0, 'rgba(37, 99, 235, 0.2)');
-        gradientBlue.addColorStop(1, 'rgba(37, 99, 235, 0)');
+    {{-- =====================================================
+     TOP PERFORMERS TEKNISI
+     ===================================================== --}}
+    @if ($section === 'all' || $section === 'technicians')
+        <div class="report-section">
+            <h2>Top Performers Teknisi ({{ $technician_period }})</h2>
+            <?php
+            $techMap = [];
+            if (!empty($technician_details)) {
+                foreach ($technician_details as $tech) {
+                    $name = $tech['technician_name'] ?? 'Teknisi Tidak Diketahui';
+                    $techMap[$name] = ($techMap[$name] ?? 0) + ($tech['services_completed'] ?? 0);
+                }
+                arsort($techMap);
+            }
+            ?>
+            @if (!empty($techMap))
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nama Teknisi</th>
+                            <th>Services Completed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php $rank = 1; ?>
+                        @foreach ($techMap as $name => $total)
+                            <tr>
+                                <td>{{ $rank++ }}</td>
+                                <td>{{ $name }}</td>
+                                <td>{{ $total }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @else
+                <p class="empty-note">Tidak ada data teknisi untuk periode ini.</p>
+            @endif
+        </div>
+    @endif
 
-        new Chart(ctxMain, {
-            type: 'line',
-            data: {
-                labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
-                datasets: [{
-                    label: 'Total Transaksi',
-                    data: [12, 19, 15, 25, 22, 30, 28],
-                    borderColor: '#2563eb', // Blue 600
-                    backgroundColor: gradientBlue,
-                    borderWidth: 3,
-                    tension: 0.4, // Garis melengkung halus
-                    fill: true,
-                    pointBackgroundColor: '#ffffff',
-                    pointBorderColor: '#2563eb',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { 
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: '#1e293b',
-                        padding: 12,
-                        titleFont: { size: 13, weight: 'bold' },
-                        bodyFont: { size: 14 },
-                        displayColors: false,
-                        cornerRadius: 8,
-                    }
-                },
-                scales: {
-                    y: { 
-                        beginAtZero: true, 
-                        border: { display: false },
-                        grid: { color: '#f1f5f9' }
+    {{-- =====================================================
+     PAYMENT METHODS
+     ===================================================== --}}
+    @if ($section === 'all' || $section === 'payment')
+        <div class="report-section">
+            <h2>Payment Methods Overview</h2>
+            <?php
+            $bca_pct = $bank_percentages['BCA'] ?? 0;
+            $mandiri_pct = $bank_percentages['MANDIRI'] ?? 0;
+            $bri_pct = $bank_percentages['BRI'] ?? 0;
+            $tunai_pct = $tunai_percentage ?? 0;
+            $voucher_pct = $voucher_usage_percentage ?? 0;
+            $pending_val = $total_pending_transfers ?? 0;
+            ?>
+
+            <!-- Diagram Batang (Bar Chart) -->
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 20px;">
+                <div style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px;">
+                    <span>📊 Diagram Batang Metode Pembayaran</span>
+                    <span style="font-size: 13px; font-weight: 500; color: #64748b;">Persentase (%) & Total Pending</span>
+                </div>
+
+                <div style="display: flex; height: 220px; align-items: flex-end; gap: 20px; padding: 0 10px 10px 10px; border-bottom: 2px solid #cbd5e1; position: relative;">
+                    <!-- Grid lines -->
+                    <div style="position: absolute; top: 0; left: 0; right: 0; border-top: 1px dashed #e2e8f0; pointer-events: none;">
+                        <span style="position: absolute; right: 8px; top: -10px; font-size: 10px; color: #94a3b8; font-weight: 600;">100%</span>
+                    </div>
+                    <div style="position: absolute; top: 50%; left: 0; right: 0; border-top: 1px dashed #e2e8f0; pointer-events: none;">
+                        <span style="position: absolute; right: 8px; top: -10px; font-size: 10px; color: #94a3b8; font-weight: 600;">50%</span>
+                    </div>
+
+                    <!-- Bar 1: BCA -->
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative; z-index: 2;">
+                        <div style="font-size: 12px; font-weight: 700; color: #2563eb; margin-bottom: 6px;">{{ $bca_pct }}%</div>
+                        <div style="width: 100%; max-width: 48px; height: {{ max(min($bca_pct, 100), 4) }}%; background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 6px 6px 0 0;"></div>
+                        <div style="margin-top: 10px; font-size: 12px; font-weight: 600; color: #334155;">Bank BCA</div>
+                    </div>
+
+                    <!-- Bar 2: Mandiri -->
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative; z-index: 2;">
+                        <div style="font-size: 12px; font-weight: 700; color: #4f46e5; margin-bottom: 6px;">{{ $mandiri_pct }}%</div>
+                        <div style="width: 100%; max-width: 48px; height: {{ max(min($mandiri_pct, 100), 4) }}%; background: linear-gradient(180deg, #6366f1 0%, #4338ca 100%); border-radius: 6px 6px 0 0;"></div>
+                        <div style="margin-top: 10px; font-size: 12px; font-weight: 600; color: #334155;">Mandiri</div>
+                    </div>
+
+                    <!-- Bar 3: BRI -->
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative; z-index: 2;">
+                        <div style="font-size: 12px; font-weight: 700; color: #0d9488; margin-bottom: 6px;">{{ $bri_pct }}%</div>
+                        <div style="width: 100%; max-width: 48px; height: {{ max(min($bri_pct, 100), 4) }}%; background: linear-gradient(180deg, #14b8a6 0%, #0f766e 100%); border-radius: 6px 6px 0 0;"></div>
+                        <div style="margin-top: 10px; font-size: 12px; font-weight: 600; color: #334155;">Bank BRI</div>
+                    </div>
+
+                    <!-- Bar 4: Tunai -->
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative; z-index: 2;">
+                        <div style="font-size: 12px; font-weight: 700; color: #059669; margin-bottom: 6px;">{{ $tunai_pct }}%</div>
+                        <div style="width: 100%; max-width: 48px; height: {{ max(min($tunai_pct, 100), 4) }}%; background: linear-gradient(180deg, #10b981 0%, #047857 100%); border-radius: 6px 6px 0 0;"></div>
+                        <div style="margin-top: 10px; font-size: 12px; font-weight: 600; color: #334155;">Tunai</div>
+                    </div>
+
+                    <!-- Bar 5: Pending -->
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative; z-index: 2;">
+                        <div style="font-size: 12px; font-weight: 700; color: #d97706; margin-bottom: 6px;">{{ $pending_val }}</div>
+                        <div style="width: 100%; max-width: 48px; height: {{ $pending_val > 0 ? min($pending_val * 15, 100) : 4 }}%; background: linear-gradient(180deg, #f59e0b 0%, #b45309 100%); border-radius: 6px 6px 0 0;"></div>
+                        <div style="margin-top: 10px; font-size: 12px; font-weight: 600; color: #334155;">Pending</div>
+                    </div>
+
+                    <!-- Bar 6: Voucher -->
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative; z-index: 2;">
+                        <div style="font-size: 12px; font-weight: 700; color: #8b5cf6; margin-bottom: 6px;">{{ $voucher_pct }}%</div>
+                        <div style="width: 100%; max-width: 48px; height: {{ max(min($voucher_pct, 100), 4) }}%; background: linear-gradient(180deg, #a855f7 0%, #6b21a8 100%); border-radius: 6px 6px 0 0;"></div>
+                        <div style="margin-top: 10px; font-size: 12px; font-weight: 600; color: #334155;">Voucher</div>
+                    </div>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metode</th>
+                        <th>Persentase / Nilai</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bank BCA</td>
+                        <td>{{ $bca_pct }}%</td>
+                    </tr>
+                    <tr>
+                        <td>Bank Mandiri</td>
+                        <td>{{ $mandiri_pct }}%</td>
+                    </tr>
+                    <tr>
+                        <td>Bank BRI</td>
+                        <td>{{ $bri_pct }}%</td>
+                    </tr>
+                    <tr>
+                        <td>Payment Pending</td>
+                        <td>{{ $total_pending_transfers ?? '0' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Tunai</td>
+                        <td>{{ $tunai_percentage ?? '0' }}%</td>
+                    </tr>
+                    <tr>
+                        <td>Voucher Used</td>
+                        <td>{{ $voucher_usage_percentage ?? '0' }}%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    @endif
+
+    {{-- =====================================================
+     RECENT ACTIVITY
+     ===================================================== --}}
+    @if ($section === 'all' || $section === 'activity')
+        <div class="report-section">
+            <h2>Recent Activity</h2>
+            <div class="kpi-grid" style="margin-bottom: 1.5rem;">
+                <div class="kpi-box">
+                    <div class="label">Total Customers</div>
+                    <div class="value">{{ $total_customers ?? '0' }}</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="label">Konfirmasi Pending</div>
+                    <div class="value">{{ $konf ?? '0' }}</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="label">Total Tunai</div>
+                    <div class="value">Rp {{ number_format($total_tunai ?? 0, 0, ',', '.') }}</div>
+                </div>
+            </div>
+
+            <h2>Recent Customers ({{ count($baru ?? []) }})</h2>
+            @if (!empty($baru) && count($baru) > 0)
+                <table style="margin-bottom:1.5rem;">
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>Tanggal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($baru as $row)
+                            <tr>
+                                <td>{{ $row->cos_nama ?? '-' }}</td>
+                                <td>{{ $row->created_at ?? '-' }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @else
+                <p class="empty-note">Belum ada customer baru.</p>
+            @endif
+
+            <h2>Recent Users ({{ count($users_baru ?? []) }})</h2>
+            @if (!empty($users_baru) && count($users_baru) > 0)
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>Tanggal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($users_baru as $row)
+                            <tr>
+                                <td>{{ $row->cos_nama ?? '-' }}</td>
+                                <td>{{ $row->created_at ?? '-' }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @else
+                <p class="empty-note">Belum ada user baru.</p>
+            @endif
+        </div>
+    @endif
+
+    @if (!in_array($section, ['all', 'performance', 'weekly', 'technicians', 'payment', 'activity']))
+        <div class="report-section">
+            <p class="empty-note">Section "{{ $section }}" tidak dikenali. Gunakan salah satu: all, performance,
+                weekly, technicians, payment, activity.</p>
+        </div>
+    @endif
+
+    {{-- Chart weekly hanya di-render kalau section weekly/all dan datanya ada --}}
+    @if (($section === 'all' || $section === 'weekly') && !empty($weekly_revenue))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const ctx = document.getElementById('weeklyReportChart');
+                if (!ctx || typeof Chart === 'undefined') return;
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [
+                            @foreach ($weekly_revenue as $row)
+                                "{{ date('D, d M', strtotime($row->day)) }}",
+                            @endforeach
+                        ],
+                        datasets: [{
+                            label: 'Revenue (Rp)',
+                            data: [
+                                @foreach ($weekly_revenue as $row)
+                                    {{ $row->total }},
+                                @endforeach
+                            ],
+                            borderColor: '#6366f1',
+                            backgroundColor: '#6366f120',
+                            tension: 0.4,
+                            fill: true,
+                            borderWidth: 2
+                        }]
                     },
-                    x: { 
-                        border: { display: false },
-                        grid: { display: false }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: (v) => 'Rp ' + Number(v).toLocaleString('id-ID')
+                                }
+                            }
+                        }
                     }
-                }
-            }
-        });
+                });
+            });
+        </script>
+    @endif
 
-        // 2. DOUGHNUT CHART (Metode Pembayaran)
-        const ctxDoughnut = document.getElementById('doughnutChart').getContext('2d');
-        new Chart(ctxDoughnut, {
-            type: 'doughnut',
-            data: {
-                labels: ['BCA', 'Tunai', 'BRI', 'Mandiri'],
-                datasets: [{
-                    data: [55, 30, 10, 5],
-                    backgroundColor: [
-                        '#3b82f6', // Blue
-                        '#34d399', // Emerald
-                        '#fbbf24', // Amber
-                        '#818cf8'  // Violet
-                    ],
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '75%', // Membuat lubang tengah lebih besar
-                plugins: { 
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: '#1e293b',
-                        padding: 12,
-                        cornerRadius: 8,
-                    }
-                }
-            }
-        });
-    </script>
 </body>
+
 </html>

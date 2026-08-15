@@ -63,7 +63,7 @@
 
         <script>
             // Token from PHP config
-            const Token = "{{ $thisconfig('app.azventory_api_key') }}";
+            const Token = "{{ config('app.azventory_api_key') }}";
             let currentPage = 1;
             let perPage = 10;
             let currentSearch = "";
