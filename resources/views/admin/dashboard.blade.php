@@ -11,26 +11,36 @@
                         {{ date('l, d F Y') ?? '0' }}
                     </p>
                 </div>
-                <div class="export-buttons" style="margin-top: 10px;">
-                    <button class="btn btn-outline export-btn" onclick="exportDashboardReport('all')" title="Export All Sections">
-                        📊 All
-                    </button>
-                    <button class="btn btn-outline export-btn" onclick="exportDashboardReport('performance')" title="Export Performance Metrics">
-                        📈 Performance
-                    </button>
-                    <button class="btn btn-outline export-btn" onclick="exportDashboardReport('weekly')" title="Export Weekly Performance">
-                        📊 Weekly
-                    </button>
-                    <button class="btn btn-outline export-btn" onclick="exportDashboardReport('technicians')" title="Export Top Performers">
-                        👷 Technicians
-                    </button>
-                    <button class="btn btn-outline export-btn" onclick="exportDashboardReport('payment')" title="Export Payment Methods">
-                        💳 Payment
-                    </button>
-                    <button class="btn btn-outline export-btn" onclick="exportDashboardReport('activity')" title="Export Recent Activity">
-                        📋 Activity
-                    </button>
+            <div class="page-header-right">
+                <div class="header-actions">
+                    <div class="export-buttons">
+                        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('all')" title="Export All Sections">
+                            <i data-feather="download"></i>
+                            📊 All
+                        </button>
+                        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('performance')" title="Export Performance Metrics">
+                            <i data-feather="trending-up"></i>
+                            📈 Performance
+                        </button>
+                        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('weekly')" title="Export Weekly Performance">
+                            <i data-feather="bar-chart"></i>
+                            📊 Weekly
+                        </button>
+                        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('technicians')" title="Export Top Performers">
+                            <i data-feather="users"></i>
+                            👷 Technicians
+                        </button>
+                        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('payment')" title="Export Payment Methods">
+                            <i data-feather="credit-card"></i>
+                            💳 Payment
+                        </button>
+                        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('activity')" title="Export Recent Activity">
+                            <i data-feather="activity"></i>
+                            📋 Activity
+                        </button>
+                    </div>
                 </div>
+            </div>
             </div>
         </div>
         
@@ -489,23 +499,23 @@
             <div class="recent-section recent-customers">
                 <div class="section-header">
                     <h3 class="section-title">Recent Customers</h3>
-                    <span class="section-count">{{ $baru ?? '0' }} new</span>
+                    <span class="section-count">{{ $baru_count ?? '0' }} new</span>
                 </div>
 
-                <?php if ($baru > 0): ?>
+                <?php if (count($baru) > 0): ?>
                     <div class="activity-list">
                         @foreach ($baru as $row)
                             <div class="activity-item">
                                 <div class="activity-icon">
                                     <div class="activity-avatar">
-                                        {{ strtoupper(substr($row->cos_nama, 0, 1)) ?? '0' }}
+                                        {{ strtoupper(substr($row->cos_nama ?? 'U', 0, 1)) }}
                                     </div>
                                 </div>
                                 <div class="activity-content">
-                                    <div class="activity-title">{{ html_escape($row->cos_nama) ?? '0' }}</div>
+                                    <div class="activity-title">{{ $row->cos_nama ?? 'Unknown' }}</div>
                                     <div class="activity-description">Customer baru dikonfirmasi</div>
                                 </div>
-                                <div class="activity-time">{{ html_escape($row->cos_jam) ?? '0' }}</div>
+                                <div class="activity-time">{{ $row->created_at ? \Carbon\Carbon::parse($row->created_at)->format('H:i') : '0' }}</div>
                             </div>
                         @endforeach
                     </div>
@@ -521,23 +531,23 @@
             <div class="recent-section recent-users">
                 <div class="section-header">
                     <h3 class="section-title">Recent Users</h3>
-                    <span class="section-count">{{ $users_baru ?? '0' }} new</span>
+                    <span class="section-count">{{ $users_baru_count ?? '0' }} new</span>
                 </div>
 
-                <?php if ($users_baru > 0): ?>
+                <?php if (count($users_baru) > 0): ?>
                     <div class="activity-list">
                         @foreach ($users_baru as $row)
                             <div class="activity-item">
                                 <div class="activity-icon">
                                     <div class="activity-avatar">
-                                        {{ strtoupper(substr($row->cos_nama, 0, 1)) ?? '0' }}
+                                        {{ strtoupper(substr($row->cos_nama ?? $row->name ?? 'U', 0, 1)) }}
                                     </div>
                                 </div>
                                 <div class="activity-content">
-                                    <div class="activity-title">{{ html_escape($row->cos_nama) ?? '0' }}</div>
+                                    <div class="activity-title">{{ $row->cos_nama ?? $row->name ?? 'Unknown' }}</div>
                                     <div class="activity-description">User baru terdaftar</div>
                                 </div>
-                                <div class="activity-time">{{ html_escape($row->cos_jam) ?? '0' }}</div>
+                                <div class="activity-time">{{ $row->created_at ? \Carbon\Carbon::parse($row->created_at)->format('H:i') : '0' }}</div>
                             </div>
                         @endforeach
                     </div>

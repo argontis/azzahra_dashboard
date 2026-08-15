@@ -127,6 +127,15 @@ document.addEventListener('DOMContentLoaded', function() {
 											<div class="font-medium whitespace-no-wrap">DOWN PATMENT BANK BRI</div>
 											<div class="text-gray-600 text-xs whitespace-no-wrap">NO Rek. 1390023150083</div>
 										</td>
+										<td class="text-right border-b w-32">{{ count(array_filter($cabang_data, function($p){ return $p->dtl_status == 'DP' && $p->dtl_bank == 'BRI'; })); }}</td>
+										<td class="text-right border-b w-32">
+											{{ "Rp. ".number_format(array_sum(array_column(array_filter($cabang_data, function($p){ return $p->dtl_status == 'DP' && $p->dtl_bank == 'BRI'; }), 'dtl_jml_bayar')), 0).",-"; }}
+										</td>
+									</tr>
+									<tr>
+										<td class="border-b">
+											<div class="font-medium whitespace-no-wrap">DOWN PATMENT BANK MANDIRI</div>
+										</td>
 										<td class="text-right border-b w-32">{{ count($dp_mandiri); }}</td>
 										<td class="text-right border-b w-32">
 											{{ "Rp. ".number_format($sum_dp_mandiri, 0).",-"; }}
@@ -155,6 +164,15 @@ document.addEventListener('DOMContentLoaded', function() {
 										<td class="border-b">
 											<div class="font-medium whitespace-no-wrap">PELUNASAN BANK BRI</div>
 											<div class="text-gray-600 text-xs whitespace-no-wrap">NO Rek. 1390023150083</div>
+										</td>
+										<td class="text-right border-b w-32">{{ count(array_filter($cabang_data, function($p){ return $p->dtl_status == 'PELUNASAN' && $p->dtl_bank == 'BRI'; })); }}</td>
+										<td class="text-right border-b w-32">
+											{{ "Rp. ".number_format(array_sum(array_column(array_filter($cabang_data, function($p){ return $p->dtl_status == 'PELUNASAN' && $p->dtl_bank == 'BRI'; }), 'dtl_jml_bayar')), 0).",-"; }}
+										</td>
+									</tr>
+									<tr>
+										<td class="border-b">
+											<div class="font-medium whitespace-no-wrap">PELUNASAN BANK MANDIRI</div>
 										</td>
 										<td class="text-right border-b w-32">{{ count($lunas_mandiri); }}</td>
 										<td class="text-right border-b w-32">
@@ -200,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
 									</thead>
 									<tbody>
 										<?php $dp = array_filter($payments_by_cabang[$cabang] ?? [], function($p){ return $p->dtl_status == 'DP'; }); ?>
-										@if (!empty($dp))
+										@if ($dp->isNotEmpty())
 											@foreach ($dp as $payment)
 												<tr>
 													<td class="border-b">{{ $payment->cos_kode }}</td>
@@ -248,7 +266,7 @@ document.addEventListener('DOMContentLoaded', function() {
 									</thead>
 									<tbody>
 										<?php $lunas = array_filter($payments_by_cabang[$cabang] ?? [], function($p){ return $p->dtl_status == 'PELUNASAN'; }); ?>
-										@if (!empty($lunas))
+										@if ($lunas->isNotEmpty())
 											@foreach ($lunas as $payment)
 												<tr>
 													<td class="border-b">{{ $payment->cos_kode }}</td>
@@ -297,7 +315,7 @@ document.addEventListener('DOMContentLoaded', function() {
 									</thead>
 									<tbody>
 										<?php $menunggu_list = array_filter($payments_by_cabang[$cabang] ?? [], function($p){ return $p->dtl_stt_stor == 'Menunggu'; }); ?>
-										@if (!empty($menunggu_list))
+										@if ($menunggu_list->isNotEmpty())
 											@foreach ($menunggu_list as $payment)
 												<tr>
 													<td class="border-b">{{ $payment->cos_kode }}</td>
@@ -371,7 +389,7 @@ document.addEventListener('DOMContentLoaded', function() {
 										<div class="font-medium whitespace-no-wrap">DOWN PATMENT BANK BCA</div>
 										<div class="text-gray-600 text-xs whitespace-no-wrap">NO Rek. 0470727705</div>
 									</td>
-									<td class="text-right border-b w-32">{{ $jml_DP_bca->num_rows(); }}</td>
+									<td class="text-right border-b w-32">{{ $jml_DP_bca }}</td>
 									<td class="text-right border-b w-32">
 										{{ "Rp. ".number_format($tot_DP_bca, 0).",-"; }}
 									</td>
@@ -381,16 +399,25 @@ document.addEventListener('DOMContentLoaded', function() {
 										<div class="font-medium whitespace-no-wrap">DOWN PATMENT BANK BRI</div>
 										<div class="text-gray-600 text-xs whitespace-no-wrap">NO Rek. 1390023150083</div>
 									</td>
-									<td class="text-right border-b w-32">{{ $jml_DP_bri->num_rows(); }}</td>
+									<td class="text-right border-b w-32">{{ $jml_DP_bri }}</td>
 									<td class="text-right border-b w-32">
 										{{ "Rp. ".number_format($tot_DP_bri, 0).",-"; }}
 									</td>
 								</tr>
 								<tr>
 									<td class="border-b">
+										<div class="font-medium whitespace-no-wrap">DOWN PATMENT BANK MANDIRI</div>
+									</td>
+									<td class="text-right border-b w-32">{{ $jml_DP_mandiri ?? 0 }}</td>
+									<td class="text-right border-b w-32">
+										{{ "Rp. ".number_format($tot_DP_mandiri ?? 0, 0).",-"; }}
+									</td>
+								</tr>
+								<tr>
+									<td class="border-b">
 										<div class="font-medium whitespace-no-wrap">DOWN PATMENT TUNAI</div>
 									</td>
-									<td class="text-right border-b w-32">{{ $jml_DP_tunai->num_rows(); }}</td>
+									<td class="text-right border-b w-32">{{ $jml_DP_tunai }}</td>
 									<td class="text-right border-b w-32">
 										{{ "Rp. ".number_format($tot_DP_tunai, 0).",-"; }}
 									</td>
@@ -400,7 +427,7 @@ document.addEventListener('DOMContentLoaded', function() {
 										<div class="font-medium whitespace-no-wrap">PELUNASAN BANK BCA</div>
 										<div class="text-gray-600 text-xs whitespace-no-wrap">NO Rek. 0470727705</div>
 									</td>
-									<td class="text-right border-b w-32">{{ $jml_lns_bca->num_rows(); }}</td>
+									<td class="text-right border-b w-32">{{ $jml_lns_bca }}</td>
 									<td class="text-right border-b w-32">
 										{{ "Rp. ".number_format($tot_lns_bca, 0).",-"; }}
 									</td>
@@ -410,16 +437,25 @@ document.addEventListener('DOMContentLoaded', function() {
 										<div class="font-medium whitespace-no-wrap">PELUNASAN BANK BRI</div>
 										<div class="text-gray-600 text-xs whitespace-no-wrap">NO Rek. 1390023150083</div>
 									</td>
-									<td class="text-right border-b w-32">{{ $jml_lns_bri->num_rows(); }}</td>
+									<td class="text-right border-b w-32">{{ $jml_lns_bri }}</td>
 									<td class="text-right border-b w-32">
 										{{ "Rp. ".number_format($tot_lns_bri, 0).",-"; }}
 									</td>
 								</tr>
 								<tr>
 									<td class="border-b">
+										<div class="font-medium whitespace-no-wrap">PELUNASAN BANK MANDIRI</div>
+									</td>
+									<td class="text-right border-b w-32">{{ $jml_lns_mandiri ?? 0 }}</td>
+									<td class="text-right border-b w-32">
+										{{ "Rp. ".number_format($tot_lns_mandiri ?? 0, 0).",-"; }}
+									</td>
+								</tr>
+								<tr>
+									<td class="border-b">
 										<div class="font-medium whitespace-no-wrap">PELUNASAN TUNAI</div>
 									</td>
-									<td class="text-right border-b w-32">{{ $jml_lns_tunai->num_rows(); }}</td>
+									<td class="text-right border-b w-32">{{ $jml_lns_tunai }}</td>
 									<td class="text-right border-b w-32">
 										{{ "Rp. ".number_format($tot_lns_tunai, 0).",-"; }}
 									</td>
@@ -453,7 +489,7 @@ document.addEventListener('DOMContentLoaded', function() {
 									</tr>
 								</thead>
 								<tbody>
-									@if (!empty($dp_payments))
+									@if ($dp_payments->isNotEmpty())
 										@foreach ($dp_payments as $payment)
 											<tr>
 												<td class="border-b">{{ $payment->cos_kode }}</td>
@@ -500,7 +536,7 @@ document.addEventListener('DOMContentLoaded', function() {
 									</tr>
 								</thead>
 								<tbody>
-									@if (!empty($lunas_payments))
+									@if ($lunas_payments->isNotEmpty())
 										@foreach ($lunas_payments as $payment)
 											<tr>
 												<td class="border-b">{{ $payment->cos_kode }}</td>
@@ -548,7 +584,7 @@ document.addEventListener('DOMContentLoaded', function() {
 									</tr>
 								</thead>
 								<tbody>
-									@if (!empty($menunggu_payments))
+									@if ($menunggu_payments->isNotEmpty())
 										@foreach ($menunggu_payments as $payment)
 											<tr>
 												<td class="border-b">{{ $payment->cos_kode }}</td>
@@ -590,7 +626,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						<div class="text-xl text-theme-1 font-medium mt-2">
 							{{ "Rp. ".number_format($tot_tranfer, 0).",-"; }}
 						</div>
-						<div class="mt-1 text-xs">Dengan Total Customer - {{ $jml_tranfer->num_rows(); }}</div>
+						<div class="mt-1 text-xs">Dengan Total Customer - {{ $jml_tranfer }}</div>
 					</div>
 				</div>
 					<div class="flex flex-col lg:flex-row border-b px-5 sm:px-9 pt-10 pb-10 sm:pb-20 text-center sm:text-left">
@@ -602,9 +638,9 @@ document.addEventListener('DOMContentLoaded', function() {
 					<div class="text-center sm:text-right sm:ml-auto">
 						<div class="text-base text-gray-600">Total</div>
 						<div class="text-xl text-theme-1 font-medium mt-2">
-							{{ "Rp. ".number_format($blm_setor, 0).",-"; }}
+							{{ "Rp. ".number_format($menunggu_total, 0).",-"; }}
 						</div>
-						<div class="mt-1 text-xs">Dengan Total Customer - {{ $jml_setor->num_rows(); }}</div>
+						<div class="mt-1 text-xs">Dengan Total Customer - {{ $menunggu_count }}</div>
 					</div>
 				</div>
 					<div class="flex flex-col lg:flex-row border-b px-5 sm:px-9 pt-10 pb-10 sm:pb-20 text-center sm:text-left">
@@ -618,7 +654,7 @@ document.addEventListener('DOMContentLoaded', function() {
 							<div class="text-xl text-theme-1 font-medium mt-2">
 								{{ "Rp. ".number_format($tot_tunai, 0).",-"; }}
 							</div>
-							<div class="mt-1 text-xs">Dengan Total Customer - {{ $jml_tunai->num_rows(); }}</div>
+							<div class="mt-1 text-xs">Dengan Total Customer - {{ $jml_tunai }}</div>
 						</div>
 					</div>
 				
