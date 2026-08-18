@@ -85,6 +85,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/arsip', [HrController::class, 'save_arsip'])->name('hr.save_arsip');
         Route::post('/arsip/delete/{id}', [HrController::class, 'delete_arsip'])->name('hr.delete_arsip');
 
+        Route::get('/input_performance', [HrController::class, 'input_performance'])->name('hr.input_performance');
+        Route::post('/input_performance/save', [HrController::class, 'save_performance'])->name('hr.save_performance');
+
+        Route::get('/calculate_performance', [\App\Http\Controllers\HrController::class, 'calculate_performance'])->name('hr.calculate_performance');
+
         Route::get('/laporan_mingguan', [HrController::class, 'laporan_mingguan'])->name('hr.laporan_mingguan');
         Route::post('/laporan_mingguan', [HrController::class, 'save_laporan_mingguan'])->name('hr.save_laporan_mingguan');
         Route::post('/laporan_mingguan/delete/{id}', [HrController::class, 'delete_laporan_mingguan'])->name('hr.delete_laporan_mingguan');
@@ -139,7 +144,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/export_excel_lap_perhari', [ExportController::class, 'lap_perhari_excel'])->name('admin.export_excel_lap_perhari');
         Route::get('/export_excel_laporan', [ExportController::class, 'lap_excel'])->name('admin.export_excel_laporan');
         Route::get('/export_dashboard', [AdminController::class, 'export_dashboard'])->name('admin.export_dashboard');
-
         // Order Routes
         Route::get('/order/{filter?}', [OrderController::class, 'index'])->name('admin.order.index');
         Route::post('/order/update_status', [OrderController::class, 'update_status'])->name('admin.order.update_status');

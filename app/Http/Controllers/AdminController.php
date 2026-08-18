@@ -83,9 +83,15 @@ class AdminController extends Controller
             ->leftJoin('costomer', 'transaksi.cos_kode', '=', 'costomer.id_costomer')
             ->leftJoin('karyawan', 'transaksi.kry_kode', '=', 'karyawan.kry_kode')
             ->where('transaksi.trans_status', 'Baru')
+            // Tambahkan orderBy di sini. 
+            // Ganti 'created_at' jika nama kolom tanggal di database Anda berbeda (misal: 'tgl_transaksi')
+            ->orderBy('transaksi.created_at', 'desc') 
             ->get();
-        $trans = Transaksi::where('trans_status', 'Baru')->orderBy('tanggal', 'desc')->get();
-            }
+
+        // Kembalikan ke halaman view beserta membawa variabel $trans
+        // Sesuaikan 'admin.cus_baru' dengan letak folder view Anda jika berbeda
+        return view('admin.cus-baru', compact('trans'));
+    }
 
     public function cus_proses()
     {

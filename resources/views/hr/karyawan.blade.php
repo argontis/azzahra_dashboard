@@ -227,11 +227,12 @@
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h4 class="mb-0">Sistem Poin Performa</h4>
                         <div>
-                            <a href="<?= url('HR/input_performance'); ?>" class="btn btn-primary mr-2">
-                                <i data-feather="plus-circle"></i> Input Poin Mingguan
+                           <a href="{{ url('HR/input_performance') }}" class="btn btn-primary mr-2 inline-flex items-center">
+                                <i data-feather="plus-circle" class="w-4 h-4 mr-2"></i> Input Poin Mingguan
                             </a>
-                            <a href="<?= url('HR/calculate_performance'); ?>" class="btn btn-outline-primary">
-                                <i data-feather="activity"></i> Hitung Rekap Bulanan
+
+                            <a href="{{ url('HR/calculate_performance') }}" class="btn btn-outline-primary inline-flex items-center">
+                                <i data-feather="activity" class="w-4 h-4 mr-2"></i> Hitung Rekap Bulanan
                             </a>
                         </div>
                     </div>

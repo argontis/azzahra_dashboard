@@ -448,4 +448,31 @@ class HrController extends Controller
             'title' => 'Generator Sertifikat',
         ]);
     }
+    
+    public function calculate_performance(Request $request)
+    {
+        return view('hr.calculate_performance', [
+            'title' => 'Hitung Rekap Performa Bulanan'
+        ]);
+    }
+    // ==========================================
+    // SISTEM POIN PERFORMA
+    // ==========================================
+    public function input_performance(Request $request)
+    {
+        // Mengambil data karyawan untuk pilihan dropdown
+        $karyawan_list = Karyawan::orderBy('kry_nama', 'asc')->get();
+
+        return view('hr.input_performance', [
+            'title' => 'Input Poin Performa Mingguan',
+            'karyawan_list' => $karyawan_list
+        ]);
+    }
+
+    public function save_performance(Request $request)
+    {
+        // Di sini nantinya Anda bisa menambahkan logika validasi dan insert database
+        // Contoh dasar kembalian sukses:
+        return back()->with('sukses', 'Poin performa mingguan berhasil disimpan');
+    }
 }
