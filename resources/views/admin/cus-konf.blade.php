@@ -48,7 +48,7 @@
 		    		<tbody>
 		    			@foreach ($trans as $row)
 			    				<tr>
-				    				<td class="text-center border-b">{{ ++$no; }}</td>
+				    				<td class="text-center border-b">{{ $loop->iteration }}</td>
 				    				<td class="text-center border-b">{{ $row->cos_kode; }}</td>
 				    				<td class="border-b">{{ $row->cos_nama; }}</td>
 				    				<td class="border-b">{{ $row->cos_alamat; }}</td>

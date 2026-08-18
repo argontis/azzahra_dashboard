@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Customer;
+use Illuminate\Support\Facades\DB;
 use App\Models\Transaksi;
 
 class CustomerController extends Controller
@@ -12,7 +13,16 @@ class CustomerController extends Controller
     {
         $search = $request->input('search');
         
-        $query = Customer::query();
+        $query = DB::table('costomer')
+            ->leftJoin('transaksi', function($join) {
+                $join->on('transaksi.cos_kode', '=', 'costomer.id_costomer')
+                     ->whereIn('transaksi.trans_kode', function($q) {
+                         $q->select(DB::raw('MAX(trans_kode)'))
+                           ->from('transaksi')
+                           ->groupBy('cos_kode');
+                     });
+            })
+            ->select('costomer.*', 'transaksi.trans_status', 'transaksi.trans_kode');
         
         if ($search) {
             $query->where('cos_nama', 'like', "%{$search}%")
@@ -20,11 +30,11 @@ class CustomerController extends Controller
                   ->orWhere('cos_hp', 'like', "%{$search}%");
         }
         
-        $customers = $query->orderBy('id_costomer', 'desc')->paginate(10);
+        $custom = $query->orderBy('costomer.id_costomer', 'desc')->paginate(10);
         
         return view('customer.index', [
             'title' => 'Customer',
-            'customers' => $customers
+            'custom' => $custom
         ]);
     }
 

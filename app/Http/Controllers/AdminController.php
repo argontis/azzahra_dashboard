@@ -19,10 +19,11 @@ class AdminController extends Controller
         $today = Carbon::today();
 
         // Basic metrics (similar to M_admin legacy)
-        $baru = OrderList::join('costomer', 'order_list.cos_kode', '=', 'costomer.id_costomer')
+        $baru_query = OrderList::join('costomer', 'order_list.cos_kode', '=', 'costomer.id_costomer')
             ->leftJoin('karyawan', 'order_list.kry_kode', '=', 'karyawan.kry_kode')
-            ->whereDate('order_list.created_at', $today)
-            ->count();
+            ->whereDate('order_list.created_at', $today);
+        $baru_count = $baru_query->count();
+        $baru = $baru_query->orderBy('order_list.created_at', 'desc')->limit(5)->get();
 
         $konf = Transaksi::where('trans_status', 'Diproses')->count();
         $discount = DB::table('vocer')->where('voc_status', 'ON')->count();
@@ -38,7 +39,9 @@ class AdminController extends Controller
         $total_tunai = TransaksiDetail::where('dtl_jenis_bayar', 'TUNAI')->where('dtl_status', 'PELUNASAN')->whereDate('dtl_tanggal', $today)->sum('dtl_jml_bayar');
 
         $total_voucher = DB::table('vocer')->where('voc_status', 'ON')->sum('voc_jumlah');
-        $users_baru = Customer::whereDate('created_at', $today)->count();
+        $users_baru_query = Customer::whereDate('created_at', $today);
+        $users_baru_count = $users_baru_query->count();
+        $users_baru = $users_baru_query->orderBy('created_at', 'desc')->limit(5)->get();
         $revenue_today = TransaksiDetail::whereDate('dtl_tanggal', $today)->whereIn('dtl_status', ['DP', 'PELUNASAN'])->sum('dtl_jml_bayar');
 
         $total_customers = Customer::count();
@@ -61,10 +64,11 @@ class AdminController extends Controller
             $tunai_percentage = round(($tunai / $total_methods) * 100);
         }
 
+        $title = 'Dashboard';
         return view('admin.dashboard', compact(
-            'baru', 'konf', 'discount', 'bca', 'mandiri', 'bri', 'tunai',
+            'title', 'baru', 'baru_count', 'konf', 'discount', 'bca', 'mandiri', 'bri', 'tunai',
             'total_bca', 'total_mandiri', 'total_bri', 'total_tunai', 'total_voucher',
-            'users_baru', 'revenue_today', 'total_customers', 'dp_pending', 'total_pending_transfers',
+            'users_baru', 'users_baru_count', 'revenue_today', 'total_customers', 'dp_pending', 'total_pending_transfers',
             'service_completion_rate', 'high_pending', 'urgent_confirmations',
             'bank_percentages', 'tunai_percentage', 'voucher_usage_percentage'
         ));
@@ -72,7 +76,18 @@ class AdminController extends Controller
 
     public function customer()
     {
-        $customers = Customer::orderBy('id_costomer', 'desc')->paginate(20);
+        $customers = DB::table('costomer')
+            ->leftJoin('transaksi', function($join) {
+                $join->on('transaksi.cos_kode', '=', 'costomer.id_costomer')
+                     ->whereIn('transaksi.trans_kode', function($query) {
+                         $query->select(DB::raw('MAX(trans_kode)'))
+                               ->from('transaksi')
+                               ->groupBy('cos_kode');
+                     });
+            })
+            ->select('costomer.*', 'transaksi.trans_status', 'transaksi.trans_kode')
+            ->orderBy('costomer.id_costomer', 'desc')
+            ->paginate(20);
 
         return view('admin.customer', ['title' => 'Customer', 'custom' => $customers]);
     }
@@ -88,9 +103,7 @@ class AdminController extends Controller
             ->orderBy('transaksi.created_at', 'desc') 
             ->get();
 
-        // Kembalikan ke halaman view beserta membawa variabel $trans
-        // Sesuaikan 'admin.cus_baru' dengan letak folder view Anda jika berbeda
-        return view('admin.cus-baru', compact('trans'));
+        return view('admin.cus-baru', ['title' => 'Transaksi Baru', 'trans' => $trans]);
     }
 
     public function cus_proses()
@@ -209,16 +222,11 @@ class AdminController extends Controller
     public function lap_perhari()
     {
         $today = Carbon::today()->toDateString();
-        $payments = TransaksiDetail::with('transaksi.customer')->whereDate('dtl_tanggal', $today)->get();
-
-        $menunggu = TransaksiDetail::where('dtl_stt_stor', 'Menunggu')->whereDate('dtl_tanggal', $today);
-
-        return view('admin.lap-perhari', [
-            'title' => 'Laporan Harian',
-            'payments' => $payments,
-            'menunggu_total' => $menunggu->sum('dtl_jml_bayar'),
-            'menunggu_count' => $menunggu->count(),
-        ]);
+        
+        $data = $this->laporan_data($today, $today);
+        $data['title'] = 'Laporan Harian';
+        
+        return view('admin.lap-perhari', $data);
     }
 
     private function laporan_data($tgl_awal, $tgl_akhir)
@@ -255,6 +263,8 @@ class AdminController extends Controller
         $tot_DP_bca = $payments->where('dtl_status', 'DP')->where('dtl_metode', 'bca')->sum('dtl_jml_bayar');
         $jml_DP_bri = $payments->where('dtl_status', 'DP')->where('dtl_metode', 'bri')->count();
         $tot_DP_bri = $payments->where('dtl_status', 'DP')->where('dtl_metode', 'bri')->sum('dtl_jml_bayar');
+        $jml_DP_mandiri = $payments->where('dtl_status', 'DP')->where('dtl_metode', 'mandiri')->count();
+        $tot_DP_mandiri = $payments->where('dtl_status', 'DP')->where('dtl_metode', 'mandiri')->sum('dtl_jml_bayar');
         $jml_DP_tunai = $payments->where('dtl_status', 'DP')->where('dtl_metode', 'tunai')->count();
         $tot_DP_tunai = $payments->where('dtl_status', 'DP')->where('dtl_metode', 'tunai')->sum('dtl_jml_bayar');
 
@@ -264,6 +274,8 @@ class AdminController extends Controller
         $tot_lns_bca = $payments->where('dtl_status', 'PELUNASAN')->where('dtl_metode', 'bca')->sum('dtl_jml_bayar');
         $jml_lns_bri = $payments->where('dtl_status', 'PELUNASAN')->where('dtl_metode', 'bri')->count();
         $tot_lns_bri = $payments->where('dtl_status', 'PELUNASAN')->where('dtl_metode', 'bri')->sum('dtl_jml_bayar');
+        $jml_lns_mandiri = $payments->where('dtl_status', 'PELUNASAN')->where('dtl_metode', 'mandiri')->count();
+        $tot_lns_mandiri = $payments->where('dtl_status', 'PELUNASAN')->where('dtl_metode', 'mandiri')->sum('dtl_jml_bayar');
 
         $jml_tranfer = $payments->where('dtl_jenis_bayar', 'TRANFER')->count();
         $tot_tranfer = $payments->where('dtl_jenis_bayar', 'TRANFER')->sum('dtl_jml_bayar');
@@ -292,8 +304,8 @@ class AdminController extends Controller
 
         return compact(
             'payments', 'dp_payments', 'lunas_payments', 'menunggu_payments', 'menunggu_total', 'menunggu_count',
-            'jml_DP_bca', 'tot_DP_bca', 'jml_DP_bri', 'tot_DP_bri', 'jml_DP_tunai', 'tot_DP_tunai',
-            'jml_lns_tunai', 'tot_lns_tunai', 'jml_lns_bca', 'tot_lns_bca', 'jml_lns_bri', 'tot_lns_bri',
+            'jml_DP_bca', 'tot_DP_bca', 'jml_DP_bri', 'tot_DP_bri', 'jml_DP_mandiri', 'tot_DP_mandiri', 'jml_DP_tunai', 'tot_DP_tunai',
+            'jml_lns_tunai', 'tot_lns_tunai', 'jml_lns_bca', 'tot_lns_bca', 'jml_lns_bri', 'tot_lns_bri', 'jml_lns_mandiri', 'tot_lns_mandiri',
             'jml_tranfer', 'tot_tranfer', 'jml_tunai', 'tot_tunai', 'jml_setor', 'payments_by_cabang', 'all_have_cabang'
         );
     }
@@ -312,8 +324,8 @@ class AdminController extends Controller
         $data['tot_bca'] = $data['tot_lns_bca'];
         $data['jml_bri'] = $data['jml_lns_bri'];
         $data['tot_bri'] = $data['tot_lns_bri'];
-        $data['jml_mandiri'] = $data['jml_lns_bri'];
-        $data['tot_mandiri'] = $data['tot_lns_bri'];
+        $data['jml_mandiri'] = $data['jml_lns_mandiri'];
+        $data['tot_mandiri'] = $data['tot_lns_mandiri'];
         $data['count_tunai'] = $data['jml_lns_tunai'];
         $data['total_tunai'] = $data['tot_lns_tunai'];
 
