@@ -15,6 +15,7 @@ return new class extends Migration
             $table->increments('mou_id');
             $table->string('file_name', 255);
             $table->text('intro_text');
+            $table->text('terms')->nullable();
             $table->string('lokasi', 50);
             $table->date('tanggal');
             $table->string('customer', 255);
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->dateTime('created_at');
 
             $table->index('kry_kode');
+            
         });
     }
 

@@ -16,12 +16,12 @@ class TeknisiController extends Controller
     {
         $orders_baru = Transaksi::with(['customer'])
             ->where('trans_status', 'Baru')
-            ->orderBy('trans_tanggal', 'desc')
+            ->orderBy('cos_tanggal', 'desc')
             ->get();
 
         $orders_repairing = Transaksi::with(['customer'])
             ->where('trans_status', 'Diproses')
-            ->orderBy('trans_tanggal', 'desc')
+            ->orderBy('cos_tanggal', 'desc')
             ->get();
 
         return view('teknisi.dashboard', [
@@ -93,7 +93,7 @@ class TeknisiController extends Controller
                         'cos_kode' => $transaksi->cos_kode,
                         'trans_status' => 'repairing',
                         'trans_total' => $transaksi->trans_total,
-                        'trans_tanggal' => $transaksi->trans_tanggal,
+                        'trans_tanggal' => $transaksi->cos_tanggal,
                         'kry_kode' => Auth::id() // Technician doing the work
                     ]
                 );

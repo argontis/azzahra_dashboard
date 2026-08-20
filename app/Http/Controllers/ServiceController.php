@@ -47,7 +47,7 @@ class ServiceController extends Controller
 
         $transaksis = Transaksi::with(['customer', 'karyawan'])
             ->where('trans_status', $status_map[$status])
-            ->orderBy('trans_tanggal', 'desc')
+            ->orderBy('cos_tanggal', 'desc')
             ->orderBy('trans_kode', 'desc')
             ->paginate(25);
 

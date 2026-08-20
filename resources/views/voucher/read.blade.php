@@ -2,21 +2,30 @@
 
 @section('content')
 
-<!-- Header -->
-        <header class="page-header mb-5">
-            <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
-                <i data-feather="menu"></i>
-            </div>
-            <div class="header-title">
-                <h1><i data-feather="percent" class="w-6 h-6 inline-block mr-2"></i>Voucher Discount</h1>
-                <p>Management Data Voucher Discount</p>
-            </div>
-            <div class="header-section mt-5">
-                <a href="{{ route('admin.voucher.add') }}" class="button text-white bg-theme-1 shadow-md mr-2 hover:bg-theme-2 transition-all">
-                Tambah Voucher
-            </a>
-            </div>
-        </header>
+<!-- Header Area -->
+<div class="page-header" style="position: fixed; top: 0 !important; left: 260px !important; width: calc(100% - 260px) !important; margin: 0 !important; border-radius: 0 !important; z-index: 9999;">
+    <div class="flex items-center gap-2 text-white">
+        <i data-feather="percent" class="w-5 h-5"></i>
+        <h1 class="text-xl font-bold tracking-wide">Voucher Discount</h1>
+        <span class="hidden md:inline-block text-white text-xs opacity-90 ml-4 border-l border-white/20 pl-4">Manage Data Voucher Discount</span>
+    </div>
+    
+    <div class="flex items-center gap-3">
+        <a href="{{ route('admin.voucher.add') }}" class="button text-white bg-theme-1 shadow-md mr-2 hover:bg-theme-2 transition-all px-4 py-2 rounded-md font-medium">
+            Tambah Voucher
+        </a>
+        <div class="relative hidden sm:block">
+            <i data-feather="search" class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            <input type="text" placeholder="Search..." class="pl-9 pr-4 py-2 rounded-md border-0 focus:ring-2 focus:ring-blue-400 text-gray-700 text-sm w-48 lg:w-80 shadow-sm">
+        </div>
+        <button class="w-9 h-9 bg-white rounded-md flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors shadow-sm relative">
+            <i data-feather="bell" class="w-4 h-4"></i>
+        </button>
+        <button class="w-9 h-9 bg-white rounded-md flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors shadow-sm relative">
+            <i data-feather="mail" class="w-4 h-4"></i>
+        </button>
+    </div>
+</div>
 
 <!-- BEGIN: Content -->
 <div class="content mt-5">

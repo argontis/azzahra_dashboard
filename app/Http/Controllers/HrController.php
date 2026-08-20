@@ -475,4 +475,28 @@ class HrController extends Controller
         // Contoh dasar kembalian sukses:
         return back()->with('sukses', 'Poin performa mingguan berhasil disimpan');
     }
+    public function interview(Request $request)
+    {
+        // Nantinya Anda bisa mengambil data dari database, contoh: $interview_list = Interview::all();
+        // Untuk sementara kita gunakan array kosong agar tampilannya rapi
+        $interview_list = []; 
+
+        return view('hr.interview', [
+            'title' => 'Jadwal & Hasil Interview',
+            'interview_list' => $interview_list
+        ]);
+    }
+    public function save_interview(Request $request)
+    {
+        $request->validate([
+            'nama_kandidat' => 'required',
+            'posisi' => 'required',
+            'tanggal_waktu' => 'required',
+        ]);
+
+        // Catatan: Jika Anda sudah membuat Model & Database untuk Interview, 
+        // Anda bisa menyimpannya menggunakan: Interview::create($request->all());
+
+        return back()->with('sukses', 'Jadwal interview berhasil ditambahkan');
+    }
 }

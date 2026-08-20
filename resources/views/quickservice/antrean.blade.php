@@ -1,45 +1,60 @@
 @extends('layouts.app')
 
 @section('content')
+<!-- Header Area -->
+<div class="page-header" style="position: fixed; top: 0 !important; left: 260px !important; width: calc(100% - 260px) !important; margin: 0 !important; border-radius: 0 !important; z-index: 9999;">
+    <div class="flex items-center gap-2 text-white">
+        <i data-feather="zap" class="w-5 h-5"></i>
+        <h1 class="text-xl font-bold tracking-wide">Quick Service</h1>
+        <span class="hidden md:inline-block text-white text-xs opacity-90 ml-4 border-l border-white/20 pl-4">Manage quick service data</span>
+    </div>
+    
+    <div class="flex items-center gap-3">
+        <div class="relative hidden sm:block">
+            <i data-feather="search" class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            <input type="text" placeholder="Search..." class="pl-9 pr-4 py-2 rounded-md border-0 focus:ring-2 focus:ring-blue-400 text-gray-700 text-sm w-48 lg:w-80 shadow-sm">
+        </div>
+        <button class="w-9 h-9 bg-white rounded-md flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors shadow-sm relative">
+            <i data-feather="bell" class="w-4 h-4"></i>
+            <span class="absolute top-2 right-2 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+        </button>
+        <button class="w-9 h-9 bg-white rounded-md flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors shadow-sm relative">
+            <i data-feather="mail" class="w-4 h-4"></i>
+        </button>
+    </div>
+</div>
+
 <div class="content-area">
     <div class="sukses" data-sukses="{{ session('sukses') }}"></div>
     <div class="gagal" data-gagal="{{ session('gagal') }}"></div>
     
-    <div class="intro-y flex flex-col sm:flex-row items-center mt-8">
-        <h2 class="text-lg font-medium mr-auto">
-            QS Antrean Transaksi: {{ ucfirst($current_status) }}
+    <div class="intro-y flex flex-col sm:flex-row items-center mt-8 mb-4">
+        <h2 class="text-xl font-semibold text-gray-700 mr-auto">
+            Data {{ ucfirst($current_status) }} Quick Service
         </h2>
         <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
-            @if($current_status == 'baru' || $current_status == 'proses')
-            <a role="button" class="button text-white bg-theme-1 shadow-md mr-2" data-toggle="modal" data-target="#add-new-costom">
-                Buat QS Transaksi Baru
+            <a role="button" class="btn text-white bg-blue-700 hover:bg-blue-800 shadow-md px-4 py-2 rounded-md font-medium" data-toggle="modal" data-target="#add-new-costom">
+                Buat Transaksi
             </a>
-            @endif
         </div>
     </div>
     
-    <div class="intro-y chat grid grid-cols-12 gap-5 mt-5">
+    <div class="intro-y grid grid-cols-12 gap-5 mt-5">
         <div class="col-span-12 lg:col-span-3 xxl:col-span-2">
-            <div class="intro-y box p-5 mt-6">
-                <div class="mt-1">
-                    <a href="{{ route('quickservice.antrean', 'proses') }}" class="flex items-center px-3 py-2 rounded-md {{ $current_status == 'proses' ? 'bg-theme-1 text-white font-medium' : '' }}"> 
-                        <i class="w-4 h-4 mr-2" data-feather="zap"></i> QS Diproses 
+            <div class="box p-3 mt-6 shadow-sm rounded-lg bg-white border border-gray-100">
+                <div class="flex flex-col gap-1">
+                    <a href="#" class="flex items-center px-4 py-3 rounded-md transition-colors bg-blue-800 text-white font-medium shadow-md"> 
+                        <i class="w-4 h-4 mr-3" data-feather="user-plus"></i> Transaksi baru 
                     </a>
-                    <a href="{{ route('quickservice.antrean', 'konfirmasi') }}" class="flex items-center px-3 py-2 mt-2 rounded-md {{ $current_status == 'konfirmasi' ? 'bg-theme-1 text-white font-medium' : '' }}">
-                        <i class="w-4 h-4 mr-2" data-feather="phone-outgoing"></i> Konfirmasi
-                    </a>
-                    <a href="{{ route('quickservice.antrean', 'pelunasan') }}" class="flex items-center px-3 py-2 mt-2 rounded-md {{ $current_status == 'pelunasan' ? 'bg-theme-1 text-white font-medium' : '' }}"> 
-                        <i class="w-4 h-4 mr-2" data-feather="credit-card"></i> Pelunasan QS
-                    </a>
-                    <a href="{{ route('quickservice.antrean', 'lunas') }}" class="flex items-center px-3 py-2 mt-2 rounded-md {{ $current_status == 'lunas' ? 'bg-theme-1 text-white font-medium' : '' }}"> 
-                        <i class="w-4 h-4 mr-2" data-feather="users"></i> Selesai (Lunas)
+                    <a href="#" class="flex items-center px-4 py-3 rounded-md transition-colors text-gray-600 hover:bg-gray-50">
+                        <i class="w-4 h-4 mr-3" data-feather="credit-card"></i> Costomer
                     </a>
                 </div>
             </div>
         </div>
         
         <div class="col-span-12 lg:col-span-9 xxl:col-span-10">
-            <div class="intro-y datatable-wrapper box p-5 mt-5">
+            <div class="intro-y datatable-wrapper box p-5 mt-6 bg-white shadow-sm rounded-lg border border-gray-100">
                 <table class="table table-report table-report--bordered display datatable w-full">
                     <thead>
                         <tr>

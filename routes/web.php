@@ -87,9 +87,12 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/input_performance', [HrController::class, 'input_performance'])->name('hr.input_performance');
         Route::post('/input_performance/save', [HrController::class, 'save_performance'])->name('hr.save_performance');
-
+        Route::get('/certificate_generator', [HrController::class, 'certificate_generator'])->name('hr.certificate_generator');
         Route::get('/calculate_performance', [\App\Http\Controllers\HrController::class, 'calculate_performance'])->name('hr.calculate_performance');
 
+        Route::get('/interview', [\App\Http\Controllers\HrController::class, 'interview'])->name('hr.interview');
+        Route::post('/interview/save', [\App\Http\Controllers\HrController::class, 'save_interview'])->name('hr.interview.save');
+    
         Route::get('/laporan_mingguan', [HrController::class, 'laporan_mingguan'])->name('hr.laporan_mingguan');
         Route::post('/laporan_mingguan', [HrController::class, 'save_laporan_mingguan'])->name('hr.save_laporan_mingguan');
         Route::post('/laporan_mingguan/delete/{id}', [HrController::class, 'delete_laporan_mingguan'])->name('hr.delete_laporan_mingguan');
@@ -144,6 +147,27 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/export_excel_lap_perhari', [ExportController::class, 'lap_perhari_excel'])->name('admin.export_excel_lap_perhari');
         Route::get('/export_excel_laporan', [ExportController::class, 'lap_excel'])->name('admin.export_excel_laporan');
         Route::get('/export_dashboard', [AdminController::class, 'export_dashboard'])->name('admin.export_dashboard');
+        // Order Approval Routes
+        Route::get('/order_approval/oow', [OrderApprovalController::class, 'pending_oow'])->name('admin.order_approval.oow');
+        Route::get('/order_approval/iw', [OrderApprovalController::class, 'pending_iw'])->name('admin.order_approval.iw');
+        Route::post('/order_approval/{id}/approve', [OrderApprovalController::class, 'approve'])->name('admin.order_approval.approve');
+        Route::post('/order_approval/{id}/reject', [OrderApprovalController::class, 'reject'])->name('admin.order_approval.reject');
+
+    }); // <-- Batas akhir Group Admin khusus Admin
+
+    // ==========================================
+    // MODULE MOU (Diletakkan di luar group Admin khusus, 
+    // agar bisa diakses Admin, HR, Kasir, dan CS tanpa error 403/404)
+    // ==========================================
+    Route::prefix('Admin')->middleware('role:Admin,HR,Kasir,Customer Service')->group(function () {
+        Route::get('/mou', [MouController::class, 'index'])->name('admin.mou.index');
+        Route::get('/mou/create', [MouController::class, 'create_form'])->name('admin.mou.create_form');
+        Route::post('/mou/create', [MouController::class, 'create'])->name('admin.mou.create');
+        Route::get('/mou/edit/{id}', [MouController::class, 'edit_form'])->name('admin.mou.edit_form');
+        Route::post('/mou/edit/{id}', [MouController::class, 'edit'])->name('admin.mou.edit');
+        Route::post('/mou/delete/{id}', [MouController::class, 'delete'])->name('admin.mou.delete');
+        Route::get('/mou/download/{id}', [MouController::class, 'download'])->name('admin.mou.download');
+
         // Order Routes
         Route::get('/order/{filter?}', [OrderController::class, 'index'])->name('admin.order.index');
         Route::post('/order/update_status', [OrderController::class, 'update_status'])->name('admin.order.update_status');
@@ -154,17 +178,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/order/inform_unavailable', [OrderController::class, 'inform_unavailable'])->name('admin.order.inform_unavailable');
         Route::post('/order/update_trans_total', [OrderController::class, 'update_trans_total'])->name('admin.order.update_trans_total');
 
-        // Order Approval Routes
-        Route::get('/order_approval/oow', [OrderApprovalController::class, 'pending_oow'])->name('admin.order_approval.oow');
-        Route::get('/order_approval/iw', [OrderApprovalController::class, 'pending_iw'])->name('admin.order_approval.iw');
-        Route::post('/order_approval/{id}/approve', [OrderApprovalController::class, 'approve'])->name('admin.order_approval.approve');
-        Route::post('/order_approval/{id}/reject', [OrderApprovalController::class, 'reject'])->name('admin.order_approval.reject');
-
         // Ketersediaan Sparepart Routes
         Route::get('/ketersediaan_sparepart', [KetersediaanSparepartController::class, 'index'])->name('admin.ketersediaan_sparepart');
         Route::get('/ketersediaan_sparepart/sampai/{id}', [KetersediaanSparepartController::class, 'barang_sampai'])->name('admin.ketersediaan_sparepart.barang_sampai');
 
-        // Voucher Routes
         // Voucher Routes
         Route::get('/voucher', [VoucherController::class, 'index'])->name('admin.voucher.index');
         Route::get('/voucher/search', [VoucherController::class, 'ajax_search'])->name('admin.voucher.search');
@@ -181,20 +198,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/cetak/print_4/{kode}', [CetakController::class, 'print_4'])->name('admin.cetak.print_4');
         Route::get('/cetak/print_5/{kode}', [CetakController::class, 'print_5'])->name('admin.cetak.print_5');
         Route::get('/cetak/print_6/{kode}', [CetakController::class, 'print_6'])->name('admin.cetak.print_6');
-    }); // <-- Batas akhir Group Admin khusus Admin
-
-    // ==========================================
-    // MODULE MOU (Diletakkan di luar group Admin khusus, 
-    // agar bisa diakses Admin, HR, Kasir, dan CS tanpa error 403/404)
-    // ==========================================
-    Route::prefix('Admin')->middleware('role:Admin,HR,Kasir,Customer Service')->group(function () {
-        Route::get('/mou', [MouController::class, 'index'])->name('admin.mou.index');
-        Route::get('/mou/create', [MouController::class, 'create_form'])->name('admin.mou.create_form');
-        Route::post('/mou/create', [MouController::class, 'create'])->name('admin.mou.create');
-        Route::get('/mou/edit/{id}', [MouController::class, 'edit_form'])->name('admin.mou.edit_form');
-        Route::post('/mou/edit/{id}', [MouController::class, 'edit'])->name('admin.mou.edit');
-        Route::post('/mou/delete/{id}', [MouController::class, 'delete'])->name('admin.mou.delete');
-        Route::get('/mou/download/{id}', [MouController::class, 'download'])->name('admin.mou.download');
     });
 
 }); // <-- Batas akhir Route::middleware(['auth'])
