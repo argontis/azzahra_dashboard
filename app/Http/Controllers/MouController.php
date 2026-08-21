@@ -68,6 +68,10 @@ class MouController extends Controller
             MouItem::create(array_merge($item, ['mou_id' => $mou->mou_id, 'item_no' => $item_no++]));
         }
 
+        if ($request->ajax()) {
+            return response()->json(['status' => 'success', 'pdf_url' => route('admin.mou.download', $mou->mou_id)]);
+        }
+
         return $this->generateAndDownload($mou->mou_id);
     }
 

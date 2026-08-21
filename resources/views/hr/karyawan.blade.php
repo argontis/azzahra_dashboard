@@ -14,8 +14,8 @@
                <a role="button" class="button text-white bg-theme-1 shadow-md mr-2" data-toggle="modal" data-target="#add-new-karyawan">
         		Tambah Karyawan Baru
         	</a>
-        	<a href="" class="button box flex items-center text-gray-700">
-        		<i data-feather="file-text" class="hidden sm:block w-4 h-4 mr-2"></i> Export to Excel
+        	<a href="{{ route('hr.export_karyawan') }}" class="button box flex items-center text-gray-700">
+        		<i data-feather="file-text" class="hidden sm:block w-4 h-4 mr-2"></i> Export to PDF
         	</a>
             </div>
         </header>
@@ -59,7 +59,7 @@
 			                            <a class="flex items-center mr-3" role="button" data-toggle="modal" data-target="#edit-karyawan-{{ $row->kry_kode }}"> 
 			                            	<i data-feather="check-square" class="w-4 h-4 mr-1"></i> Edit 
 			                            </a>
-			                            <a class="flex items-center text-theme-6 tombol-hapus" href="{{ url('Karyawan/delete/'.$row->kry_kode) }}" data-nama="{{ $row->kry_nama }}"> 
+			                            <a class="flex items-center text-theme-6 tombol-hapus" href="{{ url('HR/delete_karyawan/'.$row->kry_kode) }}" data-nama="{{ $row->kry_nama }}"> 
 			                            	<i data-feather="trash-2" class="w-4 h-4 mr-1"></i> Delete 
 			                            </a>
 			                        </div>
@@ -99,7 +99,8 @@
             	<a data-toggle="tab" data-target="#account" role="button" class="py-4 sm:mr-8">Account</a>
             </div>
 		</div>
-		<form method="post" action="{{ url('Karyawan/save') }}">
+		<form method="post" action="{{ url('HR/save_karyawan') }}">
+			@csrf
 			<div class="tab-content">
 				<div class="tab-content__pane active" id="profile">
 					<div class="p-5 grid grid-cols-12 gap-4 row-gap-3">
@@ -194,7 +195,8 @@
 	            	<a data-toggle="tab" data-target="#edit-profile" role="button" class="py-4 sm:mr-8 active">Profile</a>
 	            </div>
 			</div>
-			<form method="post" action="{{ url('Karyawan/update') }}">
+			<form method="post" action="{{ url('HR/update_karyawan') }}">
+				@csrf
 				<div class="tab-content">
 					<div class="tab-content__pane active" id="edit-profile">
 						<div class="p-5 grid grid-cols-12 gap-4 row-gap-3">

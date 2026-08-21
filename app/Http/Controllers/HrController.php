@@ -69,18 +69,23 @@ class HrController extends Controller
     public function save_karyawan(Request $request)
     {
         $request->validate([
-            'kry_nama' => 'required',
-            'kry_level' => 'required',
+            'nama' => 'required',
+            'level' => 'required',
         ]);
 
-        $baseUsername = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $request->kry_nama));
-        if (empty($baseUsername)) {
-            $baseUsername = 'karyawan';
+        $username = $request->username;
+        if (empty($username)) {
+            $baseUsername = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $request->nama));
+            if (empty($baseUsername)) {
+                $baseUsername = 'karyawan';
+            }
+            $username = $baseUsername.rand(100, 999);
         }
-        $username = $baseUsername.rand(100, 999);
+
+        $password = $request->pswd ? Hash::make($request->pswd) : Hash::make('123456');
 
         // Pertahanan: Konversi otomatis teks ke angka
-        $status_input = $request->kry_status;
+        $status_input = $request->status;
         $status_angka = 1; // Default 1 (Aktif)
         if ($status_input === 'Tidak Aktif' || $status_input == '0') {
             $status_angka = 0;
@@ -90,13 +95,13 @@ class HrController extends Controller
 
         Karyawan::create([
             'kry_username' => $username,
-            'kry_pswd' => Hash::make('123456'),
-            'kry_nama' => $request->kry_nama,
-            'kry_level' => $request->kry_level,
-            'kry_telp' => $request->kry_telp,
-            'kry_alamat' => $request->kry_alamat,
+            'kry_pswd' => $password,
+            'kry_nama' => $request->nama,
+            'kry_level' => $request->level,
+            'kry_telp' => $request->tlp,
+            'kry_alamat' => $request->alamat,
             'kry_status' => $status_angka, // Gunakan variabel yang sudah dikonversi
-            'kry_join_date' => $request->kry_join_date ?? date('Y-m-d'),
+            'kry_join_date' => $request->tgl_masuk ?? date('Y-m-d'),
         ]);
 
         return back()->with('sukses', 'Karyawan berhasil ditambahkan');
@@ -105,13 +110,12 @@ class HrController extends Controller
     public function update_karyawan(Request $request)
     {
         $request->validate([
-            'kry_kode' => 'required',
-            'kry_nama' => 'required',
-            'kry_level' => 'required',
+            'kode' => 'required',
+            'nama' => 'required',
         ]);
 
         // Pertahanan: Konversi otomatis teks ke angka
-        $status_input = $request->kry_status;
+        $status_input = $request->status;
         $status_angka = 1; // Default 1 (Aktif)
         if ($status_input === 'Tidak Aktif' || $status_input == '0') {
             $status_angka = 0;
@@ -119,15 +123,21 @@ class HrController extends Controller
             $status_angka = 2;
         }
 
-        $karyawan = Karyawan::where('kry_kode', $request->kry_kode)->firstOrFail();
-        $karyawan->update([
-            'kry_nama' => $request->kry_nama,
-            'kry_level' => $request->kry_level,
-            'kry_telp' => $request->kry_telp,
-            'kry_alamat' => $request->kry_alamat,
+        $karyawan = Karyawan::where('kry_kode', $request->kode)->firstOrFail();
+        
+        $updateData = [
+            'kry_nama' => $request->nama,
+            'kry_telp' => $request->tlp,
+            'kry_alamat' => $request->alamat,
             'kry_status' => $status_angka, // Gunakan variabel yang sudah dikonversi
-            'kry_join_date' => $request->kry_join_date,
-        ]);
+            'kry_join_date' => $request->tgl_masuk,
+        ];
+        
+        if ($request->has('level') && !empty($request->level)) {
+            $updateData['kry_level'] = $request->level;
+        }
+
+        $karyawan->update($updateData);
 
         return back()->with('sukses', 'Data karyawan berhasil diperbarui');
     }
@@ -137,6 +147,16 @@ class HrController extends Controller
         Karyawan::where('kry_kode', $kode)->delete();
 
         return back()->with('sukses', 'Karyawan berhasil dihapus');
+    }
+
+    public function export_pdf()
+    {
+        $karyawan_list = Karyawan::orderBy('kry_kode', 'asc')->get();
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('hr.export_karyawan_pdf', ['karyawan_list' => $karyawan_list])
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download('data_karyawan_' . date('Y-m-d') . '.pdf');
     }
 
     // ==========================================

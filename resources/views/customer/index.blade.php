@@ -307,8 +307,8 @@
                 <p>List Data Customer</p>
             </div>
             <div class="header-actions">
-             <a href="{{ url('Export') }}" target="_blank" class="button box flex items-center text-gray-700">
-        		<i data-feather="file-text" class="hidden sm:block w-4 h-4 mr-2"></i> Export to Excel
+             <a href="{{ route('customer.export_pdf') }}" target="_blank" class="button box flex items-center text-gray-700">
+        		<i data-feather="file-text" class="hidden sm:block w-4 h-4 mr-2"></i> Export to PDF
         	</a>
             </div>
         </header>

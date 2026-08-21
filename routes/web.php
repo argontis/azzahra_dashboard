@@ -39,6 +39,7 @@ Route::middleware(['auth'])->group(function () {
         'Customer' => 'id_costomer',
     ]);
     Route::get('/Customer/histori/{kode_transaksi}', [CustomerController::class, 'histori'])->name('customer.histori');
+    Route::get('/export_customer', [CustomerController::class, 'export_pdf'])->name('customer.export_pdf');
 
     // ==========================================
     // MODULE KASIR (TRANSAKSI)
@@ -68,6 +69,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('HR')->middleware('role:HR,Admin')->group(function () {
         Route::get('/', [HrController::class, 'index'])->name('hr.index');
         Route::get('/karyawan', [HrController::class, 'karyawan'])->name('hr.karyawan');
+        Route::get('/export_karyawan', [HrController::class, 'export_pdf'])->name('hr.export_karyawan');
         Route::post('/save_karyawan', [HrController::class, 'save_karyawan'])->name('hr.save_karyawan');
         Route::post('/update_karyawan', [HrController::class, 'update_karyawan'])->name('hr.update_karyawan');
         Route::get('/delete_karyawan/{kode}', [HrController::class, 'delete_karyawan'])->name('hr.delete_karyawan');

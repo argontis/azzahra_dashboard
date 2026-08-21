@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p>Laporan per tanggal</p>
             </div>            
         </header>
-	<div class="content" style="margin-top: 200px">	
+	<div class="content">	
         <div class="col-span-12 lg:col-span-9 xxl:col-span-10">
         	<form action="{{ url('Export/lap_excel') }}" method="post">
 	            <div class="intro-y flex flex-col-reverse sm:flex-row items-center">           	
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
 									</thead>
 									<tbody>
 										<?php $dp = array_filter($payments_by_cabang[$cabang] ?? [], function($p){ return $p->dtl_status == 'DP'; }); ?>
-										@if ($dp->isNotEmpty())
+										@if (!empty($dp))
 											@foreach ($dp as $payment)
 												<tr>
 													<td class="border-b">{{ $payment->cos_kode }}</td>
@@ -266,7 +266,7 @@ document.addEventListener('DOMContentLoaded', function() {
 									</thead>
 									<tbody>
 										<?php $lunas = array_filter($payments_by_cabang[$cabang] ?? [], function($p){ return $p->dtl_status == 'PELUNASAN'; }); ?>
-										@if ($lunas->isNotEmpty())
+										@if (!empty($lunas))
 											@foreach ($lunas as $payment)
 												<tr>
 													<td class="border-b">{{ $payment->cos_kode }}</td>
@@ -315,7 +315,7 @@ document.addEventListener('DOMContentLoaded', function() {
 									</thead>
 									<tbody>
 										<?php $menunggu_list = array_filter($payments_by_cabang[$cabang] ?? [], function($p){ return $p->dtl_stt_stor == 'Menunggu'; }); ?>
-										@if ($menunggu_list->isNotEmpty())
+										@if (!empty($menunggu_list))
 											@foreach ($menunggu_list as $payment)
 												<tr>
 													<td class="border-b">{{ $payment->cos_kode }}</td>

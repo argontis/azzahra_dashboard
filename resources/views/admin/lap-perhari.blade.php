@@ -11,7 +11,7 @@
                 <p>Laporan Hari ini</p>
             </div>            
         </header>
-<div class="content" style="margin-top: 200px;">
+<div class="content">
     <div class="intro-y box overflow-hidden mt-5">
         <div class="flex flex-col lg:flex-row border-b px-5 sm:px-20 pt-10 pb-10 sm:pb-20 text-center sm:text-left">
             <div class="font-semibold text-theme-1 text-3xl">LAPORAN</div>
@@ -22,21 +22,9 @@
         </div>
         <div class="px-5 sm:px-16 py-5">
             <div class="flex justify-end">
-                <form action="{{ url('Export/lap_perhari_excel') }}" method="post" class="mr-2">
-                    <button type="submit" class="button text-white bg-theme-1 shadow-md flex">
-                        <i data-feather="file-text" class="mr-2"></i>Export to Excel
-                    </button>
-                </form>
-                <div class="dropdown relative ml-auto sm:ml-0">
-                    <button class="dropdown-toggle button px-2 box text-gray-700">
-                        <span class="w-5 h-5 flex items-center justify-center"> <i class="w-4 h-4" data-feather="plus"></i> </span>
-                    </button>
-                    <div class="dropdown-box mt-10 absolute w-40 top-0 right-0 z-20">
-                        <div class="dropdown-box__content box p-2">
-                        <a href="{{ url('Admin/export_pdf_lap_perhari') }}" class="flex items-center block p-2 transition duration-300 ease-in-out bg-white hover:bg-gray-200 rounded-md"> <i data-feather="file" class="w-4 h-4 mr-2"></i> Export PDF </a>
-                        </div>
-                    </div>
-                </div>
+                <a href="{{ route('admin.export_pdf_lap_perhari') }}" class="button text-white bg-theme-1 shadow-md flex">
+                    <i data-feather="file-text" class="mr-2"></i>Export to PDF
+                </a>
             </div>
         </div>
         <div class="px-5 sm:px-16 py-10 sm:py-20">

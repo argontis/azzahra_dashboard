@@ -94,4 +94,25 @@ class CustomerController extends Controller
             'pembayaran' => $pembayaran
         ]);
     }
+
+    public function export_pdf()
+    {
+        $customers = DB::table('costomer')
+            ->leftJoin('transaksi', function($join) {
+                $join->on('transaksi.cos_kode', '=', 'costomer.id_costomer')
+                     ->whereIn('transaksi.trans_kode', function($q) {
+                         $q->select(DB::raw('MAX(trans_kode)'))
+                           ->from('transaksi')
+                           ->groupBy('cos_kode');
+                     });
+            })
+            ->select('costomer.*', 'transaksi.trans_status', 'transaksi.trans_kode')
+            ->orderBy('costomer.id_costomer', 'desc')
+            ->get();
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('customer.export_pdf', ['customers' => $customers])
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download('data_customer_' . date('Y-m-d') . '.pdf');
+    }
 }

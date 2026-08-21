@@ -58,6 +58,7 @@
     </div>
 
     <form action="{{ route('admin.voucher.save') }}" method="POST" enctype="multipart/form-data" id="voucher-form">
+        @csrf
     <div class="grid grid-cols-12 gap-6 mt-5">
         <!-- Main Form -->
         <div class="intro-y col-span-12 lg:col-span-8">
@@ -307,8 +308,7 @@
                         <span class="text-gray-600">Total Voucher</span>
                         <span class="font-semibold text-theme-1">
                             <?php
-                             
-                            echo \Illuminate\Support\Facades\DB::table('voucher')->where('status', 'active')->count();
+                            echo \App\Models\Voucher::count();
                             ?>
                         </span>
                     </div>
@@ -316,9 +316,7 @@
                         <span class="text-gray-600">Voucher Aktif</span>
                         <span class="font-semibold text-green-600">
                             <?php
-                             
-                             
-                            echo \Illuminate\Support\Facades\DB::table('voucher')->where('status', 'active')->count();
+                            echo \App\Models\Voucher::where('status', 'active')->count();
                             ?>
                         </span>
                     </div>

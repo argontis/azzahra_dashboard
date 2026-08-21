@@ -98,6 +98,7 @@
 
                 <div class="p-5">
                     <form action="{{ route('admin.voucher.update') }}" method="POST" enctype="multipart/form-data" id="voucher-form">
+                        @csrf
                         <input type="hidden" name="voucher_id" value="<?= $voucher->voucher_id ?>">
                         <input type="hidden" name="old_voucher_code" value="<?= htmlspecialchars($voucher->voucher_code) ?>">
 
