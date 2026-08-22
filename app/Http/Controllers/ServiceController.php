@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Customer;
-use App\Models\Transaksi;
-use App\Models\TransaksiDetail;
-use App\Models\Tindakan;
 use App\Models\OrderList;
-use App\Models\TransaksiReturn;
+use App\Models\Tindakan;
+use App\Models\Transaksi;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
 
 class ServiceController extends Controller
 {
@@ -27,7 +24,7 @@ class ServiceController extends Controller
 
         return view('service.dashboard', [
             'title' => 'Dashboard Customer Service',
-            'stats' => $stats
+            'stats' => $stats,
         ]);
     }
 
@@ -38,10 +35,10 @@ class ServiceController extends Controller
             'proses' => 'Diproses',
             'konfirmasi' => 'Konfirmasi',
             'pelunasan' => 'Pelunasan',
-            'lunas' => 'Lunas'
+            'lunas' => 'Lunas',
         ];
 
-        if (!array_key_exists($status, $status_map)) {
+        if (! array_key_exists($status, $status_map)) {
             $status = 'baru';
         }
 
@@ -52,16 +49,16 @@ class ServiceController extends Controller
             ->paginate(25);
 
         return view('service.antrean', [
-            'title' => 'Antrean - ' . ucfirst($status),
+            'title' => 'Antrean - '.ucfirst($status),
             'transaksis' => $transaksis,
-            'current_status' => $status
+            'current_status' => $status,
         ]);
     }
 
     public function create()
     {
         return view('service.form_penerimaan', [
-            'title' => 'Penerimaan Servis Baru'
+            'title' => 'Penerimaan Servis Baru',
         ]);
     }
 
@@ -71,28 +68,28 @@ class ServiceController extends Controller
             'nama' => 'required',
             'tlp' => 'required',
             'type' => 'required',
-            'keluhan' => 'required'
+            'keluhan' => 'required',
         ]);
 
         try {
             DB::beginTransaction();
 
             // 1. Generate id_costomer
-            $date_prefix = 'TTS' . date('ymd');
-            $latest_customer = Customer::where('id_costomer', 'like', $date_prefix . '%')
+            $date_prefix = 'TTS'.date('ymd');
+            $latest_customer = Customer::where('id_costomer', 'like', $date_prefix.'%')
                 ->orderBy('id_costomer', 'desc')
                 ->first();
-            
+
             $next_num = 1;
             if ($latest_customer) {
                 $last_num = (int) substr($latest_customer->id_costomer, -3);
                 $next_num = $last_num + 1;
             }
-            $id_costomer = $date_prefix . str_pad($next_num, 3, '0', STR_PAD_LEFT);
+            $id_costomer = $date_prefix.str_pad($next_num, 3, '0', STR_PAD_LEFT);
 
             // 2. Insert Customer
             $password = $request->pswd_type === 'text' ? $request->pswd : ($request->pswd_type === 'pattern_desc' ? $request->pswd_desc : '');
-            
+
             Customer::create([
                 'id_costomer' => $id_costomer,
                 'cos_nama' => $request->nama,
@@ -100,6 +97,8 @@ class ServiceController extends Controller
                 'password' => Hash::make($id_costomer),
                 'cos_tgl_lahir' => $request->cos_tgl_lahir,
                 'cos_alamat' => $request->alamat,
+                'cos_cabang' => $request->cabang,
+                'cos_device' => $request->device,
                 'cos_hp' => $request->tlp,
                 'cos_tipe' => $request->type,
                 'cos_model' => $request->model,
@@ -113,21 +112,21 @@ class ServiceController extends Controller
                 'cos_keterangan' => $request->ket,
                 'cos_tanggal' => date('Y-m-d'),
                 'cos_jam' => date('H:i:s'),
-                'cos_poin' => 0
+                'cos_poin' => 0,
             ]);
 
             // 3. Generate trans_kode
-            $date_prefix_trans = 'TR' . date('dmy');
-            $latest_trans = Transaksi::where('trans_kode', 'like', $date_prefix_trans . '%')
+            $date_prefix_trans = 'TR'.date('dmy');
+            $latest_trans = Transaksi::where('trans_kode', 'like', $date_prefix_trans.'%')
                 ->orderBy('trans_kode', 'desc')
                 ->first();
-                
+
             $next_trans_num = 1;
             if ($latest_trans) {
                 $last_trans_num = (int) substr($latest_trans->trans_kode, -3);
                 $next_trans_num = $last_trans_num + 1;
             }
-            $trans_kode = $date_prefix_trans . str_pad($next_trans_num, 3, '0', STR_PAD_LEFT);
+            $trans_kode = $date_prefix_trans.str_pad($next_trans_num, 3, '0', STR_PAD_LEFT);
 
             $is_quick_service = $request->has('is_quick_service');
 
@@ -139,7 +138,7 @@ class ServiceController extends Controller
                 'trans_total' => 0,
                 'trans_discount' => 0,
                 'trans_status' => $is_quick_service ? 'Pelunasan' : 'Baru',
-                'trans_tanggal' => date('Y-m-d')
+                'trans_tanggal' => date('Y-m-d'),
             ]);
 
             // 5. If quick service, add default tindakan
@@ -150,7 +149,7 @@ class ServiceController extends Controller
                     'tdkn_qty' => 1,
                     'tdkn_subtot' => 0,
                     'tdkn_tanggal' => date('Y-m-d'),
-                    'tdkn_jam' => date('H:i:s')
+                    'tdkn_jam' => date('H:i:s'),
                 ]);
             }
 
@@ -168,7 +167,7 @@ class ServiceController extends Controller
                 'seri' => $request->seri ?? '',
                 'ket_keluhan' => $request->keluhan ?? '',
                 'email' => 'example@gmail.com',
-                'alamat' => $request->alamat ?? ''
+                'alamat' => $request->alamat ?? '',
             ]);
 
             DB::commit();
@@ -177,7 +176,7 @@ class ServiceController extends Controller
                 return response()->json([
                     'status' => 'success',
                     'trans_kode' => $trans_kode,
-                    'id_costomer' => $id_costomer
+                    'id_costomer' => $id_costomer,
                 ]);
             }
 
@@ -185,7 +184,15 @@ class ServiceController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('gagal', 'Terjadi kesalahan: ' . $e->getMessage());
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Terjadi kesalahan: '.$e->getMessage(),
+                ], 400);
+            }
+
+            return back()->with('gagal', 'Terjadi kesalahan: '.$e->getMessage());
         }
     }
 
@@ -204,20 +211,22 @@ class ServiceController extends Controller
                 'tdkn_qty' => 1,
                 'tdkn_subtot' => 50000,
                 'tdkn_tanggal' => date('Y-m-d'),
-                'tdkn_jam' => date('H:i:s')
+                'tdkn_jam' => date('H:i:s'),
             ]);
 
             Transaksi::where('trans_kode', $kode)->update([
                 'trans_total' => 50000,
                 'trans_discount' => 0,
-                'trans_status' => 'Cencel'
+                'trans_status' => 'Cencel',
             ]);
 
             DB::commit();
+
             return redirect()->route('service.antrean', 'konfirmasi')->with('sukses', 'Transaksi dibatalkan. Silahkan ke Kasir.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('gagal', 'Terjadi kesalahan: ' . $e->getMessage());
+
+            return back()->with('gagal', 'Terjadi kesalahan: '.$e->getMessage());
         }
     }
 
@@ -234,13 +243,13 @@ class ServiceController extends Controller
                 'tdkn_qty' => 1,
                 'tdkn_subtot' => 50000,
                 'tdkn_tanggal' => date('Y-m-d'),
-                'tdkn_jam' => date('H:i:s')
+                'tdkn_jam' => date('H:i:s'),
             ]);
 
             Transaksi::where('trans_kode', $kode)->update([
                 'trans_total' => 50000,
                 'trans_discount' => 0,
-                'trans_status' => 'Return'
+                'trans_status' => 'Return',
             ]);
 
             $transaksi = Transaksi::where('trans_kode', $kode)->first();
@@ -249,28 +258,167 @@ class ServiceController extends Controller
             }
 
             DB::commit();
+
             return redirect()->route('service.antrean', 'pelunasan')->with('sukses', 'Return pembayaran berhasil. Silahkan ke Kasir.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('gagal', 'Terjadi kesalahan: ' . $e->getMessage());
+
+            return back()->with('gagal', 'Terjadi kesalahan: '.$e->getMessage());
         }
     }
+
     public function pembayaran(Request $request, $filter = null)
     {
-        // Anda dapat menyalin logika dari KasirController::pembayaran() 
+        // Anda dapat menyalin logika dari KasirController::pembayaran()
         // atau menyesuaikannya dengan kebutuhan Customer Service di sini.
 
         return view('service.pembayaran', [
             'title' => 'Pembayaran',
-            'filter' => $filter
+            'filter' => $filter,
         ]);
     }
+
     public function laporan(Request $request)
     {
         // Anda dapat menambahkan query untuk mengambil data laporan CS di sini nantinya
 
         return view('service.laporan', [
-            'title' => 'Laporan'
+            'title' => 'Laporan',
         ]);
+    }
+
+    public function proses($id)
+    {
+        $transaksi = Transaksi::with(['customer', 'tindakan'])
+            ->where('trans_kode', $id)
+            ->orWhere('cos_kode', $id)
+            ->orWhere('id', $id)
+            ->first();
+
+        if (! $transaksi) {
+            $customer = Customer::where('id_costomer', $id)->first();
+            if ($customer) {
+                $transaksi = Transaksi::with(['customer', 'tindakan'])
+                    ->where('cos_kode', $customer->id_costomer)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+            }
+        }
+
+        if (! $transaksi) {
+            return back()->with('gagal', 'Data customer / transaksi tidak ditemukan');
+        }
+
+        $customer = $transaksi->customer;
+        $tindakans = Tindakan::where('trans_kode', $transaksi->trans_kode)->get();
+
+        return view('service.proses', [
+            'title' => 'Input Proses - '.($customer->cos_nama ?? 'Customer'),
+            'transaksi' => $transaksi,
+            'customer' => $customer,
+            'tindakans' => $tindakans,
+            'current_status' => strtolower($transaksi->trans_status ?? 'proses'),
+        ]);
+    }
+
+    public function save_tindakan(Request $request, $id)
+    {
+        $request->validate([
+            'tindakan' => 'required',
+        ]);
+
+        $transaksi = Transaksi::where('trans_kode', $id)->orWhere('cos_kode', $id)->first();
+        if (! $transaksi) {
+            $transaksi = Transaksi::whereHas('customer', function ($q) use ($id) {
+                $q->where('id_costomer', $id);
+            })->firstOrFail();
+        }
+
+        $qty = $request->input('qty', 1);
+        $harga = $request->input('biaya', 0);
+        $keterangan = $request->input('keterangan', '');
+        $tindakan_nama = $request->input('tindakan');
+
+        // Include detail in tdkn_barang if provided
+        $tdkn_barang = $tindakan_nama;
+        if (! empty($keterangan)) {
+            $tdkn_barang .= ' ('.$keterangan.')';
+        }
+
+        Tindakan::create([
+            'trans_kode' => $transaksi->trans_kode,
+            'tdkn_barang' => $tdkn_barang,
+            'tdkn_harga' => $harga,
+            'tdkn_qty' => $qty,
+            'tdkn_subtot' => $harga * $qty,
+            'tdkn_tanggal' => date('Y-m-d'),
+            'tdkn_jam' => date('H:i:s'),
+        ]);
+
+        return back()->with('sukses', 'Tindakan perbaikan berhasil ditambahkan');
+    }
+
+    public function delete_tindakan($id)
+    {
+        $tindakan = Tindakan::findOrFail($id);
+        $tindakan->delete();
+
+        return back()->with('sukses', 'Tindakan perbaikan berhasil dihapus');
+    }
+
+    public function simpan_proses(Request $request, $id)
+    {
+        $transaksi = Transaksi::where('trans_kode', $id)->orWhere('cos_kode', $id)->first();
+        if (! $transaksi) {
+            $transaksi = Transaksi::whereHas('customer', function ($q) use ($id) {
+                $q->where('id_costomer', $id);
+            })->firstOrFail();
+        }
+
+        if ($transaksi->trans_status == 'Baru') {
+            $transaksi->update(['trans_status' => 'Diproses']);
+        }
+
+        // Recalculate total subtot from tindakan
+        $total = Tindakan::where('trans_kode', $transaksi->trans_kode)->sum('tdkn_subtot');
+        $transaksi->update(['trans_total' => $total]);
+
+        return redirect()->route('service.antrean', 'proses')->with('sukses', 'Tindakan perbaikan berhasil disimpan!');
+    }
+
+    public function update_customer(Request $request, $id)
+    {
+        $customer = Customer::where('id_costomer', $id)->first();
+        if (! $customer) {
+            $transaksi = Transaksi::where('trans_kode', $id)->first();
+            if ($transaksi) {
+                $customer = Customer::where('id_costomer', $transaksi->cos_kode)->first();
+            }
+        }
+
+        if ($customer) {
+            $pswd_type = $request->input('pswd_type', 'text');
+            $password = ($pswd_type == 'text') ? $request->input('pswd') : $request->input('pswd_desc');
+
+            $customer->update([
+                'cos_nama' => $request->input('nama', $customer->cos_nama),
+                'cos_hp' => $request->input('tlp', $customer->cos_hp),
+                'cos_alamat' => $request->input('alamat', $customer->cos_alamat),
+                'cos_cabang' => $request->input('cabang', $customer->cos_cabang),
+                'cos_tgl_lahir' => $request->input('cos_tgl_lahir', $customer->cos_tgl_lahir),
+                'cos_status' => $request->input('status', $customer->cos_status),
+                'cos_device' => $request->input('device', $customer->cos_device),
+                'cos_tipe' => $request->input('type', $customer->cos_tipe),
+                'cos_model' => $request->input('model', $customer->cos_model),
+                'cos_no_seri' => $request->input('seri', $customer->cos_no_seri),
+                'cos_pswd_type' => $pswd_type,
+                'cos_pswd' => $password,
+                'cos_asesoris' => $request->input('asesoris', $customer->cos_asesoris),
+                'cos_keluhan' => $request->input('keluhan', $customer->cos_keluhan),
+                'cos_keterangan' => $request->input('ket', $customer->cos_keterangan),
+            ]);
+        }
+
+        return back()->with('sukses', 'Data customer berhasil diperbarui');
     }
 }

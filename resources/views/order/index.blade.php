@@ -51,40 +51,36 @@ window.currentUser = '<?php echo addslashes(auth()->user()->name ?? 'Admin'); ?>
         <div class="notification-header border-b px-4 py-3 bg-gray-50 rounded-t-md">
             <h4 class="font-bold text-sm">Notifikasi Order Hari Ini</h4>
         </div>
-                        <div class="notification-list">
-                            <?php if (!empty($today_orders)): ?>
-                                <?php foreach ($today_orders as $order): ?>
-                                    <div class="notification-item">
-                                        <div class="notification-content">
-                                            <p><strong><?php echo $order->trans_kode; ?></strong> - <?php echo $order->cos_nama ?? 'N/A'; ?></p>
-                                            <p>Status: <?php echo $order->trans_status; ?></p>
-                                            <small><?php echo date('H:i', strtotime($order->created_at)); ?></small>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <div class="notification-empty">Tidak ada order baru hari ini</div>
-                            <?php endif; ?>
+        <div class="notification-list">
+            <?php if (!empty($today_orders)): ?>
+                <?php foreach ($today_orders as $order): ?>
+                    <div class="notification-item">
+                        <div class="notification-content">
+                            <p><strong><?php echo $order->trans_kode; ?></strong> - <?php echo $order->cos_nama ?? 'N/A'; ?></p>
+                            <p>Status: <?php echo $order->trans_status; ?></p>
+                            <small><?php echo date('H:i', strtotime($order->created_at)); ?></small>
                         </div>
                     </div>
-                </div>               
-            </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="notification-empty">Tidak ada order baru hari ini</div>
+            <?php endif; ?>
         </div>
     </div>
 </div>
 
-<div class="content">
+<div class="content-area">
   <div class="sukses" data-sukses="<?php echo $suksesMsg; ?>"></div>
   <div class="gagal" data-gagal="<?php echo $gagalMsg; ?>"></div>
 
   <!-- Header Section -->
-  <div class="intro-y flex flex-col sm:flex-row items-center mt-8">
+  <div class="intro-y flex flex-col sm:flex-row items-center mt-2">
     <h2 class="text-2xl font-bold mr-auto text-gray-800">      
       Order Management
     </h2>
   </div>
 
-  <div class="intro-y grid grid-cols-12 gap-6 mt-5">
+  <div class="intro-y grid grid-cols-12 gap-6 mt-4">
     <!-- Sidebar Filter -->
     <div class="col-span-12 lg:col-span-3">
       <div class="box p-5 sticky top-5">

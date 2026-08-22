@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Customer;
-use App\Models\Transaksi;
-use App\Models\TransaksiDetail;
-use App\Models\Tindakan;
 use App\Models\OrderList;
+use App\Models\Tindakan;
+use App\Models\Transaksi;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -25,7 +24,7 @@ class QuickServiceController extends Controller
 
         return view('quickservice.dashboard', [
             'title' => 'Quick Service Dashboard',
-            'stats' => $stats
+            'stats' => $stats,
         ]);
     }
 
@@ -36,10 +35,10 @@ class QuickServiceController extends Controller
             'proses' => 'Diproses',
             'konfirmasi' => 'Konfirmasi',
             'pelunasan' => 'Pelunasan',
-            'lunas' => 'Lunas'
+            'lunas' => 'Lunas',
         ];
 
-        if (!array_key_exists($status, $status_map)) {
+        if (! array_key_exists($status, $status_map)) {
             $status = 'baru';
         }
 
@@ -51,16 +50,16 @@ class QuickServiceController extends Controller
             ->paginate(25);
 
         return view('quickservice.antrean', [
-            'title' => 'QS Antrean - ' . ucfirst($status),
+            'title' => 'QS Antrean - '.ucfirst($status),
             'transaksis' => $transaksis,
-            'current_status' => $status
+            'current_status' => $status,
         ]);
     }
 
     public function create()
     {
         return view('quickservice.form_penerimaan', [
-            'title' => 'Quick Service Baru'
+            'title' => 'Quick Service Baru',
         ]);
     }
 
@@ -70,28 +69,28 @@ class QuickServiceController extends Controller
             'nama' => 'required',
             'tlp' => 'required',
             'type' => 'required',
-            'keluhan' => 'required'
+            'keluhan' => 'required',
         ]);
 
         try {
             DB::beginTransaction();
 
             // 1. Generate id_costomer
-            $date_prefix = 'TTS' . date('ymd');
-            $latest_customer = Customer::where('id_costomer', 'like', $date_prefix . '%')
+            $date_prefix = 'TTS'.date('ymd');
+            $latest_customer = Customer::where('id_costomer', 'like', $date_prefix.'%')
                 ->orderBy('id_costomer', 'desc')
                 ->first();
-            
+
             $next_num = 1;
             if ($latest_customer) {
                 $last_num = (int) substr($latest_customer->id_costomer, -3);
                 $next_num = $last_num + 1;
             }
-            $id_costomer = $date_prefix . str_pad($next_num, 3, '0', STR_PAD_LEFT);
+            $id_costomer = $date_prefix.str_pad($next_num, 3, '0', STR_PAD_LEFT);
 
             // 2. Insert Customer
             $password = $request->pswd_type === 'text' ? $request->pswd : ($request->pswd_type === 'pattern_desc' ? $request->pswd_desc : '');
-            
+
             Customer::create([
                 'id_costomer' => $id_costomer,
                 'cos_nama' => $request->nama,
@@ -112,21 +111,21 @@ class QuickServiceController extends Controller
                 'cos_keterangan' => $request->ket,
                 'cos_tanggal' => date('Y-m-d'),
                 'cos_jam' => date('H:i:s'),
-                'cos_poin' => 0
+                'cos_poin' => 0,
             ]);
 
             // 3. Generate trans_kode
-            $date_prefix_trans = 'TR' . date('dmy');
-            $latest_trans = Transaksi::where('trans_kode', 'like', $date_prefix_trans . '%')
+            $date_prefix_trans = 'TR'.date('dmy');
+            $latest_trans = Transaksi::where('trans_kode', 'like', $date_prefix_trans.'%')
                 ->orderBy('trans_kode', 'desc')
                 ->first();
-                
+
             $next_trans_num = 1;
             if ($latest_trans) {
                 $last_trans_num = (int) substr($latest_trans->trans_kode, -3);
                 $next_trans_num = $last_trans_num + 1;
             }
-            $trans_kode = $date_prefix_trans . str_pad($next_trans_num, 3, '0', STR_PAD_LEFT);
+            $trans_kode = $date_prefix_trans.str_pad($next_trans_num, 3, '0', STR_PAD_LEFT);
 
             $is_quick_service = true; // In QS, it's always quick service
 
@@ -138,7 +137,7 @@ class QuickServiceController extends Controller
                 'trans_total' => 0,
                 'trans_discount' => 0,
                 'trans_status' => $is_quick_service ? 'Pelunasan' : 'Baru',
-                'trans_tanggal' => date('Y-m-d')
+                'trans_tanggal' => date('Y-m-d'),
             ]);
 
             // 5. If quick service, add default tindakan
@@ -149,7 +148,7 @@ class QuickServiceController extends Controller
                     'tdkn_qty' => 1,
                     'tdkn_subtot' => 0,
                     'tdkn_tanggal' => date('Y-m-d'),
-                    'tdkn_jam' => date('H:i:s')
+                    'tdkn_jam' => date('H:i:s'),
                 ]);
             }
 
@@ -167,7 +166,7 @@ class QuickServiceController extends Controller
                 'seri' => $request->seri ?? '',
                 'ket_keluhan' => $request->keluhan ?? '',
                 'email' => 'example@gmail.com',
-                'alamat' => $request->alamat ?? ''
+                'alamat' => $request->alamat ?? '',
             ]);
 
             DB::commit();
@@ -176,7 +175,7 @@ class QuickServiceController extends Controller
                 return response()->json([
                     'status' => 'success',
                     'trans_kode' => $trans_kode,
-                    'id_costomer' => $id_costomer
+                    'id_costomer' => $id_costomer,
                 ]);
             }
 
@@ -184,7 +183,15 @@ class QuickServiceController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('gagal', 'Terjadi kesalahan: ' . $e->getMessage());
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Terjadi kesalahan: '.$e->getMessage(),
+                ], 400);
+            }
+
+            return back()->with('gagal', 'Terjadi kesalahan: '.$e->getMessage());
         }
     }
 }

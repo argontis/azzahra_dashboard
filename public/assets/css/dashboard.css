@@ -117,7 +117,7 @@ body {
 }
 
 .content-area {
-    margin-top: 138px !important;
+    margin-top: 75px !important;
     padding-top: 12px !important;
     transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
@@ -1346,4 +1346,50 @@ body {
 .empty-state p {
     font-size: 1rem;
     color: var(--gray-700);
+}
+
+/* ===== WIZARD STEP TAB STYLING ===== */
+.nav-tabs.wizard a[data-toggle="tab"].active,
+.wizard a[data-toggle="tab"].active {
+    background-color: #0041c3 !important;
+    color: #ffffff !important;
+}
+
+.nav-tabs.wizard a[data-toggle="tab"]:not(.active),
+.wizard a[data-toggle="tab"]:not(.active) {
+    background-color: #e2e8f0 !important;
+    color: #4a5568 !important;
+}
+
+/* ===== DATATABLE HORIZONTAL DISPLAY ===== */
+.datatable-wrapper {
+    overflow-x: auto !important;
+}
+
+.datatable-wrapper table.dataTable,
+.datatable-wrapper table.table {
+    width: 100% !important;
+    white-space: nowrap !important;
+}
+
+.datatable-wrapper table.dataTable th,
+.datatable-wrapper table.dataTable td,
+.datatable-wrapper table.table th,
+.datatable-wrapper table.table td {
+    white-space: nowrap !important;
+}
+
+/* Hide DataTables responsive + control icons and child rows */
+table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control::before,
+table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control::before {
+    display: none !important;
+}
+
+table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control,
+table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control {
+    padding-left: 10px !important;
+}
+
+table.dataTable tr.child {
+    display: none !important;
 }

@@ -457,6 +457,53 @@
             }, 1000);
         }
     </script>
+
+    <!-- Wizard Step Tab Active State Override -->
+    <script>
+    (function($) {
+        // Override tab click handler to support wizard active step coloring
+        $('body').off('click', 'a[data-toggle="tab"]').on('click', 'a[data-toggle="tab"]', function(e) {
+            var $this = $(this);
+            var $navTabs = $this.closest('.nav-tabs');
+
+            // Set active class on nav
+            $navTabs.find('a[data-toggle="tab"]').removeClass('active');
+            $this.addClass('active');
+
+            // If inside a wizard, toggle blue/gray styling
+            if ($navTabs.hasClass('wizard')) {
+                $navTabs.find('a[data-toggle="tab"]')
+                    .removeClass('text-white bg-theme-1')
+                    .addClass('text-gray-600 bg-gray-200');
+                $this
+                    .removeClass('text-gray-600 bg-gray-200')
+                    .addClass('text-white bg-theme-1');
+            }
+
+            // Activate target pane
+            var elementId = $this.attr('data-target');
+            $(elementId).closest('.tab-content').find('.tab-content__pane').removeClass('active');
+            $(elementId).addClass('active');
+        });
+
+        // Disable DataTables responsive collapsing to keep table rows horizontal
+        $(document).ready(function() {
+            if (typeof $.fn.DataTable !== 'undefined') {
+                $('.datatable').each(function() {
+                    if ($.fn.DataTable.isDataTable(this)) {
+                        $(this).DataTable().destroy();
+                    }
+                    $(this).DataTable({
+                        responsive: false,
+                        autoWidth: false,
+                        paging: false,
+                        info: false
+                    });
+                });
+            }
+        });
+    })(jQuery);
+    </script>
     <!-- END: JS Assets-->
      
     <!-- Dashboard Scripts -->

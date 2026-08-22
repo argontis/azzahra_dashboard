@@ -109,6 +109,11 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('Service')->middleware('role:Customer Service,Admin')->group(function () {
         Route::get('/', [ServiceController::class, 'index'])->name('service.index');
         Route::get('/antrean/{status?}', [ServiceController::class, 'antrean'])->name('service.antrean');
+        Route::get('/proses/{id}', [ServiceController::class, 'proses'])->name('service.proses');
+        Route::post('/proses/{id}/tindakan', [ServiceController::class, 'save_tindakan'])->name('service.save_tindakan');
+        Route::delete('/proses/tindakan/{id}', [ServiceController::class, 'delete_tindakan'])->name('service.delete_tindakan');
+        Route::post('/proses/{id}/simpan', [ServiceController::class, 'simpan_proses'])->name('service.simpan_proses');
+        Route::post('/update_customer/{id}', [ServiceController::class, 'update_customer'])->name('service.update_customer');
         Route::get('/form_baru', [ServiceController::class, 'create'])->name('service.create');
         Route::post('/save_trans', [ServiceController::class, 'save_trans'])->name('service.save_trans');
         Route::get('/batal_transaksi/{kode}', [ServiceController::class, 'batal_transaksi'])->name('service.batal_transaksi');

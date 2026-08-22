@@ -325,52 +325,48 @@
     <!-- HEADER -->
     <div class="header-row">
         <div class="brand-box">
-            <img src="<?php echo asset('assets/image/logo_tts.png'); }}" class="brand-logo" alt="Logo">
-            
-
-                <div class="brand-sub">
-                    Kantor Pusat  : Ruko Citraland Blok B/11, Kraton Tegal<br>
-                    Kantor Cabang : Ruko Kranggan Permai RT.16 No.27, Bekasi<br>
-                    Telp / WA: 0859 4200 1720 (Tegal)/0818 0387 7771(bekasi)<br>
-                    Call Center (0283) 340909
-                </div>            
+            <img src="{{ asset('assets/image/logo_tts.png') }}" class="brand-logo" alt="Logo">
+            <div class="brand-sub">
+                Kantor Pusat  : Ruko Citraland Blok B/11, Kraton Tegal<br>
+                Kantor Cabang : Ruko Kranggan Permai RT.16 No.27, Bekasi<br>
+                Telp / WA: 0859 4200 1720 (Tegal)/0818 0387 7771(bekasi)<br>
+                Call Center (0283) 340909
+            </div>            
         </div>
-         <!-- kolom kanan hanya informasi yang sudah ada -->
+        <!-- kolom kanan hanya informasi yang sudah ada -->
         <div class="contact-icons">
-            <div>No. Invoice: <strong><?php echo isset($is_cos_kode) && $is_cos_kode ? (isset($customer['id_costomer']) ? $customer['id_costomer'] : '') : ((isset($customer['cos_kode']) ? $customer['cos_kode'] : '') . ($dtl_status == 'DP' ? '/DP' : ($dtl_status == 'PELUNASAN' ? '/LUNAS' : ''))); }}</strong></div>
-            <div>Tanggal: <?php echo isset($is_cos_kode) && $is_cos_kode ? $tanggal : $tanggal; }} &nbsp; <?php echo isset($is_cos_kode) && $is_cos_kode ? (isset($jam) ? $jam : '') : date('H:i'); }}</div>
-             <div class="invoice-badge" style="margin-top: 30px">
-                 <span><?php echo isset($is_cos_kode) && $is_cos_kode ? 'INVOICE' : ('INVOICE ' . ($dtl_status == 'DP' ? 'DP' : ($dtl_status == 'PELUNASAN' ? 'LUNAS' : ''))); }}</span>
-             </div>
+            <div>No. Invoice: <strong>{{ $trans->trans_kode ?? '' }}</strong></div>
+            <div>Tanggal: {{ $tanggal }} &nbsp; {{ $jam }}</div>
+            <div class="invoice-badge" style="margin-top: 30px">
+                <span>INVOICE {{ $dtl_status ?? '' }}</span>
+            </div>
         </div>
-       
     </div>
 
     <!-- RINGKASAN CUSTOMER -->
     <div class="summary-row">
         <div class="total-box">
             <div class="total-label text-uppercase muted">Customer</div>
-            <div class="invoice-customer-name"><?php echo isset($customer['cos_nama']) ? $customer['cos_nama'] : ''; }}</div>
+            <div class="invoice-customer-name">{{ $customer->cos_nama ?? $customer['cos_nama'] ?? '-' }}</div>
             <div class="invoice-customer-meta">
-                Alamat: <?php echo isset($customer['cos_alamat']) ? $customer['cos_alamat'] : ''; }}<br>
-                Hp/WA: <?php echo isset($customer['cos_hp']) ? preg_replace('/(\d{2})(\d{4})(\d{4,})/', '$1xx-xxxx-$3', $customer['cos_hp']) : ''; }}
+                Alamat: {{ $customer->cos_alamat ?? $customer['cos_alamat'] ?? '-' }}<br>
+                Hp/WA: {{ $customer->cos_hp ?? $customer['cos_hp'] ?? '-' }}
             </div>
         </div>
 
         <div class="invoice-badge-box">
-           
             <div class="invoice-meta">
                 <div>
                     <span class="invoice-meta-label">No</span>
-                    <span class="invoice-meta-value">: <?php echo isset($is_cos_kode) && $is_cos_kode ? (isset($customer['id_costomer']) ? $customer['id_costomer'] : '') : ((isset($customer['cos_kode']) ? $customer['cos_kode'] : '') . ($dtl_status == 'DP' ? '/DP' : ($dtl_status == 'PELUNASAN' ? '/LUNAS' : ''))); }}</span>
+                    <span class="invoice-meta-value">: {{ $trans->trans_kode ?? '' }}</span>
                 </div>
                 <div>
                     <span class="invoice-meta-label">Tanggal</span>
-                    <span class="invoice-meta-value">: <?php echo isset($is_cos_kode) && $is_cos_kode ? $tanggal : $tanggal; }}</span>
+                    <span class="invoice-meta-value">: {{ $tanggal }}</span>
                 </div>
                 <div>
                     <span class="invoice-meta-label">Jam</span>
-                    <span class="invoice-meta-value">: <?php echo isset($is_cos_kode) && $is_cos_kode ? (isset($jam) ? $jam : '') : date('H:i'); }}</span>
+                    <span class="invoice-meta-value">: {{ $jam }}</span>
                 </div>
             </div>
         </div>
@@ -387,28 +383,31 @@
             </tr>
         </thead>
         <tbody>
-            <?php
-            $total = 0;
-            foreach ($barang as $row):
-                $subtotal = ($row['tdkn_qty'] ?? 1) * $row['tdkn_subtot'];
-                $total += $subtotal;
-            }}
-            <tr>
-                <td style="text-align:center"><?php echo $row['tdkn_qty'] ?? 1; }}</td>
-                <td><?php echo $row['tdkn_barang']; }} : -</td>
-                <td style="text-align:right"><?php echo number_format($row['tdkn_subtot'], 0, ',', '.'); }}</td>
-                <td style="text-align:right"><?php echo number_format($subtotal, 0, ',', '.'); }}</td>
-            </tr>
-            <?php endforeach; }}
-            <?php if ($dp > 0): }}
-            <tr>
-                <td colspan="3" style="text-align:right"><strong>DP</strong></td>
-                <td style="text-align:right"><strong><?php echo number_format($dp, 0, ',', '.'); }}</strong></td>
-            </tr>
-            <?php endif; }}
+            @php $total = 0; @endphp
+            @foreach ($barang as $row)
+                @php
+                    $qty = is_object($row) ? ($row->tdkn_qty ?? 1) : ($row['tdkn_qty'] ?? 1);
+                    $item = is_object($row) ? ($row->tdkn_barang ?? '-') : ($row['tdkn_barang'] ?? '-');
+                    $harga = is_object($row) ? ($row->tdkn_subtot ?? 0) : ($row['tdkn_subtot'] ?? 0);
+                    $subtotal = $qty * $harga;
+                    $total += $subtotal;
+                @endphp
+                <tr>
+                    <td style="text-align:center">{{ $qty }}</td>
+                    <td>{{ $item }}</td>
+                    <td style="text-align:right">Rp {{ number_format($harga, 0, ',', '.') }}</td>
+                    <td style="text-align:right">Rp {{ number_format($subtotal, 0, ',', '.') }}</td>
+                </tr>
+            @endforeach
+            @if (isset($dp) && $dp > 0)
+                <tr>
+                    <td colspan="3" style="text-align:right"><strong>DP</strong></td>
+                    <td style="text-align:right"><strong>Rp {{ number_format($dp, 0, ',', '.') }}</strong></td>
+                </tr>
+            @endif
             <tr>
                 <td colspan="3" style="text-align:right"><strong>Total</strong></td>
-                <td style="text-align:right"><strong><?php echo number_format($final_total, 0, ',', '.'); }}</strong></td>
+                <td style="text-align:right"><strong>Rp {{ number_format($final_total ?? $total, 0, ',', '.') }}</strong></td>
             </tr>
         </tbody>
     </table>

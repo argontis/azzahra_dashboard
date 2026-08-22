@@ -357,21 +357,32 @@
     		                    	JAM : {{ \Carbon\Carbon::parse($row->created_at)->format('H:i:s') }}
     		                    </div>
     		                </td>
-    		                <td class="border-b w-5">
-    		                    <div class="flex sm:justify-center items-center">
-    		                        <a class="flex items-center mr-3" href="{{ url('Customer/edit/'.$row->id_costomer) }}">
-    		                        	<i data-feather="check-square" class="w-4 h-4 mr-1"></i> Edit
+    		                <td class="border-b whitespace-no-wrap">
+    		                    <div class="flex items-center gap-1">
+    		                        {{-- Tombol Proses --}}
+    		                        <a href="{{ route('service.proses', $row->trans_kode ?? $row->id_costomer) }}"
+    		                           class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold text-white bg-green-500 hover:bg-green-600 transition-colors shadow-sm">
+    		                            <i data-feather="check-square" class="w-3 h-3"></i> Proses
     		                        </a>
-    		                        <a class="flex items-center mr-3 text-theme-6 tombol-hapus" href="{{ url('Customer/delete/'.$row->id_costomer) }}" data-nama="{{ $row->cos_nama }}">
-    		                        	<i data-feather="trash-2" class="w-4 h-4 mr-1"></i> Delete
+    		                        {{-- Tombol Print PDF --}}
+    		                        <a href="{{ route('admin.cetak.print_1', $row->trans_kode) }}" target="_blank"
+    		                           class="inline-flex items-center justify-center w-7 h-7 rounded-md text-white bg-red-500 hover:bg-red-600 transition-colors shadow-sm tooltip" title="Print PDF">
+    		                            <i data-feather="printer" class="w-3 h-3"></i>
     		                        </a>
-    		                        <a class="flex items-center text-theme-1" href="{{ url('Customer/histori/'.$row->trans_kode) }}">
-    		                        	<i data-feather="align-justify" class="w-4 h-4 mr-1"></i> Detail
+    		                        {{-- Tombol WhatsApp --}}
+    		                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $row->cos_hp) }}" target="_blank"
+    		                           class="inline-flex items-center justify-center w-7 h-7 rounded-md text-white bg-green-500 hover:bg-green-600 transition-colors shadow-sm tooltip" title="Kirim WhatsApp">
+    		                            <i data-feather="message-circle" class="w-3 h-3"></i>
+    		                        </a>
+    		                        {{-- Tombol Hapus --}}
+    		                        <a href="{{ url('Customer/delete/'.$row->id_costomer) }}" data-nama="{{ $row->cos_nama }}"
+    		                           class="tombol-hapus inline-flex items-center justify-center w-7 h-7 rounded-md text-white bg-gray-400 hover:bg-gray-500 transition-colors shadow-sm tooltip" title="Hapus">
+    		                            <i data-feather="trash-2" class="w-3 h-3"></i>
     		                        </a>
     		                    </div>
     		                </td>
     		            </tr>
-    				@endforeach
+    			@endforeach
     		</tbody>
     	</table>
     	<div class="mt-5" id="pagination-container">

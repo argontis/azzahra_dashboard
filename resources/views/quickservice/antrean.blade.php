@@ -55,45 +55,50 @@
         
         <div class="col-span-12 lg:col-span-9 xxl:col-span-10">
             <div class="intro-y datatable-wrapper box p-5 mt-6 bg-white shadow-sm rounded-lg border border-gray-100">
-                <table class="table table-report table-report--bordered display datatable w-full">
-                    <thead>
-                        <tr>
-                            <th class="border-b-2 text-center whitespace-no-wrap">NO</th>
-                            <th class="border-b-2 text-center whitespace-no-wrap">INVOICE</th>
-                            <th class="border-b-2 whitespace-no-wrap">NAMA CUSTOMER</th>
-                            <th class="border-b-2 whitespace-no-wrap">ALAMAT</th>
-                            <th class="border-b-2 text-center whitespace-no-wrap">NO HP</th>
-                            <th class="border-b-2 text-center whitespace-no-wrap">ACTIONS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($transaksis as $index => $row)
+                <div class="overflow-x-auto">
+                    <table class="table table-report table-report--bordered w-full">
+                        <thead>
                             <tr>
-                                <td class="text-center border-b">{{ $transaksis->firstItem() + $index }}</td>
-                                <td class="text-center border-b">{{ $row->trans_kode }}</td>
-                                <td class="border-b">{{ $row->customer->cos_nama ?? '-' }}</td>
-                                <td class="border-b">{{ $row->customer->cos_alamat ?? '-' }}</td>
-                                <td class="text-center border-b">
-                                    @php
-                                        $hp = $row->customer->cos_hp ?? '';
-                                        $masked_hp = strlen($hp) > 4 ? substr($hp, 0, -4) . 'XXXX' : $hp;
-                                    @endphp
-                                    {{ $masked_hp }}
-                                </td>
-                                <td class="text-center border-b">
-                                    <div class="flex sm:justify-center items-center">
-                                        <a href="#" class="button px-2 mr-1 mb-2 bg-theme-1 text-white tooltip" title="Print TTS">
-                                            <span class="w-5 h-5 flex items-center justify-center"> <i data-feather="printer" class="w-4 h-4"></i> </span>
-                                        </a>
-                                        <a role="button" onclick="sendToWA('{{ url('/') }}', '{{ $row->customer->cos_hp ?? '' }}', '{{ $row->customer->cos_nama ?? '' }}', '{{ $row->cos_kode }}', '{{ $row->trans_kode }}')" class="button px-2 mr-1 mb-2 bg-green-500 text-white tooltip" title="Kirim WA">
-                                            <span class="w-5 h-5 flex items-center justify-center"> <i data-feather="message-circle" class="w-4 h-4"></i> </span>
-                                        </a>
-                                    </div>
-                                </td>
+                                <th class="border-b-2 text-center whitespace-no-wrap">NO</th>
+                                <th class="border-b-2 text-center whitespace-no-wrap">INVOICE</th>
+                                <th class="border-b-2 whitespace-no-wrap">NAMA CUSTOMER</th>
+                                <th class="border-b-2 whitespace-no-wrap">ALAMAT</th>
+                                <th class="border-b-2 text-center whitespace-no-wrap">NO HP</th>
+                                <th class="border-b-2 text-center whitespace-no-wrap">ACTIONS</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach ($transaksis as $index => $row)
+                                <tr>
+                                    <td class="text-center border-b whitespace-no-wrap">{{ $transaksis->firstItem() + $index }}</td>
+                                    <td class="text-center border-b whitespace-no-wrap font-medium">{{ $row->trans_kode }}</td>
+                                    <td class="border-b whitespace-no-wrap">{{ $row->customer->cos_nama ?? '-' }}</td>
+                                    <td class="border-b whitespace-no-wrap">{{ $row->customer->cos_alamat ?? '-' }}</td>
+                                    <td class="text-center border-b whitespace-no-wrap">
+                                        @php
+                                            $hp = $row->customer->cos_hp ?? '';
+                                            $masked_hp = strlen($hp) > 4 ? substr($hp, 0, -4) . 'XXXX' : $hp;
+                                        @endphp
+                                        {{ $masked_hp }}
+                                    </td>
+                                    <td class="text-center border-b whitespace-no-wrap">
+                                        <div class="flex sm:justify-center items-center">
+                                            <a href="{{ route('service.proses', $row->trans_kode) }}" class="button px-3 py-1.5 mr-1 mb-2 bg-theme-9 text-white tooltip flex items-center justify-center font-medium" title="Proses">
+                                                <i data-feather="check-square" class="w-4 h-4 mr-1"></i> Proses
+                                            </a>
+                                            <a href="{{ route('admin.cetak.print_1', $row->trans_kode) }}" target="_blank" class="button px-2 mr-1 mb-2 bg-theme-6 text-white tooltip" title="Print TTS (PDF)">
+                                                <span class="w-5 h-5 flex items-center justify-center"> <i data-feather="printer" class="w-4 h-4"></i> </span>
+                                            </a>
+                                            <a role="button" onclick="sendToWA('{{ url('/') }}', '{{ $row->customer->cos_hp ?? '' }}', '{{ $row->customer->cos_nama ?? '' }}', '{{ $row->cos_kode }}', '{{ $row->trans_kode }}')" class="button px-2 mr-1 mb-2 bg-theme-9 text-white tooltip" title="Kirim WA">
+                                                <span class="w-5 h-5 flex items-center justify-center"> <i data-feather="message-circle" class="w-4 h-4"></i> </span>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
                 <div class="mt-4">
                     {{ $transaksis->links() }}
                 </div>
@@ -121,7 +126,7 @@
             </div>
             <div class="wizard__line hidden lg:block w-2/3 bg-gray-200 absolute mt-2"></div>
         </div>
-        <form id="transForm" method="post" action="{{ route('quickservice.save_trans') }}" onsubmit="return submitTransForm(this);">
+        <form id="transForm" novalidate method="post" action="{{ route('quickservice.save_trans') }}" onsubmit="return submitTransForm(this);">
             @csrf
             <div class="tab-content">
                 <div class="tab-content__pane active" id="custom">
@@ -129,27 +134,27 @@
                         <div class="font-medium text-base">Data Customer QS</div>
                         <div class="grid grid-cols-12 gap-4 row-gap-5 mt-5">
                             <div class="intro-y col-span-12 sm:col-span-6">
-                                <div class="mb-2">Nama</div>
+                                <div class="mb-2">Nama <span class="text-red-500">*</span></div>
                                 <input type="text" class="input w-full border flex-1" name="nama" required placeholder="Masukan nama customer">
                             </div>
                             <div class="intro-y col-span-12 sm:col-span-6">
-                                <div class="mb-2">No Telepon</div>
+                                <div class="mb-2">No Telepon <span class="text-red-500">*</span></div>
                                 <input type="number" class="input w-full border flex-1" name="tlp" required placeholder="Masukan no tlep customer">
                             </div>
                             <div class="intro-y col-span-12 sm:col-span-6">
                                 <div class="mb-2">Alamat</div>
-                                <textarea class="input w-full border mt-2 flex-1" name="alamat" required></textarea>
+                                <textarea class="input w-full border mt-2 flex-1" name="alamat"></textarea>
                             </div>
                             <div class="intro-y col-span-12 sm:col-span-6">
                                 <div class="mb-2">Cabang</div>
-                                <select class="input w-full border mt-2 flex-1" name="cabang" required>
+                                <select class="input w-full border mt-2 flex-1" name="cabang">
                                     <option value="Tegal" selected>Tegal</option>
                                     <option value="Cibubur">Cibubur</option>
                                 </select>
                             </div>
                             <div class="intro-y col-span-12 sm:col-span-6">
                                 <div class="mb-2">Tanggal Lahir</div>
-                                <input type="date" class="input w-full border flex-1" name="cos_tgl_lahir" required>
+                                <input type="date" class="input w-full border flex-1" name="cos_tgl_lahir">
                             </div>
                         </div>
                     </div>
@@ -160,7 +165,7 @@
                         <div class="grid grid-cols-12 gap-4 row-gap-5 mt-5">
                             <div class="intro-y col-span-12 sm:col-span-6">
                                 <div class="mb-2">Status Garansi</div>
-                                <select class="input w-full border flex-1" name="status" required>
+                                <select class="input w-full border flex-1" name="status">
                                      <option value="">-</option>
                                      <option value="CID">CID</option>
                                      <option value="IW">IW</option>
@@ -169,19 +174,19 @@
                             </div>
                             <div class="intro-y col-span-12 sm:col-span-6">
                                 <div class="mb-2">Device</div>
-                                <input type="text" class="input w-full border flex-1" name="device" required placeholder="Masukan device">
+                                <input type="text" class="input w-full border flex-1" name="device" placeholder="Masukan device">
                             </div>
                             <div class="intro-y col-span-12 sm:col-span-6">
-                                <div class="mb-2">Merk / Type</div>
+                                <div class="mb-2">Merk / Type <span class="text-red-500">*</span></div>
                                 <input type="text" class="input w-full border flex-1" name="type" required placeholder="Masukan type unit">
                             </div>
                             <div class="intro-y col-span-12 sm:col-span-6">
                                 <div class="mb-2">Model</div>
-                                <input type="text" class="input w-full border flex-1" name="model" required placeholder="Masukan model unit">
+                                <input type="text" class="input w-full border flex-1" name="model" placeholder="Masukan model unit">
                             </div>
                             <div class="intro-y col-span-12 sm:col-span-6">
                                 <div class="mb-2">No Seri</div>
-                                <input type="text" class="input w-full border flex-1" name="seri" required placeholder="Masukan no seri">
+                                <input type="text" class="input w-full border flex-1" name="seri" placeholder="Masukan no seri">
                             </div>
                             <div class="intro-y col-span-12 sm:col-span-6">
                                 <div class="mb-2">Tipe Password</div>
@@ -214,12 +219,12 @@
                         <div class="font-medium text-base">Keluhan dan Keterangan</div>
                         <div class="grid grid-cols-12 gap-4 row-gap-5 mt-5">
                             <div class="intro-y col-span-12">
-                                <div class="mb-2">Keluhan</div>
+                                <div class="mb-2">Keluhan <span class="text-red-500">*</span></div>
                                 <textarea class="input w-full border mt-2 flex-1" name="keluhan" required></textarea>
                             </div>
                             <div class="intro-y col-span-12">
                                 <div class="mb-2">Keterangan Tambahan</div>
-                                <textarea class="input w-full border mt-2 flex-1" name="ket" required></textarea>
+                                <textarea class="input w-full border mt-2 flex-1" name="ket"></textarea>
                             </div>
                             <!-- Jika Quick Service, bisa tambahkan checkbox is_quick_service di sini -->
                             <input type="hidden" name="is_quick_service" value="1">
@@ -227,7 +232,7 @@
                     </div>
                     <div class="px-5 py-3 text-right border-t border-gray-200">
                         <button type="button" data-dismiss="modal" class="button w-20 border text-gray-700 mr-1">Cancel</button>
-                        <button type="submit" class="button w-20 bg-theme-1 text-white">Simpan</button>
+                        <button type="submit" id="btnSimpanQS" class="button w-20 bg-theme-1 text-white">Simpan</button>
                     </div>
                 </div>
             </div>
@@ -246,7 +251,54 @@
         }
     }
 
+    function activateTab(tabId) {
+        var $tabLink = $('.wizard a[data-target="' + tabId + '"]');
+        if ($tabLink.length) {
+            $tabLink.trigger('click');
+        }
+    }
+
     function submitTransForm(form) {
+        // Validate Step 1: Data Customer
+        const nama = form.querySelector('[name="nama"]');
+        const tlp = form.querySelector('[name="tlp"]');
+        if (!nama || !nama.value.trim()) {
+            activateTab('#custom');
+            nama.focus();
+            alert('Mohon isi Nama Customer di Step 1 (Data Customer)');
+            return false;
+        }
+        if (!tlp || !tlp.value.trim()) {
+            activateTab('#custom');
+            tlp.focus();
+            alert('Mohon isi No Telepon Customer di Step 1 (Data Customer)');
+            return false;
+        }
+
+        // Validate Step 2: Data Unit
+        const type = form.querySelector('[name="type"]');
+        if (!type || !type.value.trim()) {
+            activateTab('#unit');
+            type.focus();
+            alert('Mohon isi Merk / Type Unit di Step 2 (Data Unit)');
+            return false;
+        }
+
+        // Validate Step 3: Keluhan
+        const keluhan = form.querySelector('[name="keluhan"]');
+        if (!keluhan || !keluhan.value.trim()) {
+            activateTab('#kelket');
+            keluhan.focus();
+            alert('Mohon isi Keluhan di Step 3 (Keluhan & Keterangan)');
+            return false;
+        }
+
+        var btn = form.querySelector('#btnSimpanQS');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerText = 'Menyimpan...';
+        }
+
         var formData = new FormData(form);
         fetch(form.action, {
             method: 'POST',
@@ -256,19 +308,25 @@
             },
             body: formData
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                $('#add-new-costom').modal('hide');
-                alert('DATA BERHASIL DI TAMBAHKAN');
-                window.location.reload();
-            } else {
-                alert('Terjadi kesalahan pada respon server');
+        .then(async response => {
+            const data = await response.json();
+            if (!response.ok || data.status !== 'success') {
+                throw new Error(data.message || 'Terjadi kesalahan pada respon server');
             }
+            return data;
+        })
+        .then(data => {
+            $('#add-new-costom').modal('hide');
+            alert('DATA BERHASIL DI TAMBAHKAN');
+            window.location.reload();
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Terjadi kesalahan jaringan');
+            alert(error.message || 'Terjadi kesalahan jaringan');
+            if (btn) {
+                btn.disabled = false;
+                btn.innerText = 'Simpan';
+            }
         });
         return false;
     }

@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Transaksi;
 use App\Models\TransaksiDetail;
-use App\Models\Tindakan;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
 
 class CetakController extends Controller
 {
@@ -18,7 +17,7 @@ class CetakController extends Controller
         return $this->generate_invoice($param, $request, 'print_1');
     }
 
-    public function download($trans_kode, $dtl_status = 'PELUNASAN', Request $request)
+    public function download($trans_kode, $dtl_status, Request $request)
     {
         return $this->generate_invoice($trans_kode, $request, 'download', $dtl_status);
     }
@@ -27,7 +26,7 @@ class CetakController extends Controller
     {
         // For simplicity, we assume $param is trans_kode
         $trans = Transaksi::with(['customer', 'tindakan', 'transaksi_details'])->where('trans_kode', $param)->firstOrFail();
-        
+
         $customer = $trans->customer;
         $barang = $trans->tindakan;
         $pembayaran = $trans->transaksi_details;
@@ -37,9 +36,9 @@ class CetakController extends Controller
 
         if ($type == 'download') {
             $detail = TransaksiDetail::where('trans_kode', $param)
-                        ->where('dtl_status', $dtl_status)
-                        ->orderBy('dtl_kode', 'desc')
-                        ->first();
+                ->where('dtl_status', $dtl_status)
+                ->orderBy('dtl_kode', 'desc')
+                ->first();
 
             if ($dtl_status == 'DP' && $detail) {
                 $dp = $detail->dtl_jml_bayar;
@@ -51,7 +50,7 @@ class CetakController extends Controller
             }
         }
 
-        $total_barang = $barang->sum(function($b) {
+        $total_barang = $barang->sum(function ($b) {
             return ($b->tdkn_qty ?? 1) * $b->tdkn_subtot;
         });
 
@@ -79,7 +78,11 @@ class CetakController extends Controller
         }
 
         $pdf = Pdf::loadView('cetak.invoice', $data)->setPaper('a4', 'landscape');
-        return $pdf->stream('Invoice_' . $trans->trans_kode . '.pdf');
+        if ($request->get('stream')) {
+            return $pdf->stream('Invoice_'.$trans->trans_kode.'.pdf');
+        }
+
+        return $pdf->download('Invoice_'.$trans->trans_kode.'.pdf');
     }
 
     /**
@@ -109,24 +112,24 @@ class CetakController extends Controller
     private function generate_thermal($trans_kode, $title, $section_title, $output_prefix, $filter_status = null)
     {
         $trans = Transaksi::with(['customer', 'tindakan', 'transaksi_details'])->where('trans_kode', $trans_kode)->firstOrFail();
-        
+
         $customer = $trans->customer;
         $barang = $trans->tindakan;
-        
+
         $bayar = null;
         if ($filter_status) {
             $bayar = TransaksiDetail::where('trans_kode', $trans_kode)
-                        ->where('dtl_status', $filter_status)
-                        ->orderBy('dtl_kode', 'desc')
-                        ->first();
+                ->where('dtl_status', $filter_status)
+                ->orderBy('dtl_kode', 'desc')
+                ->first();
         } else {
             $bayar = TransaksiDetail::where('trans_kode', $trans_kode)
-                        ->orderBy('dtl_kode', 'desc')
-                        ->first();
+                ->orderBy('dtl_kode', 'desc')
+                ->first();
         }
 
-        if (!$bayar) {
-            $bayar = (object)[
+        if (! $bayar) {
+            $bayar = (object) [
                 'dtl_tanggal' => date('Y-m-d H:i:s'),
                 'dtl_status' => $filter_status ?? 'PELUNASAN',
                 'dtl_jenis_bayar' => '-',
@@ -146,9 +149,10 @@ class CetakController extends Controller
         ];
 
         // 80mm width thermal = 226.77 pt
-        $customPaper = array(0,0,226.77,800); // long height, auto-cuts depending on printer, PDF will just be a long page.
+        $customPaper = [0, 0, 226.77, 800]; // long height, auto-cuts depending on printer, PDF will just be a long page.
         $pdf = Pdf::loadView('cetak.thermal', $data)->setPaper($customPaper, 'portrait');
-        return $pdf->stream($output_prefix . '_' . date('Y-m-d_H-i-s') . '.pdf');
+
+        return $pdf->stream($output_prefix.'_'.date('Y-m-d_H-i-s').'.pdf');
     }
 
     /**
@@ -164,6 +168,7 @@ class CetakController extends Controller
         ];
 
         $pdf = Pdf::loadView('cetak.pengakuan', $data)->setPaper('a4', 'portrait');
-        return $pdf->stream('Pengakuan_' . $trans_kode . '.pdf');
+
+        return $pdf->stream('Pengakuan_'.$trans_kode.'.pdf');
     }
 }

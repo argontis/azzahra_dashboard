@@ -767,7 +767,7 @@ body {
 }
 /* Content area diberi jarak dari header */
 .content-area {
-    margin-top: 100px; /* header height + extra space */
+    margin-top: 75px; /* header height + extra space */
     padding: 20px;
 }
 
