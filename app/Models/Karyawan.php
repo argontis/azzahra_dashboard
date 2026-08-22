@@ -14,6 +14,7 @@ class Karyawan extends Authenticatable
     protected $primaryKey = 'kry_kode';
 
     protected $fillable = [
+        'kry_nik',
         'kry_username',
         'kry_pswd',
         'kry_nama',

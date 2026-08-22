@@ -193,21 +193,13 @@
                                 <div class="nav-icon"><i data-feather="clock"></i></div>
                                 <span class="nav-text">Absensi</span>
                             </a>
-                            <a href="{{ url('HR/kpi') }}" class="nav-link {{ $title == 'KPI Karyawan' ? 'active' : '' }}">
+                            <a href="{{ url('HR/kpi') }}" class="nav-link {{ ($title == 'KPI Karyawan' || $title == 'KPI' || $title == 'Laporan Mingguan') ? 'active' : '' }}">
                                 <div class="nav-icon"><i data-feather="bar-chart-2"></i></div>
                                 <span class="nav-text">KPI</span>
                             </a>
                             <a href="{{ url('HR/interview') }}" class="nav-link {{ $title == 'Interview Kandidat' ? 'active' : '' }}">
                                 <div class="nav-icon"><i data-feather="user-check"></i></div>
                                 <span class="nav-text">Interview</span>
-                            </a>
-                            <a href="{{ url('HR/pencatatan') }}" class="nav-link {{ $title == 'Pencatatan Barang' ? 'active' : '' }}">
-                                <div class="nav-icon"><i data-feather="package"></i></div>
-                                <span class="nav-text">Pencatatan Keuangan</span>
-                            </a>
-                            <a href="{{ url('HR/laporan_mingguan') }}" class="nav-link {{ $title == 'Laporan Mingguan' ? 'active' : '' }}">
-                                <div class="nav-icon"><i data-feather="edit-3"></i></div>
-                                <span class="nav-text">Laporan Mingguan</span>
                             </a>
                             <a href="{{ url('HR/rekap') }}" class="nav-link {{ $title == 'Rekap HR' ? 'active' : '' }}">
                                 <div class="nav-icon"><i data-feather="file-text"></i></div>
@@ -216,10 +208,6 @@
                             <a href="{{ url('HR/certificate_generator') }}" class="nav-link {{ $title == 'Generator Sertifikat' ? 'active' : '' }}">
                                 <div class="nav-icon"><i data-feather="award"></i></div>
                                 <span class="nav-text">Sertifikat</span>
-                            </a>
-                            <a href="{{ url('HR/arsip') }}" class="nav-link {{ $title == 'Arsip Dokumen' ? 'active' : '' }}">
-                                <div class="nav-icon"><i data-feather="archive"></i></div>
-                                <span class="nav-text">Arsip</span>
                             </a>
                              <a href="{{ url('Admin/mou') }}" class="nav-link {{ ($title == 'Mou' || $title == 'Rekap MOU') ? 'active' : '' }}">
                                 <div class="nav-icon"><i data-feather="file-text"></i></div>

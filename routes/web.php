@@ -71,9 +71,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/karyawan', [HrController::class, 'karyawan'])->name('hr.karyawan');
         Route::get('/export_karyawan', [HrController::class, 'export_pdf'])->name('hr.export_karyawan');
         Route::post('/save_karyawan', [HrController::class, 'save_karyawan'])->name('hr.save_karyawan');
+        Route::post('/save_magang', [HrController::class, 'save_magang'])->name('hr.save_magang');
         Route::post('/update_karyawan', [HrController::class, 'update_karyawan'])->name('hr.update_karyawan');
         Route::get('/delete_karyawan/{kode}', [HrController::class, 'delete_karyawan'])->name('hr.delete_karyawan');
-    
+
         Route::get('/rekap', [HrController::class, 'rekap'])->name('hr.rekap');
         Route::get('/absensi', [HrController::class, 'absensi'])->name('hr.absensi');
         Route::post('/absensi', [HrController::class, 'save_absensi'])->name('hr.save_absensi');
@@ -81,27 +82,25 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/kpi', [HrController::class, 'kpi'])->name('hr.kpi');
         Route::post('/kpi', [HrController::class, 'save_kpi'])->name('hr.save_kpi');
+        Route::post('/kpi/import', [HrController::class, 'import_kpi'])->name('hr.import_kpi');
+        Route::get('/kpi/template', [HrController::class, 'template_kpi'])->name('hr.template_kpi');
         Route::post('/kpi/delete/{id}', [HrController::class, 'delete_kpi'])->name('hr.delete_kpi');
-
-        Route::get('/arsip', [HrController::class, 'arsip'])->name('hr.arsip');
-        Route::post('/arsip', [HrController::class, 'save_arsip'])->name('hr.save_arsip');
-        Route::post('/arsip/delete/{id}', [HrController::class, 'delete_arsip'])->name('hr.delete_arsip');
 
         Route::get('/input_performance', [HrController::class, 'input_performance'])->name('hr.input_performance');
         Route::post('/input_performance/save', [HrController::class, 'save_performance'])->name('hr.save_performance');
         Route::get('/certificate_generator', [HrController::class, 'certificate_generator'])->name('hr.certificate_generator');
-        Route::get('/calculate_performance', [\App\Http\Controllers\HrController::class, 'calculate_performance'])->name('hr.calculate_performance');
+        Route::get('/calculate_performance', [HrController::class, 'calculate_performance'])->name('hr.calculate_performance');
 
-        Route::get('/interview', [\App\Http\Controllers\HrController::class, 'interview'])->name('hr.interview');
-        Route::post('/interview/save', [\App\Http\Controllers\HrController::class, 'save_interview'])->name('hr.interview.save');
-    
+        Route::get('/interview', [HrController::class, 'interview'])->name('hr.interview');
+        Route::post('/interview/save', [HrController::class, 'save_interview'])->name('hr.interview.save');
+
         Route::get('/laporan_mingguan', [HrController::class, 'laporan_mingguan'])->name('hr.laporan_mingguan');
         Route::post('/laporan_mingguan', [HrController::class, 'save_laporan_mingguan'])->name('hr.save_laporan_mingguan');
         Route::post('/laporan_mingguan/delete/{id}', [HrController::class, 'delete_laporan_mingguan'])->name('hr.delete_laporan_mingguan');
 
-        Route::get('/pencatatan', [HrController::class, 'pencatatan'])->name('hr.pencatatan');
-        Route::post('/pencatatan', [HrController::class, 'save_pencatatan'])->name('hr.save_pencatatan');
-        Route::post('/pencatatan/delete/{id}', [HrController::class, 'delete_pencatatan'])->name('hr.delete_pencatatan');
+        // Route::get('/pencatatan', [HrController::class, 'pencatatan'])->name('hr.pencatatan');
+        // Route::post('/pencatatan', [HrController::class, 'save_pencatatan'])->name('hr.save_pencatatan');
+        // Route::post('/pencatatan/delete/{id}', [HrController::class, 'delete_pencatatan'])->name('hr.delete_pencatatan');
     });
 
     // ==========================================
@@ -158,7 +157,7 @@ Route::middleware(['auth'])->group(function () {
     }); // <-- Batas akhir Group Admin khusus Admin
 
     // ==========================================
-    // MODULE MOU (Diletakkan di luar group Admin khusus, 
+    // MODULE MOU (Diletakkan di luar group Admin khusus,
     // agar bisa diakses Admin, HR, Kasir, dan CS tanpa error 403/404)
     // ==========================================
     Route::prefix('Admin')->middleware('role:Admin,HR,Kasir,Customer Service')->group(function () {

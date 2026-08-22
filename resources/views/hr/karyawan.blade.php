@@ -21,14 +21,22 @@
         </header>
 <div class="content-area">
 	<div class="sukses" data-sukses="{{ session('sukses') }}"></div>
+
+    @if(session('error'))
+    <div class="alert alert-danger bg-red-100 text-red-800 p-4 rounded-lg mt-4 flex items-center gap-2 border border-red-200">
+        <i data-feather="alert-circle" class="w-5 h-5 text-red-600"></i>
+        <span>{{ session('error') }}</span>
+    </div>
+    @endif
 	
     <div class="intro-y datatable-wrapper box p-5 mt-5">
     	<table class="table table-report table-report--bordered display datatable w-full mt-5">
     		<thead>
     			<tr>
-    				<th class="border-b-2 text-center whitespace-no-wrap">NO</th>
-    				<th class="border-b-2 text-center whitespace-no-wrap">NIK KARYAWAN</th>
-                    <th class="border-b-2 whitespace-no-wrap">NAMA KARYAWAN</th>
+    				<th class="border-b-2 text-center whitespace-no-wrap" style="width: 5%;">NO</th>
+    				<th class="border-b-2 text-center whitespace-no-wrap">NIK</th>
+    				<th class="border-b-2 text-center whitespace-no-wrap">RFID</th>
+                    <th class="border-b-2 whitespace-no-wrap">NAMA LENGKAP KARYAWAN</th>
                     <th class="border-b-2 whitespace-no-wrap">ALAMAT</th>
                     <th class="border-b-2 text-center whitespace-no-wrap">NO HP</th>
                     <th class="border-b-2 text-center whitespace-no-wrap">JABATAN</th>
@@ -37,23 +45,15 @@
     		</thead>
     		<tbody>
     			@foreach ($karyawan_list as $index => $row)
-	    				
-	    				<?php
-	    				if ($row->kry_nama != 'Qymous Code') :?>
+	    				@if ($row->kry_nama != 'Qymous Code')
 	    					<tr>
 		    					<td class="text-center border-b">{{ $loop->iteration }}</td>
-			                    <td class="text-center border-b">{{ $row->kry_nik ?? '-' }}</td>
-			                    <td class="border-b">
-			                    	<div class="font-medium whitespace-no-wrap">
-			                    		{{ $row->kry_nama }}
-			                    	</div>
-			                        <div class="text-gray-600 text-xs whitespace-no-wrap">
-			                        	USERNAME : {{ $row->kry_username }}
-			                        </div>
-			                    </td>
+			                    <td class="text-center border-b font-mono">{{ $row->kry_nik ?? '-' }}</td>
+			                    <td class="text-center border-b font-mono font-semibold text-blue-600">{{ $row->kry_username ?? '-' }}</td>
+			                    <td class="border-b font-medium">{{ $row->kry_nama }}</td>
 			                    <td class="border-b">{{ $row->kry_alamat ?? '-' }}</td>
-			                    <td class="text-center border-b">{{ $row->kry_telp }}</td>
-			                    <td class="text-center border-b">{{ $row->kry_level }}</td>
+			                    <td class="text-center border-b">{{ $row->kry_telp ?? '-' }}</td>
+			                    <td class="text-center border-b">{{ $row->kry_level ?? '-' }}</td>
 			                    <td class="border-b w-5">
 			                        <div class="flex sm:justify-center items-center">
 			                            <a class="flex items-center mr-3" role="button" data-toggle="modal" data-target="#edit-karyawan-{{ $row->kry_kode }}"> 
@@ -66,184 +66,240 @@
 			                    </td>
 			                </tr>
 	    				@endif
-	    				.
 	    			@endforeach    			
     		</tbody>
     	</table>
     </div>
-<!-- modal tambah-->
-<div class="modal" id="add-new-karyawan">
-    <div class="modal__content modal__content--xl p-10">
-		<div class="intro-y box px-5 pt-5 mt-5">
-			<div class="flex flex-col lg:flex-row border-b border-gray-200 pb-5 -mx-5">
-				<div class="flex flex-1 px-5 items-center justify-center lg:justify-start">
-                    <div class="w-20 h-20 sm:w-24 sm:h-24 flex-none lg:w-32 lg:h-32 image-fit relative">
-                        <img alt="Midone Tailwind HTML Admin Template" class="rounded-full" src="<?php echo url('/'); ?>assets/template/beck/dist/images/profile-14.jpg">
-                        <div class="absolute mb-1 mr-1 flex items-center justify-center bottom-0 right-0 bg-theme-1 rounded-full p-2"> <i class="w-4 h-4 text-white" data-feather="camera"></i> </div>
-                    </div>
-                    <div class="ml-5">
-                        <div class="w-24 sm:w-40 truncate sm:whitespace-normal font-medium text-lg">Azzahra Computer</div>
-                        <div class="text-gray-600">Tegal</div>
-                    </div>
-                </div>
-                <div class="flex mt-12 lg:mt-0 items-center lg:items-start flex-1 flex-col justify-center text-gray-600 px-5 border-l border-r border-gray-400 border-t lg:border-t-0 pt-5 lg:pt-0">
-                    <div class="truncate sm:whitespace-normal flex items-center"> <i data-feather="mail" class="w-4 h-4 mr-2"></i> azzhra@gmail.com </div>
-                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-feather="instagram" class="w-4 h-4 mr-2"></i> Azzahra computer </div>
-                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-feather="twitter" class="w-4 h-4 mr-2"></i> Azzahra computer </div>
-                </div>
-			</div>
-		</div>
-		<div class="flex items-center px-5 py-5 sm:py-3 border-b border-gray-200">
-			<div class="nav-tabs flex flex-col sm:flex-row justify-center lg:justify-start"> 
-            	<a data-toggle="tab" data-target="#profile" role="button" class="py-4 sm:mr-8 active">Profile</a> 
-            	<a data-toggle="tab" data-target="#account" role="button" class="py-4 sm:mr-8">Account</a>
+
+    <!-- Header & Button untuk Magang / PKL -->
+    <div class="intro-y flex flex-col sm:flex-row items-center justify-between mt-10">
+        <h2 class="text-lg font-medium flex items-center">
+            <i data-feather="book-open" class="w-5 h-5 inline-block mr-2 text-blue-600"></i>Daftar Magang / PKL
+        </h2>
+        <a role="button" class="button text-white bg-theme-1 shadow-md" data-toggle="modal" data-target="#add-new-magang">
+            + Tambah Magang / PKL
+        </a>
+    </div>
+
+    <!-- Tabel Data Magang / PKL -->
+    <div class="intro-y datatable-wrapper box p-5 mt-5">
+        <table class="table table-report table-report--bordered display datatable w-full">
+            <thead>
+                <tr>
+                    <th class="border-b-2 text-center whitespace-no-wrap" style="width: 5%;">NO</th>
+                    <th class="border-b-2 text-center whitespace-no-wrap">RFID</th>
+                    <th class="border-b-2 whitespace-no-wrap">NAMA LENGKAP</th>
+                    <th class="border-b-2 whitespace-no-wrap">ALAMAT</th>
+                    <th class="border-b-2 text-center whitespace-no-wrap">NO HP</th>
+                    <th class="border-b-2 text-center whitespace-no-wrap">ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($magang_list as $index => $m)
+                <tr>
+                    <td class="text-center border-b">{{ $loop->iteration }}</td>
+                    <td class="text-center border-b font-mono font-semibold text-blue-600">{{ $m->kry_username }}</td>
+                    <td class="border-b font-medium">{{ $m->kry_nama }}</td>
+                    <td class="border-b">{{ $m->kry_alamat ?? '-' }}</td>
+                    <td class="text-center border-b">{{ $m->kry_telp ?? '-' }}</td>
+                    <td class="border-b w-5">
+                        <div class="flex sm:justify-center items-center">
+                            <a class="flex items-center mr-3" role="button" data-toggle="modal" data-target="#edit-magang-{{ $m->kry_kode }}"> 
+                                <i data-feather="check-square" class="w-4 h-4 mr-1"></i> Edit 
+                            </a>
+                            <a class="flex items-center text-theme-6 tombol-hapus" href="{{ url('HR/delete_karyawan/'.$m->kry_kode) }}" data-nama="{{ $m->kry_nama }}"> 
+                                <i data-feather="trash-2" class="w-4 h-4 mr-1"></i> Delete 
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="6" class="text-center border-b p-6 text-gray-500 italic">Belum ada data Magang / PKL.</td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+<!-- modal tambah magang/pkl -->
+<div class="modal" id="add-new-magang">
+    <div class="modal__content modal__content--lg p-6">
+        <div class="flex items-center px-5 py-4 border-b border-gray-200">
+            <h2 class="font-bold text-lg text-gray-800 mr-auto">Tambah Peserta Magang / PKL</h2>
+            <button type="button" data-dismiss="modal" class="button border text-gray-700">&times;</button>
+        </div>
+        <form method="POST" action="{{ route('hr.save_magang') }}" class="p-5">
+            @csrf
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Kode / Kartu RFID *</label>
+                <input type="text" name="rfid" class="input w-full border rounded p-2 text-sm" placeholder="Contoh: 0008168066 (dapat di-scan dengan alat USB RFID Reader)" required>
             </div>
-		</div>
-		<form method="post" action="{{ url('HR/save_karyawan') }}">
-			@csrf
-			<div class="tab-content">
-				<div class="tab-content__pane active" id="profile">
-					<div class="p-5 grid grid-cols-12 gap-4 row-gap-3">
-						<div class="col-span-12 sm:col-span-6">
-		                    <label>NIK</label>
-		                    
-		                    <input type="text" class="input w-full border mt-2 flex-1" placeholder="Masukan nik sesuai KTP" name="nik" value="''" required oninvalid="this.setCustomValidity('NIK tidak boleh kosong ?')" oninput="setCustomValidity('')">
-		                </div>
-		                <div class="col-span-12 sm:col-span-6">
-		                    <label>Nama</label>
-		                    <input type="text" class="input w-full border mt-2 flex-1" placeholder="Nama karyawan" name="nama" required oninvalid="this.setCustomValidity('Nama tidak boleh kosong ?')" oninput="setCustomValidity('')">
-		                </div>
-		                <div class="col-span-12 sm:col-span-6">
-		                    <label>Tempat</label>
-		                    <input type="text" class="input w-full border mt-2 flex-1" placeholder="Tempat Lahir" name="tempat" required oninvalid="this.setCustomValidity('Tempat lahir tidak boleh kosong ?')" oninput="setCustomValidity('')">
-		                </div>
-		                <div class="col-span-12 sm:col-span-6">
-		                    <label>Tanggal Lahir</label>
-		                    <input type="date" class="input w-full border mt-2 flex-1" name="tgl_lahir" required oninvalid="this.setCustomValidity('Tanggal lahir tidak boleh kosong ?')" oninput="setCustomValidity('')">
-		                </div>
-		                <div class="col-span-12">
-		                    <label>Alamat</label>
-		                    <textarea class="input w-full border mt-2 flex-1" name="alamat" required oninvalid="this.setCustomValidity('Alamat tidak boleh kosong ?')" oninput="setCustomValidity('')"></textarea>
-		                </div>
-		                 <div class="col-span-12 sm:col-span-6">
-		                    <label>No Telp</label>
-		                    <input type="text" class="input w-full border mt-2 flex-1" placeholder="Masukan no tlephone" name="tlp" required oninvalid="this.setCustomValidity('No hp tidak boleh kosong ?')" oninput="setCustomValidity('')">
-		                </div>
-		                <div class="col-span-12 sm:col-span-6">
-		                    <label>Tanggal Masuk</label>
-		                    <input type="date" class="input w-full border mt-2 flex-1" name="tgl_masuk" required oninvalid="this.setCustomValidity('Tanggal masuk tidak boleh kosong ?')" oninput="setCustomValidity('')">
-		                </div>
-					</div>
-				</div>
-				<div class="tab-content__pane" id="account">
-					<div class="p-5 grid grid-cols-12 gap-4 row-gap-3">
-						<div class="col-span-12">
-		                    <label>Jabatan</label>
-		                    <select class="input w-full border mt-2 flex-1" name="level" required oninvalid="this.setCustomValidity('Jabatan tidak boleh kosong ?')" oninput="setCustomValidity('')">
-		                <option value="">-</option>
-		                <option value="Admin">Admin</option>
-		                <option value="Kasir">Kasir</option>
-		                <option value="Customer Service">Customer Service</option>
-		                <option value="Teknisi">Teknisi</option>
-		                <option value="HR">HR</option>
-		            </select>
-		                </div>
-		                <div class="col-span-12">
-		                    <label>Username</label>
-		                    
-		                    <input type="text" class="input w-full border mt-2 flex-1" placeholder="Username" name="username" value="''" required oninvalid="this.setCustomValidity('Username tidak boleh kosong ?')" oninput="setCustomValidity('')">
-		                </div>
-		                <div class="col-span-12">
-		                    <label>Password</label>
-		                    <input type="password" class="input w-full border mt-2 flex-1" placeholder="Password" name="pswd" required oninvalid="this.setCustomValidity('Password tidak boleh kosong ?')" oninput="setCustomValidity('')">
-		                </div>
-					</div>
-				</div>
-			</div>			
-			<div class="px-5 py-3 text-right border-t border-gray-200">
-	            <button type="button" data-dismiss="modal" class="button w-20 border text-gray-700 mr-1">Cancel</button>
-	            <button type="submit" class="button w-20 bg-theme-1 text-white">Simpan</button>
-	        </div>
-		</form>		
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap *</label>
+                <input type="text" name="nama" class="input w-full border rounded p-2 text-sm" placeholder="Nama lengkap siswa / mahasiswa Magang PKL" required>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Alamat</label>
+                <textarea name="alamat" class="input w-full border rounded p-2 text-sm" rows="2" placeholder="Alamat lengkap"></textarea>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-1">No HP</label>
+                <input type="text" name="tlp" class="input w-full border rounded p-2 text-sm" placeholder="Nomor telepon / WhatsApp">
+            </div>
+
+            <div class="flex justify-end gap-2 pt-4 border-t border-gray-200">
+                <button type="button" data-dismiss="modal" class="button border text-gray-700 px-4 py-2">Batal</button>
+                <button type="submit" class="button bg-theme-1 text-white px-4 py-2 font-semibold">Simpan Magang / PKL</button>
+            </div>
+        </form>
     </div>
 </div>
-<!-- modal -->
+
+@foreach ($magang_list as $m)
+<div class="modal" id="edit-magang-{{ $m->kry_kode }}">
+    <div class="modal__content modal__content--lg p-6">
+        <div class="flex items-center px-5 py-4 border-b border-gray-200">
+            <h2 class="font-bold text-lg text-gray-800 mr-auto">Edit Data Magang / PKL</h2>
+            <button type="button" data-dismiss="modal" class="button border text-gray-700">&times;</button>
+        </div>
+        <form method="POST" action="{{ route('hr.update_karyawan') }}" class="p-5">
+            @csrf
+            <input type="hidden" name="kode" value="{{ $m->kry_kode }}">
+            <input type="hidden" name="level" value="Magang / PKL">
+
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Kode / Kartu RFID</label>
+                <input type="text" name="username" value="{{ $m->kry_username }}" class="input w-full border rounded p-2 text-sm" required>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap</label>
+                <input type="text" name="nama" value="{{ $m->kry_nama }}" class="input w-full border rounded p-2 text-sm" required>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Alamat</label>
+                <textarea name="alamat" class="input w-full border rounded p-2 text-sm" rows="2">{{ $m->kry_alamat }}</textarea>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-1">No HP</label>
+                <input type="text" name="tlp" value="{{ $m->kry_telp }}" class="input w-full border rounded p-2 text-sm">
+            </div>
+
+            <div class="flex justify-end gap-2 pt-4 border-t border-gray-200">
+                <button type="button" data-dismiss="modal" class="button border text-gray-700 px-4 py-2">Batal</button>
+                <button type="submit" class="button bg-theme-1 text-white px-4 py-2 font-semibold">Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endforeach
+<!-- modal tambah-->
+<!-- modal tambah karyawan -->
+<div class="modal" id="add-new-karyawan">
+    <div class="modal__content modal__content--lg p-6">
+        <div class="flex items-center px-5 py-4 border-b border-gray-200">
+            <h2 class="font-bold text-lg text-gray-800 mr-auto">Tambah Karyawan Baru</h2>
+            <button type="button" data-dismiss="modal" class="button border text-gray-700">&times;</button>
+        </div>
+        <form method="POST" action="{{ url('HR/save_karyawan') }}" class="p-5">
+            @csrf
+            <div class="grid grid-cols-12 gap-4">
+                <div class="col-span-12 sm:col-span-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">NIK *</label>
+                    <input type="text" name="nik" class="input w-full border rounded p-2 text-sm" placeholder="Masukan NIK KTP" required>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Kode / Kartu RFID *</label>
+                    <input type="text" name="username" class="input w-full border rounded p-2 text-sm" placeholder="Scan Kartu RFID / ID" required>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap Karyawan *</label>
+                    <input type="text" name="nama" class="input w-full border rounded p-2 text-sm" placeholder="Nama lengkap karyawan" required>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Jabatan *</label>
+                    <select name="level" class="input w-full border rounded p-2 text-sm" required>
+                        <option value="">-- Pilih Jabatan --</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Kasir">Kasir</option>
+                        <option value="Customer Service">Customer Service</option>
+                        <option value="Teknisi">Teknisi</option>
+                        <option value="HR">HR</option>
+                    </select>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">No HP *</label>
+                    <input type="text" name="tlp" class="input w-full border rounded p-2 text-sm" placeholder="Nomor telepon / WhatsApp" required>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+                    <input type="password" name="pswd" class="input w-full border rounded p-2 text-sm" placeholder="Default: 123456">
+                </div>
+                <div class="col-span-12">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Alamat</label>
+                    <textarea name="alamat" class="input w-full border rounded p-2 text-sm" rows="2" placeholder="Alamat lengkap"></textarea>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-4 border-t border-gray-200 mt-4">
+                <button type="button" data-dismiss="modal" class="button border text-gray-700 px-4 py-2">Batal</button>
+                <button type="submit" class="button bg-theme-1 text-white px-4 py-2 font-semibold">Simpan Karyawan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 @foreach ($karyawan_list as $row)
-	<div class="modal" id="edit-karyawan-{{ $row->kry_kode }}">
-	    <div class="modal__content modal__content--xl p-10">
-			<div class="intro-y box px-5 pt-5 mt-5">
-				<div class="flex flex-col lg:flex-row border-b border-gray-200 pb-5 -mx-5">
-					<div class="flex flex-1 px-5 items-center justify-center lg:justify-start">
-	                    <div class="w-20 h-20 sm:w-24 sm:h-24 flex-none lg:w-32 lg:h-32 image-fit relative">
-	                        <img alt="Midone Tailwind HTML Admin Template" class="rounded-full" src="<?php echo url('/'); ?>assets/template/beck/dist/images/profile-14.jpg">
-	                        <div class="absolute mb-1 mr-1 flex items-center justify-center bottom-0 right-0 bg-theme-1 rounded-full p-2"> <i class="w-4 h-4 text-white" data-feather="camera"></i> </div>
-	                    </div>
-	                    <div class="ml-5">
-	                        <div class="w-24 sm:w-40 truncate sm:whitespace-normal font-medium text-lg">{{ $row->kry_nama }}</div>
-	                        <div class="text-gray-600">{{ $row->kry_level }}</div>
-	                    </div>
-	                </div>
-	                <div class="flex mt-12 lg:mt-0 items-center lg:items-start flex-1 flex-col justify-center text-gray-600 px-5 border-l border-r border-gray-400 border-t lg:border-t-0 pt-5 lg:pt-0">
-	                    <div class="truncate sm:whitespace-normal flex items-center"> <i data-feather="mail" class="w-4 h-4 mr-2"></i> russellcrowe@left4code.com </div>
-	                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-feather="instagram" class="w-4 h-4 mr-2"></i> Instagram Russell Crowe </div>
-	                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-feather="twitter" class="w-4 h-4 mr-2"></i> Twitter Russell Crowe </div>
-	                </div>
-				</div>
-			</div>
-			<div class="flex items-center px-5 py-5 sm:py-3 border-b border-gray-200">
-				<div class="nav-tabs flex flex-col sm:flex-row justify-center lg:justify-start"> 
-	            	<a data-toggle="tab" data-target="#edit-profile" role="button" class="py-4 sm:mr-8 active">Profile</a>
-	            </div>
-			</div>
-			<form method="post" action="{{ url('HR/update_karyawan') }}">
-				@csrf
-				<div class="tab-content">
-					<div class="tab-content__pane active" id="edit-profile">
-						<div class="p-5 grid grid-cols-12 gap-4 row-gap-3">
-							<div class="col-span-12 sm:col-span-6">
-			                    <label>NIK</label>
-			                    <input type="text" name="kode" value="{{ $row->kry_kode }}" hidden>
-			                    
-			                    <input type="text" class="input w-full border mt-2 flex-1" placeholder="Masukan nik sesuai KTP" name="nik" value="{{ $row->kry_nik ?? '-'; }}" required oninvalid="this.setCustomValidity('NIK tidak boleh kosong ?')" oninput="setCustomValidity('')">
-			                </div>
-			                <div class="col-span-12 sm:col-span-6">
-			                    <label>Nama</label>
-			                    <input type="text" class="input w-full border mt-2 flex-1" placeholder="Nama karyawan" name="nama" value="{{ $row->kry_nama; }}" required oninvalid="this.setCustomValidity('Nama tidak boleh kosong ?')" oninput="setCustomValidity('')">
-			                </div>
-			                <div class="col-span-12 sm:col-span-6">
-			                    <label>Tempat</label>
-			                    <input type="text" class="input w-full border mt-2 flex-1" placeholder="Tempat Lahir" name="tempat" value="{{ $row->kry_tempat ?? '-'; }}"required oninvalid="this.setCustomValidity('Tempat lahir tidak boleh kosong ?')" oninput="setCustomValidity('')">
-			                </div>
-			                <div class="col-span-12 sm:col-span-6">
-			                    <label>Tanggal Lahir</label>
-			                    <input type="date" class="input w-full border mt-2 flex-1" name="tgl_lahir" value="{{ $row->kry_tgl_lahir ?? ''; }}" required oninvalid="this.setCustomValidity('Tanggal lahir tidak boleh kosong ?')" oninput="setCustomValidity('')">
-			                </div>
-			                <div class="col-span-12">
-			                    <label>Alamat</label>
-			                    <textarea class="input w-full border mt-2 flex-1" name="alamat" required oninvalid="this.setCustomValidity('Alamat tidak boleh kosong ?')" oninput="setCustomValidity('')">{{ $row->kry_alamat ?? '-'; }}</textarea>
-			                </div>
-			                 <div class="col-span-12">
-			                    <label>No Telp</label>
-			                    <input type="text" class="input w-full border mt-2 flex-1" placeholder="Masukan no tlephone" name="tlp" value="{{ $row->kry_telp; }}" required oninvalid="this.setCustomValidity('No hp tidak boleh kosong ?')" oninput="setCustomValidity('')">
-			                </div>
-			                <div class="col-span-12 sm:col-span-6">
-			                    <label>Tanggal Masuk</label>
-			                    <input type="date" class="input w-full border mt-2 flex-1" name="tgl_masuk" value="{{ $row->kry_join_date; }}" required oninvalid="this.setCustomValidity('Tanggal masuk tidak boleh kosong ?')" oninput="setCustomValidity('')">
-			                </div>
-			                 <div class="col-span-12 sm:col-span-6">
-			                    <label>Tanggal Keluar</label>
-			                    <input type="date" class="input w-full border mt-2 flex-1" name="tgl_keluar" value="{{ $row->kry_tgl_keluar ?? ''; }}">
-			                </div>
-						</div>
-					</div>
-				</div>			
-				<div class="px-5 py-3 text-right border-t border-gray-200">
-		            <button type="button" data-dismiss="modal" class="button w-20 border text-gray-700 mr-1">Batal</button>
-		            <button type="submit" class="button w-20 bg-theme-1 text-white">Update</button>
-		        </div>
-			</form>		
-	    </div>
-	</div>
+<div class="modal" id="edit-karyawan-{{ $row->kry_kode }}">
+    <div class="modal__content modal__content--lg p-6">
+        <div class="flex items-center px-5 py-4 border-b border-gray-200">
+            <h2 class="font-bold text-lg text-gray-800 mr-auto">Edit Karyawan: {{ $row->kry_nama }}</h2>
+            <button type="button" data-dismiss="modal" class="button border text-gray-700">&times;</button>
+        </div>
+        <form method="POST" action="{{ url('HR/update_karyawan') }}" class="p-5">
+            @csrf
+            <input type="hidden" name="kode" value="{{ $row->kry_kode }}">
+
+            <div class="grid grid-cols-12 gap-4">
+                <div class="col-span-12 sm:col-span-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">NIK</label>
+                    <input type="text" name="nik" value="{{ $row->kry_nik }}" class="input w-full border rounded p-2 text-sm" placeholder="NIK KTP" required>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Kode / Kartu RFID</label>
+                    <input type="text" name="username" value="{{ $row->kry_username }}" class="input w-full border rounded p-2 text-sm" placeholder="Scan Kartu RFID / ID" required>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap Karyawan</label>
+                    <input type="text" name="nama" value="{{ $row->kry_nama }}" class="input w-full border rounded p-2 text-sm" required>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Jabatan</label>
+                    <select name="level" class="input w-full border rounded p-2 text-sm" required>
+                        <option value="Admin" {{ $row->kry_level == 'Admin' ? 'selected' : '' }}>Admin</option>
+                        <option value="Kasir" {{ $row->kry_level == 'Kasir' ? 'selected' : '' }}>Kasir</option>
+                        <option value="Customer Service" {{ $row->kry_level == 'Customer Service' ? 'selected' : '' }}>Customer Service</option>
+                        <option value="Teknisi" {{ $row->kry_level == 'Teknisi' ? 'selected' : '' }}>Teknisi</option>
+                        <option value="HR" {{ $row->kry_level == 'HR' ? 'selected' : '' }}>HR</option>
+                    </select>
+                </div>
+                <div class="col-span-12 sm:col-span-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">No HP</label>
+                    <input type="text" name="tlp" value="{{ $row->kry_telp }}" class="input w-full border rounded p-2 text-sm" required>
+                </div>
+                <div class="col-span-12">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Alamat</label>
+                    <textarea name="alamat" class="input w-full border rounded p-2 text-sm" rows="2" required>{{ $row->kry_alamat }}</textarea>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-4 border-t border-gray-200 mt-4">
+                <button type="button" data-dismiss="modal" class="button border text-gray-700 px-4 py-2">Batal</button>
+                <button type="submit" class="button bg-theme-1 text-white px-4 py-2 font-semibold">Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+</div>
 @endforeach
 
 @endsection

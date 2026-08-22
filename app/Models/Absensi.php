@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Absensi extends Model
 {
     protected $table = 'absensi';
+
     protected $primaryKey = 'absensi_id';
-    
+
     protected $fillable = [
-        'tanggal', 'id_karyawan', 'nama_karyawan', 'posisi', 
-        'status', 'jam_masuk', 'jam_pulang', 'keterangan'
+        'tanggal', 'id_karyawan', 'nama_karyawan', 'posisi',
+        'status', 'jam_masuk', 'jam_istirahat', 'jam_kembali_istirahat', 'jam_pulang', 'keterangan',
     ];
 
     public function karyawan()
