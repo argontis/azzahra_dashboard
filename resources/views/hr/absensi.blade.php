@@ -28,7 +28,7 @@
                         <select name="id_karyawan" class="input w-full border mt-1 select2" required>
                             <option value="">-- Pilih Karyawan --</option>
                             @foreach($karyawan_list as $k)
-                                <option value="{{ $k->kry_kode }}">{{ $k->kry_nama }}</option>
+                                <option value="{{ $k->kry_kode }}">{{ $k->kry_nama }} {{ $k->kry_telp ? '('.$k->kry_telp.')' : '' }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -78,6 +78,7 @@
                         <thead>
                             <tr class="bg-gray-200">
                                 <th>NAMA</th>
+                                <th>NO HP</th>
                                 <th>STATUS</th>
                                 <th>MASUK</th>
                                 <th>PULANG</th>
@@ -89,6 +90,15 @@
                             @forelse($absensi_list as $a)
                             <tr>
                                 <td class="font-bold">{{ $a->nama_karyawan }}</td>
+                                <td>
+                                    @if($a->karyawan?->kry_telp)
+                                        <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $a->karyawan->kry_telp)) }}" target="_blank" class="text-blue-600 font-semibold hover:underline flex items-center gap-1 text-xs" title="Chat via WhatsApp">
+                                            📞 {{ $a->karyawan->kry_telp }}
+                                        </a>
+                                    @else
+                                        <span class="text-gray-400 text-xs">-</span>
+                                    @endif
+                                </td>
                                 <td>
                                     <span class="px-2 py-1 rounded text-xs text-white bg-{{ $a->status == 'HADIR' ? 'green' : ($a->status == 'ALPA' ? 'red' : 'yellow') }}-500">
                                         {{ $a->status }}
@@ -105,7 +115,7 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr><td colspan="6" class="text-center text-gray-500 italic p-4">Data absensi belum tersedia untuk tanggal ini.</td></tr>
+                            <tr><td colspan="7" class="text-center text-gray-500 italic p-4">Data absensi belum tersedia untuk tanggal ini.</td></tr>
                             @endforelse
                         </tbody>
                     </table>

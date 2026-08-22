@@ -2,7 +2,7 @@
 
 @section('content')
 <!-- Header Area -->
-<div class="page-header" style="position: fixed; top: 0 !important; left: 260px !important; width: calc(100% - 260px) !important; margin: 0 !important; border-radius: 0 !important; z-index: 9999;">
+<div class="page-header">
     <div class="flex items-center gap-2 text-white">
         <i data-feather="zap" class="w-5 h-5"></i>
         <h1 class="text-xl font-bold tracking-wide">Quick Service</h1>

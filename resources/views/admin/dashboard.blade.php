@@ -2,47 +2,47 @@
 @extends('layouts.app')
 @section('content')
 
- <div class="page-header">
-            <div class="page-header-left">
-                <div class="page-title-section">
-                    <h1 class="page-title"><i data-feather="home" class="w-10 h-10 inline-block mr-2"></i>Dashboard Overview</h1>
-                    <p class="page-subtitle">
-                        <i data-feather="calendar"></i>
-                        {{ date('l, d F Y') ?? '0' }}
-                    </p>
-                </div>
-            <div class="page-header-right">
-                <div class="header-actions">
-                    <div class="export-buttons">
-                        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('all')" title="Export All Sections">
-                            <i data-feather="download"></i>
-                            📊 All
-                        </button>
-                        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('performance')" title="Export Performance Metrics">
-                            <i data-feather="trending-up"></i>
-                            📈 Performance
-                        </button>
-                        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('weekly')" title="Export Weekly Performance">
-                            <i data-feather="bar-chart"></i>
-                            📊 Weekly
-                        </button>
-                        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('technicians')" title="Export Top Performers">
-                            <i data-feather="users"></i>
-                            👷 Technicians
-                        </button>
-                        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('payment')" title="Export Payment Methods">
-                            <i data-feather="credit-card"></i>
-                            💳 Payment
-                        </button>
-                        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('activity')" title="Export Recent Activity">
-                            <i data-feather="activity"></i>
-                            📋 Activity
-                        </button>
-                    </div>
-                </div>
-            </div>
+<div class="page-header">
+    <div class="page-header-left">
+        <div class="page-title-section">
+            <h1 class="page-title"><i data-feather="home" class="w-10 h-10 inline-block mr-2"></i>Dashboard Overview</h1>
+            <p class="page-subtitle">
+                <i data-feather="calendar"></i>
+                {{ date('l, d F Y') ?? '0' }}
+            </p>
+        </div>
+    </div>
+    <div class="page-header-right">
+        <div class="header-actions">
+            <div class="export-buttons">
+                <button class="btn btn-outline export-btn" onclick="exportDashboardReport('all')" title="Export All Sections">
+                    <i data-feather="download"></i>
+                    📊 All
+                </button>
+                <button class="btn btn-outline export-btn" onclick="exportDashboardReport('performance')" title="Export Performance Metrics">
+                    <i data-feather="trending-up"></i>
+                    📈 Performance
+                </button>
+                <button class="btn btn-outline export-btn" onclick="exportDashboardReport('weekly')" title="Export Weekly Performance">
+                    <i data-feather="bar-chart"></i>
+                    📊 Weekly
+                </button>
+                <button class="btn btn-outline export-btn" onclick="exportDashboardReport('technicians')" title="Export Top Performers">
+                    <i data-feather="users"></i>
+                    👷 Technicians
+                </button>
+                <button class="btn btn-outline export-btn" onclick="exportDashboardReport('payment')" title="Export Payment Methods">
+                    <i data-feather="credit-card"></i>
+                    💳 Payment
+                </button>
+                <button class="btn btn-outline export-btn" onclick="exportDashboardReport('activity')" title="Export Recent Activity">
+                    <i data-feather="activity"></i>
+                    📋 Activity
+                </button>
             </div>
         </div>
+    </div>
+</div>
         
 <!-- Content Area (dari template sidebar Anda) -->
 <div class="content-area">        

@@ -28,7 +28,7 @@
                         <select name="id_karyawan" class="input w-full border mt-1 select2" required>
                             <option value="">-- Pilih Karyawan --</option>
                             @foreach($karyawan_list as $k)
-                                <option value="{{ $k->kry_kode }}">{{ $k->kry_nama }}</option>
+                                <option value="{{ $k->kry_kode }}">{{ $k->kry_nama }} {{ $k->kry_telp ? '('.$k->kry_telp.')' : '' }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -73,6 +73,7 @@
                         <thead>
                             <tr class="bg-gray-200">
                                 <th>NAMA</th>
+                                <th>NO HP</th>
                                 <th>TARGET</th>
                                 <th>HASIL</th>
                                 <th>KENDALA</th>
@@ -83,6 +84,15 @@
                             @forelse($laporan_list as $lap)
                             <tr>
                                 <td class="font-bold">{{ $lap->nama_karyawan }}</td>
+                                <td>
+                                    @if($lap->karyawan?->kry_telp)
+                                        <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $lap->karyawan->kry_telp)) }}" target="_blank" class="text-blue-600 font-semibold hover:underline flex items-center gap-1 text-xs" title="Chat via WhatsApp">
+                                            📞 {{ $lap->karyawan->kry_telp }}
+                                        </a>
+                                    @else
+                                        <span class="text-gray-400 text-xs">-</span>
+                                    @endif
+                                </td>
                                 <td>{{ Str::limit($lap->target_mingguan, 30) }}</td>
                                 <td>{{ Str::limit($lap->hasil, 30) }}</td>
                                 <td>{{ Str::limit($lap->kendala, 30) }}</td>
@@ -94,7 +104,7 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr><td colspan="5" class="text-center text-gray-500 italic p-4">Laporan belum tersedia untuk minggu ini.</td></tr>
+                            <tr><td colspan="6" class="text-center text-gray-500 italic p-4">Laporan belum tersedia untuk minggu ini.</td></tr>
                             @endforelse
                         </tbody>
                     </table>
