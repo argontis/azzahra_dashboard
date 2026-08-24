@@ -30,10 +30,10 @@
     
     <div class="intro-y flex flex-col sm:flex-row items-center mt-8 mb-4">
         <h2 class="text-xl font-semibold text-gray-700 mr-auto">
-            Data {{ ucfirst($current_status) }} Quick Service
+            Data Pelunasan Quick Service
         </h2>
         <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
-            <a role="button" class="btn text-white bg-blue-700 hover:bg-blue-800 shadow-md px-4 py-2 rounded-md font-medium" data-toggle="modal" data-target="#add-new-costom">
+            <a role="button" class="button text-white bg-theme-1 shadow-md px-4 py-2 rounded-md font-medium flex items-center gap-2" data-toggle="modal" data-target="#add-new-costom">
                 Buat Transaksi
             </a>
         </div>
@@ -43,11 +43,8 @@
         <div class="col-span-12 lg:col-span-3 xxl:col-span-2">
             <div class="box p-3 mt-6 shadow-sm rounded-lg bg-white border border-gray-100">
                 <div class="flex flex-col gap-1">
-                    <a href="#" class="flex items-center px-4 py-3 rounded-md transition-colors bg-blue-800 text-white font-medium shadow-md"> 
+                    <a href="{{ route('quickservice.antrean', 'baru') }}" class="flex items-center px-4 py-3 rounded-md transition-colors bg-theme-1 text-white font-medium shadow-md"> 
                         <i class="w-4 h-4 mr-3" data-feather="user-plus"></i> Transaksi baru 
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-3 rounded-md transition-colors text-gray-600 hover:bg-gray-50">
-                        <i class="w-4 h-4 mr-3" data-feather="credit-card"></i> Costomer
                     </a>
                 </div>
             </div>
@@ -68,7 +65,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($transaksis as $index => $row)
+                            @forelse ($transaksis as $index => $row)
                                 <tr>
                                     <td class="text-center border-b whitespace-no-wrap">{{ $transaksis->firstItem() + $index }}</td>
                                     <td class="text-center border-b whitespace-no-wrap font-medium">{{ $row->trans_kode }}</td>
@@ -95,7 +92,11 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="text-center p-6 text-gray-500 italic">Belum ada transaksi Quick Service</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -107,24 +108,27 @@
     </div>    
 </div>
 
-@if($current_status == 'baru' || $current_status == 'proses')
 <!-- modal tambah customer QS -->
-<div class="modal flex items-center justify-center" id="add-new-costom" style="z-index: 1050;">
-    <div class="modal__content modal__content--xl p-10 intro-y box sm:py-15" style="max-height: 80vh; overflow-y: auto;">
-        <div class="nav-tabs wizard flex flex-col lg:flex-row justify-center px-5 sm:px-20">
-            <div class="intro-x lg:text-center flex items-center lg:block flex-1 z-10 ">
-                <a href="#" class="w-10 h-10 rounded-full button text-white bg-theme-1 active" data-toggle="tab" data-target="#custom">1</a>
-                <div class="lg:w-32 font-medium text-base lg:mt-3 ml-3 lg:mx-auto">Data Customer</div>
+<div class="modal" id="add-new-costom">
+    <div class="modal__content modal__content--xl p-6 sm:p-8">
+        <div class="flex items-center px-2 py-2 border-b border-gray-200 mb-6">
+            <h2 class="font-bold text-lg text-gray-800 mr-auto">Buat Transaksi Quick Service</h2>
+            <button type="button" data-dismiss="modal" class="button border text-gray-700">&times;</button>
+        </div>
+
+        <div class="nav-tabs wizard flex flex-col lg:flex-row justify-center px-2 sm:px-10 mb-6">
+            <div class="intro-x lg:text-center flex items-center lg:block flex-1 z-10">
+                <a href="#custom" class="w-10 h-10 rounded-full button text-white bg-theme-1 active wizard-tab-btn" data-target="#custom">1</a>
+                <div class="lg:w-32 font-medium text-sm lg:mt-2 ml-3 lg:mx-auto">Data Customer</div>
             </div>
-            <div class="intro-x lg:text-center flex items-center mt-5 lg:mt-0 lg:block flex-1 z-10">
-                <a href="#" class="w-10 h-10 rounded-full button text-gray-600 bg-gray-200" data-toggle="tab" data-target="#unit">2</a>
-                <div class="lg:w-32 font-medium text-base lg:mt-3 ml-3 lg:mx-auto">Data Unit</div>
+            <div class="intro-x lg:text-center flex items-center mt-3 lg:mt-0 lg:block flex-1 z-10">
+                <a href="#unit" class="w-10 h-10 rounded-full button text-gray-600 bg-gray-200 wizard-tab-btn" data-target="#unit">2</a>
+                <div class="lg:w-32 font-medium text-sm lg:mt-2 ml-3 lg:mx-auto">Data Unit</div>
             </div>
-            <div class="intro-x lg:text-center flex items-center mt-5 lg:mt-0 lg:block flex-1 z-10">
-                <a href="#" class="w-10 h-10 rounded-full button text-gray-600 bg-gray-200" data-toggle="tab" data-target="#kelket">3</a>
-                <div class="lg:w-32 font-medium text-base lg:mt-3 ml-3 lg:mx-auto">Keluhan & Keterangan</div>
+            <div class="intro-x lg:text-center flex items-center mt-3 lg:mt-0 lg:block flex-1 z-10">
+                <a href="#kelket" class="w-10 h-10 rounded-full button text-gray-600 bg-gray-200 wizard-tab-btn" data-target="#kelket">3</a>
+                <div class="lg:w-32 font-medium text-sm lg:mt-2 ml-3 lg:mx-auto">Keluhan &amp; Ket</div>
             </div>
-            <div class="wizard__line hidden lg:block w-2/3 bg-gray-200 absolute mt-2"></div>
         </div>
         <form id="transForm" novalidate method="post" action="{{ route('quickservice.save_trans') }}" onsubmit="return submitTransForm(this);">
             @csrf
@@ -252,11 +256,23 @@
     }
 
     function activateTab(tabId) {
-        var $tabLink = $('.wizard a[data-target="' + tabId + '"]');
+        var $tabLink = $('.wizard a[data-target="' + tabId + '"], .wizard a[href="' + tabId + '"]');
         if ($tabLink.length) {
-            $tabLink.trigger('click');
+            $('.nav-tabs.wizard a').removeClass('active text-white bg-theme-1').addClass('text-gray-600 bg-gray-200');
+            $tabLink.addClass('active text-white bg-theme-1').removeClass('text-gray-600 bg-gray-200');
+
+            $('.tab-content__pane').removeClass('active').hide();
+            $(tabId).addClass('active').show();
         }
     }
+
+    $(document).on('click', '.wizard-tab-btn, .nav-tabs.wizard a', function(e) {
+        e.preventDefault();
+        var target = $(this).data('target') || $(this).attr('href');
+        if (target && target.startsWith('#')) {
+            activateTab(target);
+        }
+    });
 
     function submitTransForm(form) {
         // Validate Step 1: Data Customer
@@ -265,13 +281,13 @@
         if (!nama || !nama.value.trim()) {
             activateTab('#custom');
             nama.focus();
-            alert('Mohon isi Nama Customer di Step 1 (Data Customer)');
+            Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Mohon isi Nama Customer di Step 1 (Data Customer)' });
             return false;
         }
         if (!tlp || !tlp.value.trim()) {
             activateTab('#custom');
             tlp.focus();
-            alert('Mohon isi No Telepon Customer di Step 1 (Data Customer)');
+            Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Mohon isi No Telepon Customer di Step 1 (Data Customer)' });
             return false;
         }
 
@@ -280,7 +296,7 @@
         if (!type || !type.value.trim()) {
             activateTab('#unit');
             type.focus();
-            alert('Mohon isi Merk / Type Unit di Step 2 (Data Unit)');
+            Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Mohon isi Merk / Type Unit di Step 2 (Data Unit)' });
             return false;
         }
 
@@ -289,7 +305,7 @@
         if (!keluhan || !keluhan.value.trim()) {
             activateTab('#kelket');
             keluhan.focus();
-            alert('Mohon isi Keluhan di Step 3 (Keluhan & Keterangan)');
+            Swal.fire({ icon: 'warning', title: 'Peringatan', text: 'Mohon isi Keluhan di Step 3 (Keluhan & Keterangan)' });
             return false;
         }
 
@@ -316,13 +332,24 @@
             return data;
         })
         .then(data => {
-            $('#add-new-costom').modal('hide');
-            alert('DATA BERHASIL DI TAMBAHKAN');
-            window.location.reload();
+            if (typeof window.closeAppModal === 'function') {
+                window.closeAppModal('#add-new-costom');
+            } else {
+                $('#add-new-costom').modal('hide');
+            }
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: 'Transaksi Quick Service berhasil dibuat!',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.reload();
+            });
         })
         .catch(error => {
             console.error('Error:', error);
-            alert(error.message || 'Terjadi kesalahan jaringan');
+            Swal.fire({ icon: 'error', title: 'Gagal', text: error.message || 'Terjadi kesalahan jaringan' });
             if (btn) {
                 btn.disabled = false;
                 btn.innerText = 'Simpan';
@@ -341,5 +368,4 @@
         window.open(waUrl, '_blank');
     }
 </script>
-@endif
 @endsection

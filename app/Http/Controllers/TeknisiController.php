@@ -2,42 +2,88 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Transaksi;
-use App\Models\Tindakan;
-use App\Models\OrderList;
 use App\Models\KetersediaanSparepart;
-use Illuminate\Support\Facades\DB;
+use App\Models\OrderList;
+use App\Models\Tindakan;
+use App\Models\Transaksi;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TeknisiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $orders_baru = Transaksi::with(['customer'])
-            ->where('trans_status', 'Baru')
-            ->orderBy('cos_tanggal', 'desc')
-            ->get();
+        $status_filter = $request->query('status', 'Semua Status');
+        $periode_filter = $request->query('periode', 'Semua Waktu');
+        $search = $request->query('search');
 
-        $orders_repairing = Transaksi::with(['customer'])
-            ->where('trans_status', 'Diproses')
+        $query = Transaksi::with(['customer'])
             ->orderBy('cos_tanggal', 'desc')
-            ->get();
+            ->orderBy('trans_kode', 'desc');
+
+        // Status filter
+        if ($status_filter === 'Order Baru') {
+            $query->where('trans_status', 'Baru');
+        } elseif ($status_filter === 'Sedang Dikerjakan' || $status_filter === 'Diproses') {
+            $query->where('trans_status', 'Diproses');
+        } elseif ($status_filter === 'Selesai') {
+            $query->whereIn('trans_status', ['Pelunasan', 'Lunas']);
+        } else {
+            // Default: show orders that require technician attention
+            $query->whereIn('trans_status', ['Baru', 'Diproses', 'Konfirmasi', 'Pelunasan']);
+        }
+
+        // Periode filter
+        if ($periode_filter === 'Hari Ini') {
+            $query->whereDate('cos_tanggal', date('Y-m-d'));
+        } elseif ($periode_filter === '7 Hari Terakhir') {
+            $query->whereDate('cos_tanggal', '>=', date('Y-m-d', strtotime('-7 days')));
+        } elseif ($periode_filter === 'Bulan Ini') {
+            $query->whereMonth('cos_tanggal', date('m'))->whereYear('cos_tanggal', date('Y'));
+        }
+
+        // Search keyword filter
+        if (! empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('trans_kode', 'like', "%{$search}%")
+                    ->orWhere('cos_kode', 'like', "%{$search}%")
+                    ->orWhereHas('customer', function ($cq) use ($search) {
+                        $cq->where('cos_nama', 'like', "%{$search}%")
+                            ->orWhere('cos_tipe', 'like', "%{$search}%")
+                            ->orWhere('cos_model', 'like', "%{$search}%")
+                            ->orWhere('cos_no_seri', 'like', "%{$search}%")
+                            ->orWhere('cos_hp', 'like', "%{$search}%")
+                            ->orWhere('cos_keluhan', 'like', "%{$search}%")
+                            ->orWhere('cos_alamat', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        $orders = $query->paginate(24);
+        $total_order_baru = Transaksi::where('trans_status', 'Baru')->count();
+        $total_diproses = Transaksi::where('trans_status', 'Diproses')->count();
+        $total_selesai = Transaksi::whereIn('trans_status', ['Pelunasan', 'Lunas'])->count();
 
         return view('teknisi.dashboard', [
             'title' => 'Dashboard Teknisi',
-            'orders_baru' => $orders_baru,
-            'orders_repairing' => $orders_repairing
+            'orders' => $orders,
+            'total_order_baru' => $total_order_baru,
+            'total_diproses' => $total_diproses,
+            'total_selesai' => $total_selesai,
+            'status_filter' => $status_filter,
+            'periode_filter' => $periode_filter,
+            'search' => $search,
         ]);
     }
 
     public function input_tindakan($kode)
     {
-        $transaksi = Transaksi::with(['customer'])->where('trans_kode', $kode)->firstOrFail();
+        $transaksi = Transaksi::with(['customer', 'tindakan'])->where('trans_kode', $kode)->firstOrFail();
 
         return view('teknisi.input_tindakan', [
-            'title' => 'Input Tindakan & Sparepart',
-            'transaksi' => $transaksi
+            'title' => 'Input Tindakan Perbaikan',
+            'transaksi' => $transaksi,
         ]);
     }
 
@@ -61,8 +107,10 @@ class TeknisiController extends Controller
             $total_tindakan = 0;
 
             foreach ($tindakans as $index => $nama) {
-                if (empty($nama)) continue;
-                
+                if (empty($nama)) {
+                    continue;
+                }
+
                 $qty = $qtys[$index] ?? 1;
                 $subtot = $subtots[$index] ?? 0;
                 $ket = $kets[$index] ?? '';
@@ -73,7 +121,7 @@ class TeknisiController extends Controller
                     'tdkn_qty' => $qty,
                     'tdkn_subtot' => $subtot,
                     'tdkn_tanggal' => now()->toDateString(),
-                    'tdkn_jam' => now()->toTimeString()
+                    'tdkn_jam' => now()->toTimeString(),
                 ]);
 
                 $total_tindakan += $subtot;
@@ -94,16 +142,18 @@ class TeknisiController extends Controller
                         'trans_status' => 'repairing',
                         'trans_total' => $transaksi->trans_total,
                         'trans_tanggal' => $transaksi->cos_tanggal,
-                        'kry_kode' => Auth::id() // Technician doing the work
+                        'kry_kode' => Auth::id(), // Technician doing the work
                     ]
                 );
             }
 
             DB::commit();
+
             return redirect()->route('teknisi.index')->with('sukses', 'Tindakan berhasil disimpan');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('gagal', 'Gagal menyimpan data tindakan: ' . $e->getMessage());
+
+            return back()->with('gagal', 'Gagal menyimpan data tindakan: '.$e->getMessage());
         }
     }
 
@@ -112,7 +162,7 @@ class TeknisiController extends Controller
         $request->validate([
             'trans_kode' => 'required',
             'barang_nama' => 'required',
-            'ketersediaan' => 'required'
+            'ketersediaan' => 'required',
         ]);
 
         $trans_kode = $request->input('trans_kode');
@@ -129,26 +179,28 @@ class TeknisiController extends Controller
                     'cos_nama' => $cos_nama,
                     'barang_nama' => $request->input('barang_nama'),
                     'ketersediaan' => 'tidak_ada',
-                    'status' => 'menunggu'
+                    'status' => 'menunggu',
                 ]);
 
                 // Update status transaksi ke Konfirmasi
                 if ($transaksi) {
                     $transaksi->trans_status = 'Konfirmasi';
                     $transaksi->save();
-                    
+
                     // Clear existing actions if waiting for sparepart
                     Tindakan::where('trans_kode', $trans_kode)->delete();
 
                     OrderList::where('trans_kode', $trans_kode)->update([
-                        'trans_status' => 'waitingOrder'
+                        'trans_status' => 'waitingOrder',
                     ]);
                 }
 
                 DB::commit();
+
                 return redirect()->route('teknisi.index')->with('sukses', 'Order sparepart berhasil diajukan! Menunggu barang sampai.');
             } catch (\Exception $e) {
                 DB::rollBack();
+
                 return back()->with('gagal', 'Terjadi kesalahan saat order sparepart.');
             }
         }

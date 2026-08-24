@@ -42,15 +42,20 @@ class QuickServiceController extends Controller
             $status = 'baru';
         }
 
-        // Only show Quick Service related? In CI it just filters by trans_status.
-        $transaksis = Transaksi::with(['customer', 'karyawan'])
-            ->where('trans_status', $status_map[$status])
-            ->orderBy('cos_tanggal', 'desc')
+        $query = Transaksi::with(['customer', 'karyawan']);
+
+        if ($status === 'baru') {
+            $query->whereIn('trans_status', ['Baru', 'Pelunasan']);
+        } else {
+            $query->where('trans_status', $status_map[$status]);
+        }
+
+        $transaksis = $query->orderBy('cos_tanggal', 'desc')
             ->orderBy('trans_kode', 'desc')
             ->paginate(25);
 
         return view('quickservice.antrean', [
-            'title' => 'QS Antrean - '.ucfirst($status),
+            'title' => 'Quick Service',
             'transaksis' => $transaksis,
             'current_status' => $status,
         ]);
@@ -136,7 +141,7 @@ class QuickServiceController extends Controller
                 'kry_kode' => auth()->user()->kry_kode ?? null,
                 'trans_total' => 0,
                 'trans_discount' => 0,
-                'trans_status' => $is_quick_service ? 'Pelunasan' : 'Baru',
+                'trans_status' => 'Baru',
                 'trans_tanggal' => date('Y-m-d'),
             ]);
 

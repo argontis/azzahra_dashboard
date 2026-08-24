@@ -57,6 +57,104 @@
         </svg>
     </div>
     <!-- END: Preloader -->
+
+    @if(session('show_curtain'))
+    <!-- =====================================================
+         DASHBOARD CURTAIN REVEAL OVERLAY
+         Tirai menutup saat halaman load, lalu membuka
+         Hanya muncul saat pertama masuk dari halaman login
+         ===================================================== -->
+    <div id="dashCurtainOverlay" style="
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        z-index: 99999;
+        pointer-events: none;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    ">
+        <!-- Left Curtain Panel -->
+        <div id="dashCurtainLeft" style="
+            position: absolute;
+            top: 0; left: 0;
+            width: 50%; height: 100%;
+            background: linear-gradient(160deg, #1e1b4b 0%, #312e81 50%, #1e40af 100%);
+            border-right: 3px solid #38bdf8;
+            box-shadow: inset -20px 0 60px rgba(0,0,0,0.6), 10px 0 30px rgba(56, 189, 248, 0.5);
+            transform: translateX(0%);
+            transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        ">
+            <div style="
+                position: absolute; right: 0; top: 0;
+                width: 6px; height: 100%;
+                background: linear-gradient(180deg, #38bdf8, #818cf8, #34d399, #38bdf8);
+                box-shadow: 0 0 12px #38bdf8;
+                opacity: 0.95;
+            "></div>
+            <div style="font-size: 54px; margin-bottom: 14px; filter: drop-shadow(0 0 18px rgba(56,189,248,0.9));">🔵</div>
+            <div style="font-size: 12px; font-weight: 800; letter-spacing: 4px; color: #38bdf8; text-transform: uppercase; text-shadow: 0 0 12px rgba(56,189,248,0.6);">Azzahra Computer</div>
+        </div>
+        <!-- Right Curtain Panel -->
+        <div id="dashCurtainRight" style="
+            position: absolute;
+            top: 0; right: 0;
+            width: 50%; height: 100%;
+            background: linear-gradient(200deg, #1e1b4b 0%, #312e81 50%, #1e40af 100%);
+            border-left: 3px solid #38bdf8;
+            box-shadow: inset 20px 0 60px rgba(0,0,0,0.6), -10px 0 30px rgba(56, 189, 248, 0.5);
+            transform: translateX(0%);
+            transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        ">
+            <div style="
+                position: absolute; left: 0; top: 0;
+                width: 6px; height: 100%;
+                background: linear-gradient(180deg, #38bdf8, #818cf8, #34d399, #38bdf8);
+                box-shadow: 0 0 12px #38bdf8;
+                opacity: 0.95;
+            "></div>
+            <div style="font-size: 54px; margin-bottom: 14px; filter: drop-shadow(0 0 18px rgba(56,189,248,0.9));">🔵</div>
+            <div style="font-size: 12px; font-weight: 800; letter-spacing: 4px; color: #38bdf8; text-transform: uppercase; text-shadow: 0 0 12px rgba(56,189,248,0.6);">Super-Apps System</div>
+        </div>
+        <!-- Center Badge -->
+        <div id="dashCurtainBadge" style="
+            position: relative; z-index: 10;
+            background: rgba(15, 23, 42, 0.97);
+            border: 1.5px solid rgba(56, 189, 248, 0.7);
+            padding: 15px 32px;
+            border-radius: 40px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 12px 50px rgba(0,0,0,0.7), 0 0 40px rgba(56,189,248,0.5);
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        ">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.5" style="animation: dashSpin 0.7s linear infinite;">
+                <style>@keyframes dashSpin { to { transform: rotate(360deg); } }</style>
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+            <span>Memuat Dashboard...</span>
+        </div>
+    </div>
+    @endif
+    <!-- END: Dashboard Curtain Reveal Overlay -->
     <div class="app-layout">
     <!-- Mobile Menu Button -->
     <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileSidebar()">
@@ -669,6 +767,37 @@
             if (typeof feather !== 'undefined') {
                 feather.replace();
             }
+
+            // =====================================================
+            //  DASHBOARD CURTAIN REVEAL — only fires on first login
+            // =====================================================
+            @if(session('show_curtain'))
+            const curtainLeft  = document.getElementById('dashCurtainLeft');
+            const curtainRight = document.getElementById('dashCurtainRight');
+            const curtainBadge = document.getElementById('dashCurtainBadge');
+            const curtainOverlay = document.getElementById('dashCurtainOverlay');
+
+            // Step 1: After 350ms, fade badge and open curtains
+            setTimeout(() => {
+                if (curtainBadge) {
+                    curtainBadge.style.opacity = '0';
+                    curtainBadge.style.transform = 'scale(0.85)';
+                }
+                if (curtainLeft)  curtainLeft.style.transform  = 'translateX(-102%)';
+                if (curtainRight) curtainRight.style.transform = 'translateX(102%)';
+            }, 350);
+
+            // Step 2: After curtains fully open, hide overlay entirely
+            setTimeout(() => {
+                if (curtainOverlay) {
+                    curtainOverlay.style.opacity = '0';
+                    curtainOverlay.style.transition = 'opacity 0.3s ease';
+                    setTimeout(() => {
+                        if (curtainOverlay) curtainOverlay.style.display = 'none';
+                    }, 300);
+                }
+            }, 1300);
+            @endif
         });
     </script>
 </body>

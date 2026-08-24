@@ -25,6 +25,8 @@ Route::get('/', function () {
 Route::get('/Auth', [AuthController::class, 'index'])->name('login');
 Route::post('/Auth/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/Auth/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/Auth/reset', [AuthController::class, 'reset'])->name('password.reset');
+Route::post('/Auth/reset', [AuthController::class, 'postReset'])->name('password.reset.post');
 
 // Phase 3A Routes
 Route::middleware(['auth'])->group(function () {
@@ -56,7 +58,7 @@ Route::middleware(['auth'])->group(function () {
     // ==========================================
     // MODULE TEKNISI
     // ==========================================
-    Route::prefix('Teknisi')->middleware('role:Teknisi')->group(function () {
+    Route::prefix('Teknisi')->middleware('role:Teknisi,Admin')->group(function () {
         Route::get('/', [TeknisiController::class, 'index'])->name('teknisi.index');
         Route::get('/input_tindakan/{kode}', [TeknisiController::class, 'input_tindakan'])->name('teknisi.input_tindakan');
         Route::post('/save_tindakan', [TeknisiController::class, 'save_tindakan'])->name('teknisi.save_tindakan');
@@ -126,7 +128,8 @@ Route::middleware(['auth'])->group(function () {
     // MODULE QUICK SERVICE - Phase 6
     // ==========================================
     Route::prefix('QuickService')->middleware('role:Customer Service,Kasir,Admin')->group(function () {
-        Route::get('/', [QuickServiceController::class, 'index'])->name('quickservice.index');
+        Route::get('/', [QuickServiceController::class, 'antrean'])->name('quickservice.index');
+        Route::get('/cos_baru', [QuickServiceController::class, 'antrean'])->name('quickservice.cos_baru');
         Route::get('/antrean/{status?}', [QuickServiceController::class, 'antrean'])->name('quickservice.antrean');
         Route::get('/form_baru', [QuickServiceController::class, 'create'])->name('quickservice.create');
         Route::post('/save_trans', [QuickServiceController::class, 'save_trans'])->name('quickservice.save_trans');
