@@ -10,6 +10,7 @@ class Vocer extends Model
     use HasFactory;
 
     protected $table = 'vocer';
+
     protected $primaryKey = 'voc_kode';
 
     protected $fillable = [

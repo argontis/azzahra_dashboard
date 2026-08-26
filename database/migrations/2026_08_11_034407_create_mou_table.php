@@ -24,7 +24,7 @@ return new class extends Migration
             $table->dateTime('created_at');
 
             $table->index('kry_kode');
-            
+
         });
     }
 

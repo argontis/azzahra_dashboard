@@ -66,21 +66,37 @@
                         </thead>
                         <tbody>
                             @foreach ($transaksis as $index => $row)
-                                <tr>
+                                @php
+                                    $customer = $row->customer;
+                                    $isPriority = $customer && (($customer->cos_tier === 'prioritas') || ($customer->cos_score >= 5) || ($customer->total_transaksi >= 5));
+                                    $isLoyal = $customer && (($customer->cos_tier === 'loyal') || ($customer->cos_score >= 3 && !$isPriority));
+                                    $hp = $customer->cos_hp ?? '';
+                                    $masked_hp = strlen($hp) > 4 ? substr($hp, 0, -4) . 'XXXX' : $hp;
+                                @endphp
+                                <tr class="{{ $isPriority ? 'bg-amber-50/50 hover:bg-amber-50/80 border-l-4 border-l-amber-500' : '' }}">
                                     <td class="text-center border-b whitespace-no-wrap">{{ $transaksis->firstItem() + $index }}</td>
                                     <td class="text-center border-b whitespace-no-wrap font-medium">{{ $row->trans_kode }}</td>
-                                    <td class="border-b whitespace-no-wrap">{{ $row->customer->cos_nama ?? '-' }}</td>
-                                    <td class="border-b whitespace-no-wrap">{{ $row->customer->cos_alamat ?? '-' }}</td>
-                                    <td class="text-center border-b whitespace-no-wrap">
-                                        @php
-                                            $hp = $row->customer->cos_hp ?? '';
-                                            $masked_hp = strlen($hp) > 4 ? substr($hp, 0, -4) . 'XXXX' : $hp;
-                                        @endphp
+                                    <td class="border-b whitespace-no-wrap">
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="font-medium text-gray-800">{{ $customer->cos_nama ?? '-' }}</span>
+                                            @if($isPriority)
+                                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300 shadow-xs" title="Pelanggan Prioritas (VIP)">
+                                                    👑 PRIORITAS
+                                                </span>
+                                            @elseif($isLoyal)
+                                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-100 text-blue-700 border border-blue-200">
+                                                    ⭐ Loyal
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td class="border-b whitespace-no-wrap text-gray-600">{{ $customer->cos_alamat ?? '-' }}</td>
+                                    <td class="text-center border-b whitespace-no-wrap font-medium text-gray-700">
                                         {{ $masked_hp }}
                                     </td>
                                     <td class="text-center border-b whitespace-no-wrap">
                                         <div class="flex sm:justify-center items-center">
-                                            <a href="{{ route('service.proses', $row->trans_kode) }}" class="button px-3 py-1.5 mr-1 mb-2 bg-theme-9 text-white tooltip flex items-center justify-center font-medium" title="Proses">
+                                            <a href="{{ route('service.proses', $row->trans_kode) }}" class="button px-3 py-1.5 mr-1 mb-2 bg-theme-9 text-white tooltip flex items-center justify-center font-medium shadow-sm" title="Proses">
                                                 <i data-feather="check-square" class="w-4 h-4 mr-1"></i> Proses
                                             </a>
                                             @if($current_status == 'konfirmasi')

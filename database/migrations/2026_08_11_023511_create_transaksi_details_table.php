@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('dtl_payment_method')->nullable();
             $table->string('dtl_transfer_status')->nullable();
             $table->timestamps();
-            
+
             $table->foreign('trans_kode')->references('trans_kode')->on('transaksi')->onDelete('cascade');
         });
     }

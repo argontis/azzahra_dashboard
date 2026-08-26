@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class OrderPartApproval extends Model
 {
     protected $primaryKey = 'approval_id';
-    
+
     protected $fillable = [
         'trans_kode',
         'type',

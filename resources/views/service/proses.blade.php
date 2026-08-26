@@ -51,6 +51,41 @@
 
         <!-- Main Content Area -->
         <div class="col-span-12 lg:col-span-9 xxl:col-span-10 space-y-5">
+            @php
+                $isPriority = $customer && (($customer->cos_tier === 'prioritas') || ($customer->cos_score >= 5) || ($customer->total_transaksi >= 5));
+                $isLoyal = $customer && (($customer->cos_tier === 'loyal') || ($customer->cos_score >= 3 && !$isPriority));
+                $score = $customer->cos_score ?? ($isPriority ? 5 : ($isLoyal ? 3 : 1));
+                $totalTx = $customer->total_transaksi ?? ($isPriority ? 5 : ($isLoyal ? 3 : 1));
+            @endphp
+
+            @if($isPriority)
+                <div class="intro-y box p-4 bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-600 rounded-xl shadow-md text-white flex flex-col md:flex-row md:items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-xl flex-shrink-0">
+                            👑
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm md:text-base flex items-center gap-2">
+                                <span>PELANGGAN PRIORITAS (VIP) - Skor {{ $score }}</span>
+                                <span class="bg-white text-amber-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Prioritas Utama</span>
+                            </div>
+                            <p class="text-xs text-amber-100 mt-0.5">Customer memiliki {{ $totalTx }} riwayat transaksi dan berhak atas seluruh keuntungan VIP.</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 text-xs font-semibold">
+                        <span class="bg-black/20 px-2.5 py-1 rounded-md flex items-center gap-1 border border-white/10">
+                            <i data-feather="percent" class="w-3 h-3"></i> Diskon s/d 50%
+                        </span>
+                        <span class="bg-black/20 px-2.5 py-1 rounded-md flex items-center gap-1 border border-white/10">
+                            <i data-feather="zap" class="w-3 h-3"></i> Antrean Cepat
+                        </span>
+                        <span class="bg-black/20 px-2.5 py-1 rounded-md flex items-center gap-1 border border-white/10">
+                            <i data-feather="truck" class="w-3 h-3"></i> Pickup / Onsite
+                        </span>
+                    </div>
+                </div>
+            @endif
+
             <!-- Customer Profile Info Box -->
             <div class="intro-y box p-5 bg-white rounded-xl shadow-sm border border-gray-200">
                 <div class="grid grid-cols-12 gap-4 items-center">
@@ -63,7 +98,22 @@
                             </div>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800">{{ $customer->cos_nama ?? 'N/A' }}</h3>
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <h3 class="text-lg font-bold text-gray-800">{{ $customer->cos_nama ?? 'N/A' }}</h3>
+                                @if($isPriority)
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                                        👑 VIP (Skor 5)
+                                    </span>
+                                @elseif($isLoyal)
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-100 text-blue-700 border border-blue-200">
+                                        ⭐ Loyal (Skor {{ $score }})
+                                    </span>
+                                @else
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-600">
+                                        Reguler
+                                    </span>
+                                @endif
+                            </div>
                             <p class="text-sm text-gray-500">{{ $customer->id_costomer ?? $transaksi->cos_kode }}</p>
                         </div>
                     </div>

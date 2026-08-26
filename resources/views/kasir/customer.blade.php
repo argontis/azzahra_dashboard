@@ -41,10 +41,26 @@
                 </thead>
                 <tbody>
                     @forelse($transaksis ?? [] as $row)
-                    <tr class="intro-x">
+                    @php
+                        $customer = $row->customer;
+                        $isPriority = $customer && (($customer->cos_tier === 'prioritas') || ($customer->cos_score >= 5) || ($customer->total_transaksi >= 5));
+                        $isLoyal = $customer && (($customer->cos_tier === 'loyal') || ($customer->cos_score >= 3 && !$isPriority));
+                    @endphp
+                    <tr class="intro-x {{ $isPriority ? 'bg-amber-50/50' : '' }}">
                         <td>
-                            <div class="font-medium whitespace-no-wrap">{{ $row->customer->cos_nama ?? '-' }}</div>
-                            <div class="text-gray-600 text-xs">{{ $row->customer->cos_hp ?? '-' }}</div>
+                            <div class="font-medium whitespace-no-wrap flex items-center gap-1.5">
+                                <span>{{ $customer->cos_nama ?? '-' }}</span>
+                                @if($isPriority)
+                                    <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                                        👑 VIP
+                                    </span>
+                                @elseif($isLoyal)
+                                    <span class="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-100 text-blue-700 border border-blue-200">
+                                        ⭐ Loyal
+                                    </span>
+                                @endif
+                            </div>
+                            <div class="text-gray-600 text-xs">{{ $customer->cos_hp ?? '-' }}</div>
                         </td>
                         <td>
                             <div class="font-medium text-theme-1">{{ $row->trans_status }}</div>

@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class OrderList extends Model
 {
     protected $table = 'order_list';
-    
+
     protected $fillable = [
         'trans_kode', 'cos_kode', 'kry_kode', 'trans_total', 'trans_discount',
         'trans_tanggal', 'trans_status', 'merek', 'device', 'status_garansi',
-        'seri', 'ket_keluhan', 'email', 'alamat'
+        'seri', 'ket_keluhan', 'email', 'alamat',
     ];
 
     public function transaksi()

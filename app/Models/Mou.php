@@ -10,6 +10,7 @@ class Mou extends Model
     use HasFactory;
 
     protected $table = 'mou';
+
     const UPDATED_AT = null;
 
     protected $primaryKey = 'mou_id';

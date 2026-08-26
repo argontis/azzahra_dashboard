@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\KetersediaanSparepart;
-use App\Models\Transaksi;
 use App\Models\Tindakan;
+use App\Models\Transaksi;
+use Illuminate\Support\Facades\DB;
 
 class KetersediaanSparepartController extends Controller
 {
@@ -14,17 +14,17 @@ class KetersediaanSparepartController extends Controller
      */
     public function index()
     {
-        $spareparts = \Illuminate\Support\Facades\DB::table('ketersediaan_sparepart')
+        $spareparts = DB::table('ketersediaan_sparepart')
             ->select('ketersediaan_sparepart.*', 'transaksi.*', 'costomer.cos_nama', 'karyawan.kry_nama')
             ->join('transaksi', 'ketersediaan_sparepart.trans_kode', '=', 'transaksi.trans_kode')
             ->join('costomer', 'transaksi.cos_kode', '=', 'costomer.id_costomer')
             ->join('karyawan', 'transaksi.kry_kode', '=', 'karyawan.kry_kode')
             ->where('ketersediaan_sparepart.status', 'Menunggu')
             ->get();
-        
+
         $data = [
             'title' => 'Ketersediaan Sparepart',
-            'spareparts' => $spareparts
+            'spareparts' => $spareparts,
         ];
 
         return view('admin.ketersediaan_sparepart', $data);

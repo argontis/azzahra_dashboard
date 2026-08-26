@@ -10,7 +10,9 @@ class MouItem extends Model
     use HasFactory;
 
     protected $table = 'mou_items';
+
     public $timestamps = false;
+
     protected $primaryKey = 'item_id';
 
     protected $fillable = [

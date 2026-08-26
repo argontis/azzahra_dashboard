@@ -37,7 +37,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/produk-ajax', [ProdukController::class, 'ajax_search'])->name('produk.ajax_search');
 
     // Customer Routes
-    Route::resource('Customer', CustomerController::class)->parameters([
+    Route::resource('Customer', CustomerController::class)->names('customer')->parameters([
         'Customer' => 'id_costomer',
     ]);
     Route::get('/Customer/histori/{kode_transaksi}', [CustomerController::class, 'histori'])->name('customer.histori');

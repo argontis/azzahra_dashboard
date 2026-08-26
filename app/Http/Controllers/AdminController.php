@@ -65,6 +65,7 @@ class AdminController extends Controller
         }
 
         $title = 'Dashboard';
+
         return view('admin.dashboard', compact(
             'title', 'baru', 'baru_count', 'konf', 'discount', 'bca', 'mandiri', 'bri', 'tunai',
             'total_bca', 'total_mandiri', 'total_bri', 'total_tunai', 'total_voucher',
@@ -77,13 +78,13 @@ class AdminController extends Controller
     public function customer()
     {
         $customers = DB::table('costomer')
-            ->leftJoin('transaksi', function($join) {
+            ->leftJoin('transaksi', function ($join) {
                 $join->on('transaksi.cos_kode', '=', 'costomer.id_costomer')
-                     ->whereIn('transaksi.trans_kode', function($query) {
-                         $query->select(DB::raw('MAX(trans_kode)'))
-                               ->from('transaksi')
-                               ->groupBy('cos_kode');
-                     });
+                    ->whereIn('transaksi.trans_kode', function ($query) {
+                        $query->select(DB::raw('MAX(trans_kode)'))
+                            ->from('transaksi')
+                            ->groupBy('cos_kode');
+                    });
             })
             ->select('costomer.*', 'transaksi.trans_status', 'transaksi.trans_kode')
             ->orderBy('costomer.id_costomer', 'desc')
@@ -98,9 +99,9 @@ class AdminController extends Controller
             ->leftJoin('costomer', 'transaksi.cos_kode', '=', 'costomer.id_costomer')
             ->leftJoin('karyawan', 'transaksi.kry_kode', '=', 'karyawan.kry_kode')
             ->where('transaksi.trans_status', 'Baru')
-            // Tambahkan orderBy di sini. 
+            // Tambahkan orderBy di sini.
             // Ganti 'created_at' jika nama kolom tanggal di database Anda berbeda (misal: 'tgl_transaksi')
-            ->orderBy('transaksi.created_at', 'desc') 
+            ->orderBy('transaksi.created_at', 'desc')
             ->get();
 
         return view('admin.cus-baru', ['title' => 'Transaksi Baru', 'trans' => $trans]);
@@ -222,10 +223,10 @@ class AdminController extends Controller
     public function lap_perhari()
     {
         $today = Carbon::today()->toDateString();
-        
+
         $data = $this->laporan_data($today, $today);
         $data['title'] = 'Laporan Harian';
-        
+
         return view('admin.lap-perhari', $data);
     }
 

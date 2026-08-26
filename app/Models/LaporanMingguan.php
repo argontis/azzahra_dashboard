@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class LaporanMingguan extends Model
 {
     protected $table = 'laporan_mingguan';
+
     protected $primaryKey = 'laporan_id';
-    
+
     protected $fillable = [
         'id_karyawan', 'nama_karyawan', 'posisi', 'periode',
-        'target_mingguan', 'tugas_dilakukan', 'hasil', 'kendala', 'solusi'
+        'target_mingguan', 'tugas_dilakukan', 'hasil', 'kendala', 'solusi',
     ];
 
     public function karyawan()

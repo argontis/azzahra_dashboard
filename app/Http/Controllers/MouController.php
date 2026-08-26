@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Mou;
 use App\Models\MouItem;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
 
 class MouController extends Controller
 {
     public function index()
     {
         $mou_list = Mou::with('items')->orderBy('created_at', 'desc')->paginate(25);
+
         return view('mou.index', ['mou_list' => $mou_list]);
     }
 
@@ -37,7 +37,7 @@ class MouController extends Controller
 
         $grand_total = 0;
         $items_processed = [];
-        
+
         foreach ($items as $item) {
             $qty = floatval($item['qty']);
             $harga = floatval(str_replace(['.', ','], '', $item['harga']));
@@ -48,7 +48,7 @@ class MouController extends Controller
                 'spesifikasi' => $item['spesifikasi'],
                 'qty' => $qty,
                 'harga' => $harga,
-                'total' => $total
+                'total' => $total,
             ];
         }
 
@@ -78,6 +78,7 @@ class MouController extends Controller
     public function edit_form($id)
     {
         $mou = Mou::with('items')->findOrFail($id);
+
         return view('mou.edit', ['mou' => $mou, 'items' => $mou->items]);
     }
 
@@ -99,7 +100,7 @@ class MouController extends Controller
 
         $grand_total = 0;
         $items_processed = [];
-        
+
         foreach ($items as $item) {
             $qty = floatval($item['qty']);
             $harga = floatval(str_replace(['.', ','], '', $item['harga']));
@@ -110,7 +111,7 @@ class MouController extends Controller
                 'spesifikasi' => $item['spesifikasi'],
                 'qty' => $qty,
                 'harga' => $harga,
-                'total' => $total
+                'total' => $total,
             ];
         }
 
@@ -155,14 +156,15 @@ class MouController extends Controller
     private function generateAndDownload($id)
     {
         $mou = Mou::with('items')->findOrFail($id);
-        
+
         $data = [
             'mou' => $mou,
             'items' => $mou->items,
-            'terms' => explode("\n", $mou->terms)
+            'terms' => explode("\n", $mou->terms),
         ];
 
         $pdf = Pdf::loadView('mou.pdf_template', $data)->setPaper('a4', 'portrait');
-        return $pdf->download(preg_replace('/[^a-zA-Z0-9._-]/', '_', $mou->file_name) . '.pdf');
+
+        return $pdf->download(preg_replace('/[^a-zA-Z0-9._-]/', '_', $mou->file_name).'.pdf');
     }
 }

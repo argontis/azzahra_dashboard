@@ -21,7 +21,7 @@ return new class extends Migration
             $table->decimal('trans_discount', 15, 2)->default(0);
             $table->decimal('trans_total', 15, 2)->default(0);
             $table->timestamps();
-            
+
             // relationships
             $table->foreign('cos_kode')->references('id_costomer')->on('costomer')->onDelete('cascade');
             $table->foreign('kry_kode')->references('kry_kode')->on('karyawan')->onDelete('set null');

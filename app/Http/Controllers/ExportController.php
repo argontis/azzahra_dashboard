@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\TransaksiDetail;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Http\Request;
 
 class ExportController extends Controller
 {
@@ -15,34 +14,34 @@ class ExportController extends Controller
     public function lap_perhari_excel()
     {
         $today = Carbon::today()->toDateString();
-        
+
         $payments = TransaksiDetail::with(['transaksi.customer'])
             ->whereDate('dtl_tanggal', $today)
             ->get();
 
-        $filename = "laporan_hari_ini_" . date('d-m-Y') . ".csv";
-        
+        $filename = 'laporan_hari_ini_'.date('d-m-Y').'.csv';
+
         $headers = [
-            "Content-type"        => "text/csv",
-            "Content-Disposition" => "attachment; filename=$filename",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=$filename",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
         ];
 
-        $columns = ["NO", "INVOICE", "NAMA CUSTOMER", "STATUS", "JENIS BAYAR", "BANK", "JUMLAH (Rp)"];
+        $columns = ['NO', 'INVOICE', 'NAMA CUSTOMER', 'STATUS', 'JENIS BAYAR', 'BANK', 'JUMLAH (Rp)'];
 
-        $callback = function() use($payments, $columns) {
+        $callback = function () use ($payments, $columns) {
             $file = fopen('php://output', 'w');
-            
+
             // Add BOM to fix UTF-8 in Excel
-            fputs($file, $bom =(chr(0xEF) . chr(0xBB) . chr(0xBF)));
-            
+            fwrite($file, $bom = (chr(0xEF).chr(0xBB).chr(0xBF)));
+
             fputcsv($file, $columns);
-            
+
             $total = 0;
             $no = 1;
-            
+
             foreach ($payments as $payment) {
                 $row['NO'] = $no++;
                 $row['INVOICE'] = $payment->trans_kode;
@@ -59,14 +58,14 @@ class ExportController extends Controller
                     $row['STATUS'],
                     $row['JENIS BAYAR'],
                     $row['BANK'],
-                    $row['JUMLAH (Rp)']
+                    $row['JUMLAH (Rp)'],
                 ]);
-                
+
                 $total += $payment->dtl_jml_bayar;
             }
-            
+
             fputcsv($file, ['', '', '', '', '', 'TOTAL PENDAPATAN', $total]);
-            
+
             fclose($file);
         };
 
@@ -80,35 +79,35 @@ class ExportController extends Controller
     {
         $tgl_awal = $request->query('tgl_awal') ?? Carbon::today()->startOfMonth()->toDateString();
         $tgl_akhir = $request->query('tgl_akhir') ?? Carbon::today()->endOfMonth()->toDateString();
-        
+
         $payments = TransaksiDetail::with(['transaksi.customer'])
-            ->whereBetween('dtl_tanggal', [$tgl_awal . ' 00:00:00', $tgl_akhir . ' 23:59:59'])
+            ->whereBetween('dtl_tanggal', [$tgl_awal.' 00:00:00', $tgl_akhir.' 23:59:59'])
             ->get();
 
-        $filename = "laporan_periode_" . $tgl_awal . "_sampai_" . $tgl_akhir . ".csv";
-        
+        $filename = 'laporan_periode_'.$tgl_awal.'_sampai_'.$tgl_akhir.'.csv';
+
         $headers = [
-            "Content-type"        => "text/csv",
-            "Content-Disposition" => "attachment; filename=$filename",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=$filename",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
         ];
 
-        $columns = ["NO", "INVOICE", "NAMA CUSTOMER", "TANGGAL", "STATUS", "JENIS BAYAR", "BANK", "JUMLAH (Rp)"];
+        $columns = ['NO', 'INVOICE', 'NAMA CUSTOMER', 'TANGGAL', 'STATUS', 'JENIS BAYAR', 'BANK', 'JUMLAH (Rp)'];
 
-        $callback = function() use($payments, $columns, $tgl_awal, $tgl_akhir) {
+        $callback = function () use ($payments, $columns, $tgl_awal, $tgl_akhir) {
             $file = fopen('php://output', 'w');
-            
-            fputs($file, $bom =(chr(0xEF) . chr(0xBB) . chr(0xBF)));
-            
-            fputcsv($file, ["PERIODE LAPORAN", $tgl_awal . " s/d " . $tgl_akhir]);
+
+            fwrite($file, $bom = (chr(0xEF).chr(0xBB).chr(0xBF)));
+
+            fputcsv($file, ['PERIODE LAPORAN', $tgl_awal.' s/d '.$tgl_akhir]);
             fputcsv($file, []);
             fputcsv($file, $columns);
-            
+
             $total = 0;
             $no = 1;
-            
+
             foreach ($payments as $payment) {
                 $row['NO'] = $no++;
                 $row['INVOICE'] = $payment->trans_kode;
@@ -127,14 +126,14 @@ class ExportController extends Controller
                     $row['STATUS'],
                     $row['JENIS BAYAR'],
                     $row['BANK'],
-                    $row['JUMLAH (Rp)']
+                    $row['JUMLAH (Rp)'],
                 ]);
-                
+
                 $total += $payment->dtl_jml_bayar;
             }
-            
+
             fputcsv($file, ['', '', '', '', '', '', 'TOTAL PENDAPATAN', $total]);
-            
+
             fclose($file);
         };
 

@@ -22,12 +22,48 @@
 
     <div class="grid grid-cols-12 gap-6">
         <div class="col-span-12 lg:col-span-8">
+            @php
+                $customer = $trans->customer;
+                $isPriority = $customer && (($customer->cos_tier === 'prioritas') || ($customer->cos_score >= 5) || ($customer->total_transaksi >= 5));
+                $isLoyal = $customer && (($customer->cos_tier === 'loyal') || ($customer->cos_score >= 3 && !$isPriority));
+                $score = $customer->cos_score ?? ($isPriority ? 5 : ($isLoyal ? 3 : 1));
+                $totalTx = $customer->total_transaksi ?? ($isPriority ? 5 : ($isLoyal ? 3 : 1));
+            @endphp
+
+            @if($isPriority)
+                <div class="alert alert-warning bg-amber-500 text-white p-4 rounded-lg mb-4 flex items-center justify-between shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">👑</span>
+                        <div>
+                            <div class="font-bold text-sm">PELANGGAN PRIORITAS (VIP) - Skor {{ $score }}</div>
+                            <div class="text-xs text-amber-100">Customer memiliki {{ $totalTx }} riwayat transaksi & berhak atas potongan diskon loyalitas up-to 25% - 50%.</div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <div class="box p-5">
-                <h2 class="font-bold text-lg border-b pb-2 mb-4">Informasi Customer</h2>
+                <div class="flex items-center justify-between border-b pb-2 mb-4">
+                    <h2 class="font-bold text-lg">Informasi Customer</h2>
+                    @if($isPriority)
+                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300 inline-flex items-center gap-1">
+                            👑 Prioritas VIP (Skor 5)
+                        </span>
+                    @elseif($isLoyal)
+                        <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 border border-blue-200 inline-flex items-center gap-1">
+                            ⭐ Loyal (Skor {{ $score }})
+                        </span>
+                    @else
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                            Reguler (Skor {{ $score }})
+                        </span>
+                    @endif
+                </div>
                 <table class="table w-full mb-6">
                     <tr><td class="w-1/4 font-semibold">Nama</td><td>: {{ $trans->customer->cos_nama ?? '-' }}</td></tr>
                     <tr><td class="font-semibold">No. HP</td><td>: {{ $trans->customer->cos_hp ?? '-' }}</td></tr>
                     <tr><td class="font-semibold">Alamat</td><td>: {{ $trans->customer->cos_alamat ?? '-' }}</td></tr>
+                    <tr><td class="font-semibold">Total Transaksi</td><td>: {{ $totalTx }} kali</td></tr>
                 </table>
 
                 <h2 class="font-bold text-lg border-b pb-2 mb-4">Rincian Tindakan / Servis</h2>

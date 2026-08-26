@@ -43,9 +43,12 @@ class ServiceController extends Controller
         }
 
         $transaksis = Transaksi::with(['customer', 'karyawan'])
+            ->select('transaksi.*')
+            ->leftJoin('costomer', 'transaksi.cos_kode', '=', 'costomer.id_costomer')
             ->where('trans_status', $status_map[$status])
-            ->orderBy('cos_tanggal', 'desc')
-            ->orderBy('trans_kode', 'desc')
+            ->orderByRaw("CASE WHEN costomer.cos_tier = 'prioritas' OR costomer.cos_score >= 5 THEN 0 WHEN costomer.cos_tier = 'loyal' OR costomer.cos_score >= 3 THEN 1 ELSE 2 END ASC")
+            ->orderBy('transaksi.cos_tanggal', 'desc')
+            ->orderBy('transaksi.trans_kode', 'desc')
             ->paginate(25);
 
         return view('service.antrean', [

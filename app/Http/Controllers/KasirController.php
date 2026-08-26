@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Customer;
+use App\Models\Tindakan;
 use App\Models\Transaksi;
 use App\Models\TransaksiDetail;
-use App\Models\Tindakan;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class KasirController extends Controller
@@ -19,10 +19,10 @@ class KasirController extends Controller
             ->where('trans_status', '!=', 'Lunas');
 
         if ($search) {
-            $query->whereHas('customer', function($q) use ($search) {
+            $query->whereHas('customer', function ($q) use ($search) {
                 $q->where('cos_nama', 'like', "%{$search}%")
-                  ->orWhere('cos_alamat', 'like', "%{$search}%")
-                  ->orWhere('cos_hp', 'like', "%{$search}%");
+                    ->orWhere('cos_alamat', 'like', "%{$search}%")
+                    ->orWhere('cos_hp', 'like', "%{$search}%");
             });
         }
 
@@ -31,7 +31,7 @@ class KasirController extends Controller
 
         return view('kasir.customer', [
             'title' => 'Kasir - Customer',
-            'transaksis' => $transaksis
+            'transaksis' => $transaksis,
         ]);
     }
 
@@ -40,7 +40,7 @@ class KasirController extends Controller
         $transaksi = Transaksi::with(['customer', 'karyawan'])->where('trans_kode', $kode)->firstOrFail();
         $tindakan = Tindakan::where('trans_kode', $kode)->get();
         $bayar = TransaksiDetail::where('trans_kode', $kode)->get();
-        
+
         return view('kasir.cari', [
             'title' => 'Pembayaran',
             'trans' => $transaksi,
@@ -71,10 +71,15 @@ class KasirController extends Controller
                 'dtl_status' => 'PELUNASAN',
                 'dtl_tanggal' => now()->toDateString(),
                 'dtl_jam' => now()->toTimeString(),
-                'dtl_stt_stor' => 'Disetorkan'
+                'dtl_stt_stor' => 'Disetorkan',
             ]);
 
             $transaksi->update(['trans_status' => 'Lunas']);
+
+            // Recalculate customer score automatically
+            if ($transaksi->customer) {
+                $transaksi->customer->recalculateScore();
+            }
         });
 
         return redirect()->route('kasir.cari', $kode)->with('sukses', 'DI LUNASI');
@@ -96,7 +101,7 @@ class KasirController extends Controller
                 'dtl_status' => 'DP',
                 'dtl_tanggal' => now()->toDateString(),
                 'dtl_jam' => now()->toTimeString(),
-                'dtl_stt_stor' => 'Disetorkan'
+                'dtl_stt_stor' => 'Disetorkan',
             ]);
 
             Transaksi::where('trans_kode', $kode)->update(['trans_status' => 'Pelunasan']);
@@ -120,9 +125,9 @@ class KasirController extends Controller
         }
 
         if ($search) {
-            $query->whereHas('transaksi.customer', function($q) use ($search) {
+            $query->whereHas('transaksi.customer', function ($q) use ($search) {
                 $q->where('cos_nama', 'like', "%{$search}%")
-                  ->orWhere('cos_kode', 'like', "%{$search}%");
+                    ->orWhere('cos_kode', 'like', "%{$search}%");
             });
         }
 
@@ -131,14 +136,14 @@ class KasirController extends Controller
         return view('kasir.pembayaran', [
             'title' => 'Pembayaran',
             'pembayarans' => $pembayarans,
-            'filter' => $filter
+            'filter' => $filter,
         ]);
     }
 
     public function laporan()
     {
         $date = now()->toDateString();
-        
+
         // DP & Pelunasan today
         $payments = TransaksiDetail::with(['transaksi.customer'])
             ->whereDate('dtl_tanggal', $date)
@@ -154,7 +159,7 @@ class KasirController extends Controller
             'dp_total' => $dp_total,
             'lunas_total' => $lunas_total,
             'total_all' => $total_all,
-            'payments' => $payments
+            'payments' => $payments,
         ]);
     }
 }

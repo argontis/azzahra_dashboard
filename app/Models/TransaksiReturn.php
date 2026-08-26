@@ -10,6 +10,7 @@ class TransaksiReturn extends Model
     use HasFactory;
 
     protected $table = 'transaksi_return';
+
     protected $primaryKey = 'ret_kode';
 
     protected $fillable = [
