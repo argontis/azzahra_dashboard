@@ -7,6 +7,7 @@ use App\Models\OrderList;
 use App\Models\Tindakan;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -50,6 +51,7 @@ class QuickServiceController extends Controller
             $query->where('trans_status', $status_map[$status]);
         }
 
+        // Order by latest customer date (assuming trans_tanggal or cos_tanggal logic)
         $transaksis = $query->orderBy('cos_tanggal', 'desc')
             ->orderBy('trans_kode', 'desc')
             ->paginate(25);
@@ -142,6 +144,8 @@ class QuickServiceController extends Controller
                 'trans_total' => 0,
                 'trans_discount' => 0,
                 'trans_status' => 'Baru',
+                'cos_tanggal' => date('Y-m-d'),
+                'cos_jam' => date('H:i:s'),
                 'trans_tanggal' => date('Y-m-d'),
             ]);
 
