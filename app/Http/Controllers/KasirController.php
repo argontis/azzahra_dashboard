@@ -26,7 +26,7 @@ class KasirController extends Controller
             });
         }
 
-        // Order by latest customer date (assuming trans_tanggal or cos_tanggal logic)
+        // Order by latest customer date
         $transaksis = $query->orderBy('trans_kode', 'desc')->paginate(25);
 
         return view('kasir.customer', [
@@ -37,7 +37,10 @@ class KasirController extends Controller
 
     public function cari($kode)
     {
-        $transaksi = Transaksi::with(['customer', 'karyawan'])->where('trans_kode', $kode)->firstOrFail();
+        $transaksi = Transaksi::with(['customer', 'karyawan'])
+            ->where('trans_kode', $kode)
+            ->firstOrFail();
+
         $tindakan = Tindakan::where('trans_kode', $kode)->get();
         $bayar = TransaksiDetail::where('trans_kode', $kode)->get();
 
@@ -58,10 +61,18 @@ class KasirController extends Controller
         $transaksi = Transaksi::where('trans_kode', $kode)->firstOrFail();
 
         if ($transaksi->trans_status == 'Lunas') {
-            return redirect()->route('kasir.cari', $kode)->with('gagal', 'Customer ini sudah melakukan pelunasan');
+            return redirect()
+                ->route('kasir.cari', $kode)
+                ->with('gagal', 'Customer ini sudah melakukan pelunasan');
         }
 
-        DB::transaction(function () use ($kode, $jenis_bayar, $bank, $request, $transaksi) {
+        DB::transaction(function () use (
+            $kode,
+            $jenis_bayar,
+            $bank,
+            $request,
+            $transaksi
+        ) {
             TransaksiDetail::create([
                 'trans_kode' => $kode,
                 'kry_kode' => auth()->user()->kry_kode ?? null,
@@ -74,7 +85,9 @@ class KasirController extends Controller
                 'dtl_stt_stor' => 'Disetorkan',
             ]);
 
-            $transaksi->update(['trans_status' => 'Lunas']);
+            $transaksi->update([
+                'trans_status' => 'Lunas'
+            ]);
 
             // Recalculate customer score automatically
             if ($transaksi->customer) {
@@ -82,7 +95,9 @@ class KasirController extends Controller
             }
         });
 
-        return redirect()->route('kasir.cari', $kode)->with('sukses', 'DI LUNASI');
+        return redirect()
+            ->route('kasir.cari', $kode)
+            ->with('sukses', 'DI LUNASI');
     }
 
     public function save_dp(Request $request)
@@ -91,7 +106,12 @@ class KasirController extends Controller
         $jenis_bayar = $request->input('jenis_bayar');
         $bank = ($jenis_bayar == 'TUNAI') ? '-' : $request->input('bank');
 
-        DB::transaction(function () use ($kode, $jenis_bayar, $bank, $request) {
+        DB::transaction(function () use (
+            $kode,
+            $jenis_bayar,
+            $bank,
+            $request
+        ) {
             TransaksiDetail::create([
                 'trans_kode' => $kode,
                 'kry_kode' => auth()->user()->kry_kode ?? null,
@@ -104,17 +124,25 @@ class KasirController extends Controller
                 'dtl_stt_stor' => 'Disetorkan',
             ]);
 
-            Transaksi::where('trans_kode', $kode)->update(['trans_status' => 'Pelunasan']);
+            Transaksi::where('trans_kode', $kode)
+                ->update([
+                    'trans_status' => 'Pelunasan'
+                ]);
         });
 
-        return redirect()->route('kasir.cari', $kode)->with('sukses', 'DP DI SIMPAN');
+        return redirect()
+            ->route('kasir.cari', $kode)
+            ->with('sukses', 'DP DI SIMPAN');
     }
 
     public function pembayaran(Request $request, $filter = null)
     {
         $search = $request->input('search');
 
-        $query = TransaksiDetail::with(['transaksi.customer', 'transaksi.karyawan'])
+        $query = TransaksiDetail::with([
+                'transaksi.customer',
+                'transaksi.karyawan'
+            ])
             ->orderBy('dtl_tanggal', 'desc')
             ->orderBy('dtl_jam', 'desc');
 
@@ -133,10 +161,17 @@ class KasirController extends Controller
 
         $pembayarans = $query->paginate(25);
 
+        $dpCount = TransaksiDetail::where('dtl_status', 'DP')->count();
+        $lunasCount = TransaksiDetail::where('dtl_status', 'PELUNASAN')->count();
+        $totalCount = $dpCount + $lunasCount;
+
         return view('kasir.pembayaran', [
             'title' => 'Pembayaran',
             'pembayarans' => $pembayarans,
             'filter' => $filter,
+            'dpCount' => $dpCount,
+            'lunasCount' => $lunasCount,
+            'totalCount' => $totalCount,
         ]);
     }
 
@@ -145,12 +180,20 @@ class KasirController extends Controller
         $date = now()->toDateString();
 
         // DP & Pelunasan today
-        $payments = TransaksiDetail::with(['transaksi.customer'])
+        $payments = TransaksiDetail::with([
+                'transaksi.customer'
+            ])
             ->whereDate('dtl_tanggal', $date)
             ->get();
 
-        $dp_total = $payments->where('dtl_status', 'DP')->sum('dtl_jml_bayar');
-        $lunas_total = $payments->where('dtl_status', 'PELUNASAN')->sum('dtl_jml_bayar');
+        $dp_total = $payments
+            ->where('dtl_status', 'DP')
+            ->sum('dtl_jml_bayar');
+
+        $lunas_total = $payments
+            ->where('dtl_status', 'PELUNASAN')
+            ->sum('dtl_jml_bayar');
+
         $total_all = $dp_total + $lunas_total;
 
         return view('kasir.laporan', [

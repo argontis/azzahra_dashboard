@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
+        Schema::dropIfExists('ketersediaan_sparepart');
         Schema::dropIfExists('tindakan');
         Schema::dropIfExists('transaksi_detail');
         Schema::dropIfExists('vocer');
@@ -122,6 +123,18 @@ return new class extends Migration
             $table->decimal('ret_jml', 15, 2)->default(0);
             $table->date('ret_tanggal')->nullable();
             $table->timestamps();
+        });
+
+        Schema::create('ketersediaan_sparepart', function (Blueprint $table) {
+            $table->id();
+            $table->string('trans_kode')->nullable();
+            $table->string('cos_nama')->nullable();
+            $table->string('barang_nama')->nullable();
+            $table->string('ketersediaan')->nullable();
+            $table->string('status')->default('menunggu');
+            $table->timestamps();
+
+            $table->foreign('trans_kode')->references('trans_kode')->on('transaksi')->onDelete('cascade');
         });
 
         Schema::enableForeignKeyConstraints();

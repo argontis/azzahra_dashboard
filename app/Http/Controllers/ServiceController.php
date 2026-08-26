@@ -141,6 +141,8 @@ class ServiceController extends Controller
                 'trans_total' => 0,
                 'trans_discount' => 0,
                 'trans_status' => $is_quick_service ? 'Pelunasan' : 'Baru',
+                'cos_tanggal' => date('Y-m-d'),
+                'cos_jam' => date('H:i:s'),
                 'trans_tanggal' => date('Y-m-d'),
             ]);
 

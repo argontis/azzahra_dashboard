@@ -19,8 +19,7 @@ class TeknisiController extends Controller
         $search = $request->query('search');
 
         $query = Transaksi::with(['customer'])
-            ->orderBy('cos_tanggal', 'desc')
-            ->orderBy('trans_kode', 'desc');
+            ->orderBy('created_at', 'desc');
 
         // Status filter
         if ($status_filter === 'Order Baru') {
