@@ -16,6 +16,7 @@ use App\Http\Controllers\QuickServiceController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TeknisiController;
 use App\Http\Controllers\VoucherController;
+use App\Http\Controllers\CustomerScoringController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -156,6 +157,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/export_excel_lap_perhari', [ExportController::class, 'lap_perhari_excel'])->name('admin.export_excel_lap_perhari');
         Route::get('/export_excel_laporan', [ExportController::class, 'lap_excel'])->name('admin.export_excel_laporan');
         Route::get('/export_dashboard', [AdminController::class, 'export_dashboard'])->name('admin.export_dashboard');
+        Route::post('/pelanggan/{id_costomer}/update-skor', [CustomerScoringController::class, 'updateSkorPelanggan']);
         // Order Approval Routes
         Route::get('/order_approval/oow', [OrderApprovalController::class, 'pending_oow'])->name('admin.order_approval.oow');
         Route::get('/order_approval/iw', [OrderApprovalController::class, 'pending_iw'])->name('admin.order_approval.iw');
