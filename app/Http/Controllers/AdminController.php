@@ -90,7 +90,7 @@ class AdminController extends Controller
             ->orderBy('costomer.id_costomer', 'desc')
             ->paginate(20);
 
-        return view('admin.customer', ['title' => 'Customer', 'custom' => $customers]);
+        return redirect()->route('customer.index');
     }
 
     public function cus_baru()
