@@ -32,6 +32,16 @@ class CheckRole
             return $next($request);
         }
 
-        abort(403, 'Unauthorized action.');
+        $roleRoutes = [
+            'Admin' => '/Admin',
+            'Kasir' => '/Kasir',
+            'Customer Service' => '/Service',
+            'Teknisi' => '/Teknisi',
+            'HR' => '/HR',
+        ];
+
+        $target = $roleRoutes[$userLevel] ?? '/Auth';
+
+        return redirect($target)->with('gagal', 'Anda tidak memiliki akses ke halaman tersebut.');
     }
 }

@@ -2,50 +2,66 @@
 @extends('layouts.app')
 @section('content')
 
-<div class="page-header">
-    <div class="page-header-left">
-        <div class="page-title-section">
-            <h1 class="page-title"><i data-feather="home" class="w-10 h-10 inline-block mr-2"></i>Dashboard Overview</h1>
-            <p class="page-subtitle">
-                <i data-feather="calendar"></i>
-                {{ date('l, d F Y') ?? '0' }}
-            </p>
-        </div>
-    </div>
-    <div class="page-header-right">
-        <div class="header-actions">
-            <div class="export-buttons">
-                <button class="btn btn-outline export-btn" onclick="exportDashboardReport('all')" title="Export All Sections">
-                    <i data-feather="download"></i>
-                    📊 All
-                </button>
-                <button class="btn btn-outline export-btn" onclick="exportDashboardReport('performance')" title="Export Performance Metrics">
-                    <i data-feather="trending-up"></i>
-                    📈 Performance
-                </button>
-                <button class="btn btn-outline export-btn" onclick="exportDashboardReport('weekly')" title="Export Weekly Performance">
-                    <i data-feather="bar-chart"></i>
-                    📊 Weekly
-                </button>
-                <button class="btn btn-outline export-btn" onclick="exportDashboardReport('technicians')" title="Export Top Performers">
-                    <i data-feather="users"></i>
-                    👷 Technicians
-                </button>
-                <button class="btn btn-outline export-btn" onclick="exportDashboardReport('payment')" title="Export Payment Methods">
-                    <i data-feather="credit-card"></i>
-                    💳 Payment
-                </button>
-                <button class="btn btn-outline export-btn" onclick="exportDashboardReport('activity')" title="Export Recent Activity">
-                    <i data-feather="activity"></i>
-                    📋 Activity
-                </button>
+<div class="page-header" style="display: flex; flex-direction: column; align-items: stretch; gap: 12px; padding: 16px 32px;">
+    <!-- Top Row: Title Left, Actions Right (Sejajar dengan Dashboard Overview di Pojok Kanan Atas) -->
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <div class="page-header-left">
+            <div class="page-title-section">
+                <h1 class="page-title" style="margin: 0; display: flex; align-items: center;">
+                    <i data-feather="home" class="w-8 h-8 inline-block mr-2"></i>Dashboard Overview
+                </h1>
+                <p class="page-subtitle" style="margin-top: 4px;">
+                    <i data-feather="calendar"></i>
+                    {{ date('l, d F Y') ?? '0' }}
+                </p>
             </div>
         </div>
+        <div class="header-actions" style="display: flex; align-items: center; gap: 12px; margin: 0;">
+            <div class="search-input-wrapper">
+                <i data-feather="search" class="search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search...">
+            </div>
+            <div class="header-btn header-btn-bell" id="topbar-bell-btn" title="Pemberitahuan Sistem & Maintenance" style="cursor: pointer; position: relative;">
+                <i data-feather="bell"></i>
+                <div class="badge-dot"></div>
+            </div>
+            <div class="header-btn header-btn-mail" id="topbar-mail-btn" title="Kotak Pesan" style="cursor: pointer; position: relative;">
+                <i data-feather="mail"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Second Row: Export Buttons -->
+    <div class="export-buttons" style="margin: 0;">
+        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('all')" title="Export All Sections">
+            <i data-feather="download"></i>
+            📊 All
+        </button>
+        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('performance')" title="Export Performance Metrics">
+            <i data-feather="trending-up"></i>
+            📈 Performance
+        </button>
+        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('weekly')" title="Export Weekly Performance">
+            <i data-feather="bar-chart"></i>
+            📊 Weekly
+        </button>
+        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('technicians')" title="Export Top Performers">
+            <i data-feather="users"></i>
+            👷 Technicians
+        </button>
+        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('payment')" title="Export Payment Methods">
+            <i data-feather="credit-card"></i>
+            💳 Payment
+        </button>
+        <button class="btn btn-outline export-btn" onclick="exportDashboardReport('activity')" title="Export Recent Activity">
+            <i data-feather="activity"></i>
+            📋 Activity
+        </button>
     </div>
 </div>
         
 <!-- Content Area (dari template sidebar Anda) -->
-<div class="content-area">        
+<div class="content-area" style="margin-top: 130px;">        
     <!-- Dashboard Container -->
     <div class="dashboard-container">        
         <!-- Page Header -->

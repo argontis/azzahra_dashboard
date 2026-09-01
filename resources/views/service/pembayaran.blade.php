@@ -2,13 +2,26 @@
 
 @section('content')
 <!-- Header -->
-<header class="page-header mb-5">
+<header class="page-header">
     <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
         <i data-feather="menu"></i>
     </div>
     <div class="header-title">
-        <h1><i data-feather="credit-card" class="w-6 h-6 inline-block mr-2"></i> Pembayaran</h1>                
+        <h1><i data-feather="credit-card" class="w-6 h-6 inline-block mr-2"></i>Pembayaran</h1>                
         <p>Kelola Data Pembayaran Customer</p>
+    </div>
+    <div class="header-actions">
+        <div class="search-input-wrapper">
+            <i data-feather="search" class="search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search...">
+        </div>
+        <div class="header-btn" title="Notifikasi">
+            <i data-feather="bell"></i>
+            <div class="badge-dot"></div>
+        </div>
+        <div class="header-btn" id="topbar-mail-btn" title="Kotak Pesan">
+            <i data-feather="mail"></i>
+        </div>
     </div>            
 </header>
 

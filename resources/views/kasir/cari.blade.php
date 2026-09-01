@@ -85,19 +85,27 @@
 </style>
 
 <!-- Header Area -->
-<div class="page-header">
-    <div class="flex items-center gap-2 text-white">
-        <i data-feather="credit-card" class="w-5 h-5"></i>
-        <h1 class="text-xl font-bold tracking-wide">Data Pembayaran</h1>
-        <span class="hidden md:inline-block text-white text-xs opacity-90 ml-4 border-l border-white/20 pl-4">Manage transaction payment details</span>
+<header class="page-header">
+    <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+        <i data-feather="menu"></i>
     </div>
-    
-    <div class="flex items-center gap-3">
-        <a href="{{ route('kasir.index') }}" class="w-9 h-9 bg-white rounded-md flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors shadow-sm" title="Kembali ke Daftar Customer">
-            <i data-feather="arrow-left" class="w-4 h-4"></i>
+    <div class="header-title">
+        <h1><i data-feather="credit-card" class="w-6 h-6 inline-block mr-2"></i>Data Pembayaran</h1>
+        <p>Manage transaction payment details</p>
+    </div>
+    <div class="header-actions">
+        <a href="{{ route('kasir.index') }}" class="header-btn" title="Kembali ke Daftar Customer" style="text-decoration: none;">
+            <i data-feather="arrow-left"></i>
         </a>
+        <div class="header-btn" title="Notifikasi">
+            <i data-feather="bell"></i>
+            <div class="badge-dot"></div>
+        </div>
+        <div class="header-btn" id="topbar-mail-btn" title="Kotak Pesan">
+            <i data-feather="mail"></i>
+        </div>
     </div>
-</div>
+</header>
 
 <div class="content-area">
     @if(session('sukses'))

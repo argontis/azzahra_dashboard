@@ -28,32 +28,29 @@
 }
 </style>
 <!-- Header Area -->
-<div class="page-header">
-    <div class="flex items-center gap-2 text-white">
-        <i data-feather="zap" class="w-5 h-5"></i>
-        <h1 class="text-xl font-bold tracking-wide">Quick Service</h1>
-        <span class="hidden md:inline-block text-white text-xs opacity-90 ml-4 border-l border-white/20 pl-4">Manage quick service data</span>
+<header class="page-header">
+    <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+        <i data-feather="menu"></i>
+    </div>
+    <div class="header-title">
+        <h1><i data-feather="zap" class="w-6 h-6 inline-block mr-2"></i>Quick Service</h1>
+        <p>Manage quick service data</p>
     </div>
     
-    <div class="flex items-center gap-4">
-        <!-- Search Form -->
-        <form class="hidden sm:block m-0">
-            <div class="relative">
-                <i data-feather="search" class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                <input type="text" placeholder="Search..." class="pl-9 pr-4 py-2 rounded-md border-0 focus:ring-2 focus:ring-blue-400 text-gray-700 text-sm w-48 lg:w-80 shadow-sm">
-            </div>
-        </form>
-        <!-- Bell Icon -->
-        <a href="#" class="text-white hover:text-gray-200 transition-colors relative flex items-center justify-center" title="Notifikasi">
-            <i data-feather="bell" class="w-5 h-5"></i>
-            <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-        </a>
-        <!-- Mail Icon -->
-        <a href="#" class="text-white hover:text-gray-200 transition-colors flex items-center justify-center" title="Pesan">
-            <i data-feather="mail" class="w-5 h-5"></i>
-        </a>
+    <div class="header-actions">
+        <div class="search-input-wrapper">
+            <i data-feather="search" class="search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search...">
+        </div>
+        <div class="header-btn" title="Notifikasi">
+            <i data-feather="bell"></i>
+            <div class="badge-dot"></div>
+        </div>
+        <div class="header-btn" id="topbar-mail-btn" title="Kotak Pesan">
+            <i data-feather="mail"></i>
+        </div>
     </div>
-</div>
+</header>
 
 <div class="content-area">
     <div class="sukses" data-sukses="{{ session('sukses') }}"></div>

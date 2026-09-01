@@ -155,6 +155,414 @@
     </div>
     @endif
     <!-- END: Dashboard Curtain Reveal Overlay -->
+
+    {{-- ============================================================
+         GLOBAL TOP-RIGHT MESSAGE DROPDOWN PANEL
+         Muncul di pojok kanan atas saat icon mail diklik
+         ============================================================ --}}
+    @auth
+    <style>
+    /* Dropdown Panel Pesan & Notifikasi Top Right */
+    #topbar-message-panel,
+    #topbar-notification-panel {
+        position: fixed !important;
+        top: 72px !important;
+        right: 28px !important;
+        z-index: 99999 !important;
+        width: 380px !important;
+        max-width: calc(100vw - 32px) !important;
+        background: #ffffff !important;
+        border-radius: 18px !important;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.22), 0 4px 16px rgba(0,0,0,0.08) !important;
+        border: 1px solid #e5e7eb !important;
+        overflow: hidden !important;
+        transform: scale(0.85) translateY(-20px) !important;
+        transform-origin: top right !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+        display: block !important;
+    }
+    #topbar-message-panel.open,
+    #topbar-notification-panel.open {
+        transform: scale(1) translateY(0) !important;
+        opacity: 1 !important;
+        pointer-events: all !important;
+    }
+    .fab-panel-header {
+        background: linear-gradient(135deg, #0041c3, #0063f0);
+        color: white;
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .fab-panel-header.notif-header {
+        background: linear-gradient(135deg, #1e1b4b, #312e81);
+    }
+    .fab-panel-header h3 {
+        font-size: 14px;
+        font-weight: 700;
+        margin: 0;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .fab-panel-header a {
+        font-size: 11px;
+        color: rgba(255,255,255,0.9);
+        text-decoration: none;
+        border: 1px solid rgba(255,255,255,0.3);
+        border-radius: 6px;
+        padding: 3px 8px;
+        transition: all 0.2s;
+    }
+    .fab-panel-header a:hover { background: rgba(255,255,255,0.2); color: white; }
+    .fab-panel-msgs {
+        max-height: 320px;
+        overflow-y: auto;
+        padding: 8px 0;
+    }
+    .fab-panel-msg-item {
+        padding: 12px 18px;
+        border-bottom: 1px solid #f3f4f6;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+    .fab-panel-msg-item:last-child { border-bottom: none; }
+    .fab-panel-msg-item:hover { background: #f8fafc; }
+    .fab-panel-msg-item .msg-title { font-size: 13.5px; font-weight: 600; color: #1f2937; margin-bottom: 2px; }
+    .fab-panel-msg-item .msg-from  { font-size: 11.5px; color: #6b7280; }
+    .fab-panel-msg-item .msg-time  { font-size: 10.5px; color: #9ca3af; float: right; margin-top: 2px; }
+    .fab-panel-msg-item.unread { background: #eff6ff; }
+    .fab-panel-msg-item.unread .msg-title { color: #0041c3; }
+    
+    .notif-tag {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 6px;
+        margin-right: 6px;
+    }
+    .notif-tag.maintenance { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .notif-tag.penting { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .notif-tag.info { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+
+    .fab-compose {
+        padding: 12px 16px;
+        border-top: 1px solid #f3f4f6;
+        background: #fafbfc;
+    }
+    .fab-compose a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: linear-gradient(135deg, #0041c3, #0063f0);
+        color: white;
+        text-decoration: none;
+        padding: 8px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        transition: opacity 0.2s;
+    }
+    .fab-compose a.notif-admin-btn {
+        background: linear-gradient(135deg, #1e1b4b, #312e81);
+    }
+    .fab-compose a:hover { opacity: 0.9; }
+    .fab-panel-empty {
+        padding: 24px;
+        text-align: center;
+        color: #9ca3af;
+        font-size: 13px;
+    }
+    </style>
+
+    <!-- Top Right Dropdown Panel Pesan -->
+    <div id="topbar-message-panel">
+        <div class="fab-panel-header">
+            <h3>✉️ Kotak Pesan</h3>
+            <a href="{{ route('messages.index') }}">Lihat Semua →</a>
+        </div>
+        <div class="fab-panel-msgs" id="fab-panel-msgs-list">
+            <div class="fab-panel-empty">Memuat pesan...</div>
+        </div>
+        <div class="fab-compose">
+            <a href="{{ route('messages.index') }}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                Tulis Pesan Baru
+            </a>
+        </div>
+    </div>
+
+    <!-- Top Right Dropdown Panel Notifikasi / Pemberitahuan Sistem -->
+    <div id="topbar-notification-panel">
+        <div class="fab-panel-header notif-header">
+            <h3>🔔 Pemberitahuan Sistem</h3>
+            <a href="{{ route('announcements.index') }}">Lihat Semua →</a>
+        </div>
+        <div class="fab-panel-msgs" id="fab-panel-notif-list">
+            <div class="fab-panel-empty">Memuat pemberitahuan...</div>
+        </div>
+        @if(Auth::check() && (Auth::user()->kry_level === 'Admin' || Auth::user()->kry_level === 'Pimpinan'))
+        <div class="fab-compose">
+            <a href="{{ route('announcements.index') }}" class="notif-admin-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                + Buat Pemberitahuan / Maintenance Baru
+            </a>
+        </div>
+        @else
+        <div class="fab-compose" style="text-align: center; font-size: 11.5px; color: #64748b; background: #f8fafc; padding: 10px 14px;">
+            📢 Pemberitahuan &amp; Jadwal Maintenance Resmi dari Administrator
+        </div>
+        @endif
+    </div>
+
+    <script>
+    (function () {
+        const MESSAGES_URL = '{{ route("messages.index") }}';
+        const ANNOUNCEMENTS_URL = '{{ route("announcements.index") }}';
+        let msgPanelOpen = false;
+        let notifPanelOpen = false;
+
+        // Toggle Pesan
+        window.toggleTopbarMsgPanel = function (e) {
+            if (e) {
+                if (typeof e.stopPropagation === 'function') e.stopPropagation();
+                if (typeof e.preventDefault === 'function') e.preventDefault();
+            }
+            const msgPanel = document.getElementById('topbar-message-panel');
+            const notifPanel = document.getElementById('topbar-notification-panel');
+            if (notifPanel) notifPanel.classList.remove('open');
+            notifPanelOpen = false;
+
+            if (!msgPanel) return;
+            msgPanelOpen = !msgPanel.classList.contains('open');
+            if (msgPanelOpen) {
+                msgPanel.classList.add('open');
+                loadTopbarMessages();
+            } else {
+                msgPanel.classList.remove('open');
+            }
+        };
+
+        // Toggle Notifikasi
+        window.toggleTopbarNotifPanel = function (e) {
+            if (e) {
+                if (typeof e.stopPropagation === 'function') e.stopPropagation();
+                if (typeof e.preventDefault === 'function') e.preventDefault();
+            }
+            const msgPanel = document.getElementById('topbar-message-panel');
+            const notifPanel = document.getElementById('topbar-notification-panel');
+            if (msgPanel) msgPanel.classList.remove('open');
+            msgPanelOpen = false;
+
+            if (!notifPanel) return;
+            notifPanelOpen = !notifPanel.classList.contains('open');
+            if (notifPanelOpen) {
+                notifPanel.classList.add('open');
+                loadTopbarNotifications();
+            } else {
+                notifPanel.classList.remove('open');
+            }
+        };
+
+        // Close panel when clicking outside
+        document.addEventListener('click', function (e) {
+            const msgPanel = document.getElementById('topbar-message-panel');
+            const notifPanel = document.getElementById('topbar-notification-panel');
+            
+            if (msgPanel && msgPanel.classList.contains('open') && !msgPanel.contains(e.target) && !e.target.closest('.header-btn-mail') && !e.target.closest('#topbar-mail-btn')) {
+                msgPanel.classList.remove('open');
+                msgPanelOpen = false;
+            }
+            if (notifPanel && notifPanel.classList.contains('open') && !notifPanel.contains(e.target) && !e.target.closest('.header-btn-bell') && !e.target.closest('#topbar-bell-btn')) {
+                notifPanel.classList.remove('open');
+                notifPanelOpen = false;
+            }
+        });
+
+        // Wire Mail Buttons — langsung ke id topbar-mail-btn
+        function wireTopbarMailButtons() {
+            const mailBtn = document.getElementById('topbar-mail-btn');
+            if (mailBtn) {
+                mailBtn.style.cursor = 'pointer';
+                mailBtn.onclick = function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleTopbarMsgPanel(e);
+                };
+            }
+        }
+
+        // Wire Bell / Notification Buttons — langsung ke id topbar-bell-btn
+        function wireTopbarBellButtons() {
+            const bellBtn = document.getElementById('topbar-bell-btn');
+            if (bellBtn) {
+                bellBtn.style.cursor = 'pointer';
+                bellBtn.onclick = function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleTopbarNotifPanel(e);
+                };
+            }
+        }
+
+        function loadTopbarMessages() {
+            fetch('/messages?limit=5', { headers: { 'Accept': 'application/json' } })
+                .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+                .then(data => {
+                    renderTopbarMessages(data);
+                    fetchTopbarUnreadCount();
+                })
+                .catch(() => {
+                    const list = document.getElementById('fab-panel-msgs-list');
+                    if (list) {
+                        list.innerHTML = '<div class="fab-panel-empty"><a href="' + MESSAGES_URL + '" style="color:#0041c3;font-weight:600;">Lihat semua pesan →</a></div>';
+                    }
+                });
+        }
+
+        function renderTopbarMessages(messages) {
+            const list = document.getElementById('fab-panel-msgs-list');
+            if (!list) return;
+            if (!messages || messages.length === 0) {
+                list.innerHTML = '<div class="fab-panel-empty">📭 Belum ada pesan masuk</div>';
+                return;
+            }
+            list.innerHTML = messages.map(function (msg) {
+                const timeAgo = formatTimeAgo(msg.created_at);
+                return '<div class="fab-panel-msg-item ' + (msg.is_unread ? 'unread' : '') + '" onclick="window.location.href=\'' + MESSAGES_URL + '\'">'
+                    + '<span class="msg-time">' + timeAgo + '</span>'
+                    + '<div class="msg-title">' + escHtml(msg.judul) + '</div>'
+                    + '<div class="msg-from">Dari: ' + escHtml(msg.sender_nama) + ' · ' + escHtml(msg.target_role === 'all' ? '📢 Semua' : msg.target_role) + '</div>'
+                    + '</div>';
+            }).join('');
+        }
+
+        function loadTopbarNotifications() {
+            fetch('/announcements', { headers: { 'Accept': 'application/json' } })
+                .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+                .then(data => {
+                    renderTopbarNotifications(data);
+                    // Mark as read after open
+                    fetch('{{ route("announcements.mark_all_read") }}', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json'
+                        }
+                    }).then(() => {
+                        fetchTopbarNotifCount();
+                    });
+                })
+                .catch(() => {
+                    const list = document.getElementById('fab-panel-notif-list');
+                    if (list) {
+                        list.innerHTML = '<div class="fab-panel-empty"><a href="' + ANNOUNCEMENTS_URL + '" style="color:#0041c3;font-weight:600;">Lihat semua pemberitahuan →</a></div>';
+                    }
+                });
+        }
+
+        function renderTopbarNotifications(items) {
+            const list = document.getElementById('fab-panel-notif-list');
+            if (!list) return;
+            if (!items || items.length === 0) {
+                list.innerHTML = '<div class="fab-panel-empty">🔔 Belum ada pemberitahuan atau jadwal maintenance aktif</div>';
+                return;
+            }
+            list.innerHTML = items.map(function (item) {
+                const timeAgo = formatTimeAgo(item.created_at);
+                let tagClass = 'info';
+                let tagLabel = '📢 Info';
+                if (item.tipe === 'maintenance') {
+                    tagClass = 'maintenance';
+                    tagLabel = '🛠️ Maintenance';
+                } else if (item.tipe === 'penting') {
+                    tagClass = 'penting';
+                    tagLabel = '⚠️ Penting';
+                }
+
+                let timeInfo = '';
+                if (item.mulai_pada) {
+                    timeInfo = '<div style="font-size:10.5px;color:#d97706;margin-top:3px;font-weight:600;">🕒 ' + escHtml(item.mulai_pada) + (item.selesai_pada ? ' s/d ' + escHtml(item.selesai_pada) : '') + '</div>';
+                }
+
+                return '<div class="fab-panel-msg-item ' + (item.is_unread ? 'unread' : '') + '" onclick="window.location.href=\'' + ANNOUNCEMENTS_URL + '\'">'
+                    + '<span class="msg-time">' + timeAgo + '</span>'
+                    + '<div class="msg-title"><span class="notif-tag ' + tagClass + '">' + tagLabel + '</span>' + escHtml(item.judul) + '</div>'
+                    + '<div class="msg-from">' + escHtml(item.isi.length > 80 ? item.isi.substring(0, 80) + '...' : item.isi) + '</div>'
+                    + timeInfo
+                    + '</div>';
+            }).join('');
+        }
+
+        function formatTimeAgo(dateStr) {
+            const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
+            if (diff < 60) return diff + 'd lalu';
+            if (diff < 3600) return Math.floor(diff/60) + 'm lalu';
+            if (diff < 86400) return Math.floor(diff/3600) + 'j lalu';
+            return Math.floor(diff/86400) + 'hr lalu';
+        }
+
+        function escHtml(str) {
+            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+
+        function fetchTopbarUnreadCount() {
+            fetch('{{ route("messages.unread_count") }}')
+                .then(r => r.json())
+                .then(data => {
+                    document.querySelectorAll('.topbar-mail-badge').forEach(b => {
+                        if (data.count > 0) {
+                            b.textContent = data.count > 99 ? '99+' : data.count;
+                            b.style.display = 'block';
+                        } else {
+                            b.style.display = 'none';
+                        }
+                    });
+                }).catch(() => {});
+        }
+
+        function fetchTopbarNotifCount() {
+            fetch('{{ route("announcements.unread_count") }}')
+                .then(r => r.json())
+                .then(data => {
+                    document.querySelectorAll('.badge-dot').forEach(b => {
+                        b.style.display = (data.count > 0) ? 'block' : 'none';
+                    });
+                }).catch(() => {});
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            function initTopbar() {
+                wireTopbarMailButtons();
+                wireTopbarBellButtons();
+                fetchTopbarUnreadCount();
+                fetchTopbarNotifCount();
+            }
+            // Coba wire setelah 200ms (sebelum feather.replace) untuk backup
+            setTimeout(initTopbar, 200);
+            // Coba lagi setelah 1000ms (setelah feather.replace pasti selesai)
+            setTimeout(initTopbar, 1000);
+            setInterval(function () {
+                fetchTopbarUnreadCount();
+                fetchTopbarNotifCount();
+            }, 60000);
+        });
+
+        // Juga wire saat window load untuk memastikan
+        window.addEventListener('load', function () {
+            wireTopbarMailButtons();
+            wireTopbarBellButtons();
+        });
+    })();
+    </script>
+    @endauth
+
     <div class="app-layout">
     <!-- Mobile Menu Button -->
     <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileSidebar()">
@@ -286,6 +694,10 @@
                             <a href="{{ url('HR/karyawan') }}" class="nav-link {{ $title == 'Data Karyawan' ? 'active' : '' }}">
                                 <div class="nav-icon"><i data-feather="users"></i></div>
                                 <span class="nav-text">Karyawan</span>
+                            </a>
+                            <a href="{{ url('Customer') }}" class="nav-link {{ $title == 'Customer' ? 'active' : '' }}">
+                                <div class="nav-icon"><i data-feather="user-check"></i></div>
+                                <span class="nav-text">Customer</span>
                             </a>
                             <a href="{{ url('HR/absensi') }}" class="nav-link {{ $title == 'Absensi Karyawan' ? 'active' : '' }}">
                                 <div class="nav-icon"><i data-feather="clock"></i></div>

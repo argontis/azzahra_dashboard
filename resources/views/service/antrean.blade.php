@@ -2,13 +2,28 @@
 
 @section('content')
 <!-- Header Area -->
-<div class="page-header">
-    <div class="flex items-center gap-2 text-white">
-        <i data-feather="users" class="w-5 h-5"></i>
-        <h1 class="text-xl font-bold tracking-wide">Customer</h1>
-        <span class="hidden md:inline-block text-white text-xs opacity-90 ml-4 border-l border-white/20 pl-4">Antrean Transaksi Service Customer</span>
+<header class="page-header">
+    <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+        <i data-feather="menu"></i>
     </div>
-</div>
+    <div class="header-title">
+        <h1><i data-feather="users" class="w-6 h-6 inline-block mr-2"></i>Customer</h1>
+        <p>Antrean Transaksi Service Customer</p>
+    </div>
+    <div class="header-actions">
+        <div class="search-input-wrapper">
+            <i data-feather="search" class="search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search...">
+        </div>
+        <div class="header-btn" title="Notifikasi">
+            <i data-feather="bell"></i>
+            <div class="badge-dot"></div>
+        </div>
+        <div class="header-btn" id="topbar-mail-btn" title="Kotak Pesan">
+            <i data-feather="mail"></i>
+        </div>
+    </div>
+</header>
 
 <div class="content-area">
     <div class="sukses" data-sukses="{{ session('sukses') }}"></div>

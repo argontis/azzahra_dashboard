@@ -23,21 +23,22 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+            $request->session()->forget('url.intended');
             $user = Auth::user();
 
             if ($user->kry_level == 'Admin') {
-                return redirect()->intended('/Admin')->with('show_curtain', true);
+                return redirect('/Admin')->with('show_curtain', true);
             } elseif ($user->kry_level == 'Kasir') {
-                return redirect()->intended('/Kasir')->with('show_curtain', true);
+                return redirect('/Kasir')->with('show_curtain', true);
             } elseif ($user->kry_level == 'Customer Service') {
-                return redirect()->intended('/Service')->with('show_curtain', true);
+                return redirect('/Service')->with('show_curtain', true);
             } elseif ($user->kry_level == 'Teknisi') {
-                return redirect()->intended('/Teknisi')->with('show_curtain', true);
+                return redirect('/Teknisi')->with('show_curtain', true);
             } elseif ($user->kry_level == 'HR') {
-                return redirect()->intended('/HR')->with('show_curtain', true);
+                return redirect('/HR')->with('show_curtain', true);
             }
 
-            return redirect()->intended('/dashboard')->with('show_curtain', true);
+            return redirect('/dashboard')->with('show_curtain', true);
         }
 
         return back()->with('gagal', 'Username atau Password salah');

@@ -1,7 +1,31 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="content" style="margin-top: 40px; padding: 2rem;">
+<!-- Header -->
+<header class="page-header">
+    <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+        <i data-feather="menu"></i>
+    </div>
+    <div class="header-title">
+        <h1><i data-feather="activity" class="w-6 h-6 inline-block mr-2"></i>Laporan CS</h1>                
+        <p>Ringkasan aktivitas dan rekapitulasi data layanan customer</p>
+    </div>
+    <div class="header-actions">
+        <div class="search-input-wrapper">
+            <i data-feather="search" class="search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search...">
+        </div>
+        <div class="header-btn" title="Notifikasi">
+            <i data-feather="bell"></i>
+            <div class="badge-dot"></div>
+        </div>
+        <div class="header-btn" id="topbar-mail-btn" title="Kotak Pesan">
+            <i data-feather="mail"></i>
+        </div>
+    </div>            
+</header>
+
+<div class="content" style="margin-top: 60px; padding: 2rem;">
     <!-- Header Section -->
     <div class="intro-y flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 pb-4 border-b border-gray-200">
         <div>

@@ -2,18 +2,30 @@
 
 @section('content')
 <header class="page-header mb-5">
-    <div class="header-title flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-            <h1><i data-feather="bar-chart-2" class="w-6 h-6 inline-block mr-2 text-blue-600"></i>KPI Karyawan</h1>
-            <p class="text-xs text-gray-500 mt-1">Pencatatan & Import Data Performance KPI Karyawan (Periode Bulanan)</p>
+    <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+        <i data-feather="menu"></i>
+    </div>
+    <div class="header-title">
+        <h1><i data-feather="bar-chart-2" class="w-6 h-6 inline-block mr-2 text-blue-600"></i>KPI Karyawan</h1>
+        <p>Pencatatan & Import Data Performance KPI Karyawan (Periode Bulanan)</p>
+    </div>
+    <div class="header-actions">
+        <a href="{{ route('hr.template_kpi') }}" class="button border bg-white text-gray-700 hover:bg-gray-50 flex items-center gap-2 text-xs py-2 px-3 rounded-lg shadow-sm">
+            <i data-feather="download" class="w-4 h-4 text-blue-600"></i> Template
+        </a>
+        <a role="button" class="button bg-theme-1 text-white flex items-center gap-2 text-xs py-2 px-3 rounded-lg shadow-md" data-toggle="modal" data-target="#import-kpi-modal">
+            <i data-feather="upload" class="w-4 h-4"></i> Import
+        </a>
+        <div class="search-input-wrapper">
+            <i data-feather="search" class="search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search...">
         </div>
-        <div class="flex items-center gap-2">
-            <a href="{{ route('hr.template_kpi') }}" class="button border bg-white text-gray-700 hover:bg-gray-50 flex items-center gap-2 text-xs py-2 px-3 rounded-lg shadow-sm">
-                <i data-feather="download" class="w-4 h-4 text-blue-600"></i> Download Template Excel KPI
-            </a>
-            <a role="button" class="button bg-theme-1 text-white flex items-center gap-2 text-xs py-2 px-3 rounded-lg shadow-md" data-toggle="modal" data-target="#import-kpi-modal">
-                <i data-feather="upload" class="w-4 h-4"></i> Import File Excel / CSV
-            </a>
+        <div class="header-btn">
+            <i data-feather="bell"></i>
+            <div class="badge-dot"></div>
+        </div>
+        <div class="header-btn" id="topbar-mail-btn" title="Kotak Pesan">
+            <i data-feather="mail"></i>
         </div>
     </div>
 </header>

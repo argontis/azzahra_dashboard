@@ -1,13 +1,16 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CetakController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CustomerScoringController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\HrController;
 use App\Http\Controllers\KasirController;
 use App\Http\Controllers\KetersediaanSparepartController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\MouController;
 use App\Http\Controllers\OrderApprovalController;
 use App\Http\Controllers\OrderController;
@@ -16,7 +19,6 @@ use App\Http\Controllers\QuickServiceController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TeknisiController;
 use App\Http\Controllers\VoucherController;
-use App\Http\Controllers\CustomerScoringController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -43,6 +45,8 @@ Route::middleware(['auth'])->group(function () {
     ]);
     Route::get('/Customer/histori/{kode_transaksi}', [CustomerController::class, 'histori'])->name('customer.histori');
     Route::get('/export_customer', [CustomerController::class, 'export_pdf'])->name('customer.export_pdf');
+    Route::post('/pelanggan/{id_costomer}/update-skor', [CustomerScoringController::class, 'updateSkorPelanggan'])->name('customer.update_skor');
+    Route::post('/pelanggan/update-skor-semua', [CustomerScoringController::class, 'updateSkorSemuaPelanggan'])->name('customer.update_skor_semua');
 
     // ==========================================
     // MODULE KASIR (TRANSAKSI)
@@ -157,7 +161,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/export_excel_lap_perhari', [ExportController::class, 'lap_perhari_excel'])->name('admin.export_excel_lap_perhari');
         Route::get('/export_excel_laporan', [ExportController::class, 'lap_excel'])->name('admin.export_excel_laporan');
         Route::get('/export_dashboard', [AdminController::class, 'export_dashboard'])->name('admin.export_dashboard');
-        Route::post('/pelanggan/{id_costomer}/update-skor', [CustomerScoringController::class, 'updateSkorPelanggan']);
         // Order Approval Routes
         Route::get('/order_approval/oow', [OrderApprovalController::class, 'pending_oow'])->name('admin.order_approval.oow');
         Route::get('/order_approval/iw', [OrderApprovalController::class, 'pending_iw'])->name('admin.order_approval.iw');
@@ -210,5 +213,23 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/cetak/print_5/{kode}', [CetakController::class, 'print_5'])->name('admin.cetak.print_5');
         Route::get('/cetak/print_6/{kode}', [CetakController::class, 'print_6'])->name('admin.cetak.print_6');
     });
+
+    // ==========================================
+    // MESSAGES (Pesan Internal Antar Role)
+    // ==========================================
+    Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
+    Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
+    Route::get('/messages/unread-count', function () {
+        return response()->json(['count' => MessageController::unreadCount()]);
+    })->name('messages.unread_count');
+
+    // ==========================================
+    // ANNOUNCEMENTS (Pemberitahuan Sistem / Maintenance)
+    // ==========================================
+    Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+    Route::post('/announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
+    Route::delete('/announcements/{id}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
+    Route::post('/announcements/mark-all-read', [AnnouncementController::class, 'markAllRead'])->name('announcements.mark_all_read');
+    Route::get('/announcements/unread-count', [AnnouncementController::class, 'unreadCount'])->name('announcements.unread_count');
 
 }); // <-- Batas akhir Route::middleware(['auth'])

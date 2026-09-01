@@ -238,25 +238,76 @@ body {
     gap: 12px;
     padding: 12px 16px;
     margin-bottom: 4px;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.85);
     border-radius: 12px;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-decoration: none;
     position: relative;
     z-index: 2;
-    backdrop-filter: blur(5px);
+    overflow: hidden;
 }
 
 .laporan-toggle {
     justify-content: flex-start;
 }
 
+/* Animasi cahaya menyapu (Sweep light) */
+.nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transform: skewX(-20deg);
+    z-index: -1;
+}
+
 .nav-link:hover {
     background: rgba(255, 255, 255, 0.1);
     color: #ffffff;
+    transform: translateX(8px) scale(1.02);
+    box-shadow: 
+        0 10px 25px -5px rgba(0, 0, 0, 0.3),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.nav-link:hover::before {
+    animation: sweepLight 0.7s ease-out;
+}
+
+@keyframes sweepLight {
+    0% { left: -100%; opacity: 0; }
+    50% { opacity: 1; }
+    100% { left: 200%; opacity: 0; }
+}
+
+/* Animasi ikon (meloncat & menyala) */
+.nav-icon i {
+    width: 18px;
+    height: 18px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.nav-link:hover .nav-icon i {
+    transform: translateY(-4px) scale(1.2);
+    filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.8));
+    color: #38bdf8;
+}
+
+/* Animasi teks (menyebar sedikit) */
+.nav-text {
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.4s ease;
+    white-space: nowrap;
+}
+
+.nav-link:hover .nav-text {
     transform: translateX(4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.5px;
 }
 
 .nav-link.active {

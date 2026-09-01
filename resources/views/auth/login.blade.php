@@ -1732,6 +1732,13 @@
 <script src="{{ asset('assets/template/beck/dist/js/app.js') }}"></script>
 <script src="{{ asset('assets/file/alert/sweetalert2.all.min.js') }}"></script>
 <script src="{{ asset('assets/file/alert/alertscript.js') }}"></script>
+<script>
+window.addEventListener('pageshow', function (event) {
+    if (event.persisted) {
+        window.location.reload();
+    }
+});
+</script>
 
 </body>
 </html>

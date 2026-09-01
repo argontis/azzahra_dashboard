@@ -2,8 +2,25 @@
 
 @section('content')
 <header class="page-header mb-5">
+    <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+        <i data-feather="menu"></i>
+    </div>
     <div class="header-title">
         <h1><i data-feather="bar-chart-2" class="w-6 h-6 inline-block mr-2"></i>Evaluasi Kinerja (KPI)</h1>
+        <p>Penilaian & Monitoring Performa Karyawan</p>
+    </div>
+    <div class="header-actions">
+        <div class="search-input-wrapper">
+            <i data-feather="search" class="search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search...">
+        </div>
+        <div class="header-btn">
+            <i data-feather="bell"></i>
+            <div class="badge-dot"></div>
+        </div>
+        <div class="header-btn" id="topbar-mail-btn" title="Kotak Pesan">
+            <i data-feather="mail"></i>
+        </div>
     </div>
 </header>
 

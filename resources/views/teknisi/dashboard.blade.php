@@ -1,20 +1,41 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="content mt-5 p-2">
-    <!-- Header -->
-    <div class="flex justify-between items-start mb-6 mt-2">
-        <div>
-            <h2 class="text-xl font-bold text-gray-800">Dashboard Teknisi</h2>
-            <p class="text-sm text-gray-500 mt-1">Kelola order service yang perlu diperbaiki</p>
+<!-- Header -->
+<header class="page-header">
+    <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+        <i data-feather="menu"></i>
+    </div>
+    <div class="header-title">
+        <h1><i data-feather="tool" class="w-6 h-6 inline-block mr-2"></i>Dashboard Teknisi</h1>
+        <p>Kelola order service yang perlu diperbaiki</p>
+    </div>
+    <div class="header-actions">
+        <div class="search-input-wrapper">
+            <i data-feather="search" class="search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search...">
         </div>
-        <div class="flex items-center">
-            <button class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-blue-500 bg-white border border-blue-200 rounded-full shadow-sm hover:bg-blue-50 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+        <div class="header-btn header-btn-bell" id="topbar-bell-btn" title="Pemberitahuan Sistem & Maintenance" style="cursor: pointer; position: relative;">
+            <i data-feather="bell"></i>
+            <div class="badge-dot"></div>
+        </div>
+        <div class="header-btn header-btn-mail" id="topbar-mail-btn" title="Kotak Pesan" style="cursor: pointer; position: relative;">
+            <i data-feather="mail"></i>
+        </div>
+    </div>
+</header>
+
+<div class="content-area" style="margin-top: 75px; padding-top: 15px;">
+    <!-- Top Action Bar (Order Baru Badge) -->
+    <div class="flex justify-between items-center mb-4">
+        <div class="text-sm font-semibold text-gray-700">
+            Daftar Antrean & Pekerjaan Servis
+        </div>
+        <div>
+            <span class="flex items-center gap-2 px-3 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 border border-blue-200 rounded-full shadow-sm">
+                <i data-feather="clock" class="w-3.5 h-3.5 text-blue-500"></i>
                 Order Baru: {{ $total_order_baru }}
-            </button>
+            </span>
         </div>
     </div>
 

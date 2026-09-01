@@ -300,15 +300,27 @@ class HrController extends Controller
             $pesan = '';
 
             if ($scanMode === 'masuk') {
+                if (! empty($absensi->jam_masuk)) {
+                    return back()->with('error', "{$karyawan->kry_nama} sudah melakukan absensi Jam Masuk.");
+                }
                 $absensi->jam_masuk = $nowTime;
                 $pesan = "Jam Masuk ({$nowTime}) berhasil dicatat untuk {$karyawan->kry_nama}";
             } elseif ($scanMode === 'istirahat') {
+                if (! empty($absensi->jam_istirahat)) {
+                    return back()->with('error', "{$karyawan->kry_nama} sudah melakukan absensi Jam Istirahat.");
+                }
                 $absensi->jam_istirahat = $nowTime;
                 $pesan = "Jam Istirahat ({$nowTime}) berhasil dicatat untuk {$karyawan->kry_nama}";
             } elseif ($scanMode === 'kembali_istirahat') {
+                if (! empty($absensi->jam_kembali_istirahat)) {
+                    return back()->with('error', "{$karyawan->kry_nama} sudah melakukan absensi Kembali Istirahat.");
+                }
                 $absensi->jam_kembali_istirahat = $nowTime;
                 $pesan = "Jam Kembali Istirahat ({$nowTime}) berhasil dicatat untuk {$karyawan->kry_nama}";
             } elseif ($scanMode === 'pulang') {
+                if (! empty($absensi->jam_pulang)) {
+                    return back()->with('error', "{$karyawan->kry_nama} sudah melakukan absensi Jam Pulang.");
+                }
                 $absensi->jam_pulang = $nowTime;
                 $pesan = "Jam Pulang ({$nowTime}) berhasil dicatat untuk {$karyawan->kry_nama}";
             } else {
@@ -322,9 +334,11 @@ class HrController extends Controller
                 } elseif (empty($absensi->jam_kembali_istirahat)) {
                     $absensi->jam_kembali_istirahat = $nowTime;
                     $pesan = "Jam Kembali Istirahat ({$nowTime}) berhasil dicatat untuk {$karyawan->kry_nama}";
-                } else {
+                } elseif (empty($absensi->jam_pulang)) {
                     $absensi->jam_pulang = $nowTime;
                     $pesan = "Jam Pulang ({$nowTime}) berhasil dicatat untuk {$karyawan->kry_nama}";
+                } else {
+                    return back()->with('error', "{$karyawan->kry_nama} sudah menyelesaikan seluruh absensi (masuk sampai pulang) hari ini.");
                 }
             }
 
@@ -341,10 +355,20 @@ class HrController extends Controller
 
         $karyawan = Karyawan::where('kry_kode', $request->id_karyawan)->firstOrFail();
 
-        $absensi = Absensi::firstOrNew([
-            'tanggal' => $request->tanggal,
-            'id_karyawan' => $request->id_karyawan,
-        ]);
+        $absensi = Absensi::where('tanggal', $request->tanggal)
+            ->where('id_karyawan', $request->id_karyawan)
+            ->first();
+
+        // Jika ini bukan dari modal edit, dan data absensi sudah ada, tolak input manual baru
+        if (! $request->has('is_edit') && $absensi) {
+            return back()->with('error', "Karyawan {$karyawan->kry_nama} sudah diabsen pada tanggal ini. Gunakan fitur Edit pada tabel jika ingin mengubah datanya.");
+        }
+
+        if (! $absensi) {
+            $absensi = new Absensi;
+            $absensi->tanggal = $request->tanggal;
+            $absensi->id_karyawan = $request->id_karyawan;
+        }
 
         $absensi->nama_karyawan = $karyawan->kry_nama;
         $absensi->posisi = $karyawan->kry_level;

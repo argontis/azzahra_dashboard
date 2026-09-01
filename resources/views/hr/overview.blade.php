@@ -1,7 +1,30 @@
 @extends('layouts.app')
-
 @section('content')
-<div class="content mt-5">
+<!-- Header -->
+<header class="page-header">
+    <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+        <i data-feather="menu"></i>
+    </div>
+    <div class="header-title">
+        <h1><i data-feather="grid" class="w-6 h-6 inline-block mr-2"></i>HR Overview</h1>
+        <p>Control Center & Ringkasan Human Resources</p>
+    </div>
+    <div class="header-actions">
+        <div class="search-input-wrapper">
+            <i data-feather="search" class="search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search...">
+        </div>
+        <div class="header-btn header-btn-bell" id="topbar-bell-btn" title="Pemberitahuan Sistem & Maintenance" style="cursor: pointer; position: relative;">
+            <i data-feather="bell"></i>
+            <div class="badge-dot"></div>
+        </div>
+        <div class="header-btn header-btn-mail" id="topbar-mail-btn" title="Kotak Pesan" style="cursor: pointer; position: relative;">
+            <i data-feather="mail"></i>
+        </div>
+    </div>
+</header>
+
+<div class="content-area" style="margin-top: 75px; padding-top: 15px;">
     <!-- Header Banner -->
     <div class="intro-y p-6 rounded-2xl shadow-xl mb-6 border-2 border-blue-600" style="background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%) !important; color: #ffffff !important;">
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
