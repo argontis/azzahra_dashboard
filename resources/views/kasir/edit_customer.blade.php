@@ -40,19 +40,31 @@
     }
 </style>
 
-<div class="area-konten">
-    <div class="form-container">
-        
-        <div style="display: flex; align-items: center; margin-bottom: 2rem;">
-            <div style="background-color: #fffbeb; color: #f59e0b; padding: 12px; border-radius: 12px; margin-right: 16px;">
-                <i data-feather="edit" style="width: 24px; height: 24px;"></i>
-            </div>
-            <div>
-                <h4 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #1e293b;">Edit Data Customer</h4>
-                <span style="font-size: 0.85rem; color: #64748b;">Kode Transaksi: {{ $transaksi->trans_kode }}</span>
-            </div>
+<header class="page-header">
+    <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+        <i data-feather="menu"></i>
+    </div>
+    <div class="header-title">
+        <h1><i data-feather="edit" class="w-5 h-5 inline-block mr-2"></i>Edit Data Customer</h1>
+        <p>Kode Transaksi: {{ $transaksi->trans_kode }}</p>
+    </div>
+    <div class="header-actions">
+        <div class="search-input-wrapper">
+            <i data-feather="search" class="search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search...">
         </div>
+        <div class="header-btn header-btn-bell" id="topbar-bell-btn" title="Pemberitahuan Sistem & Maintenance" style="cursor: pointer; position: relative;">
+            <i data-feather="bell"></i>
+            <div class="badge-dot"></div>
+        </div>
+        <div class="header-btn header-btn-mail" id="topbar-mail-btn" title="Kotak Pesan" style="cursor: pointer; position: relative;">
+            <i data-feather="mail"></i>
+        </div>
+    </div>
+</header>
 
+<div class="content-area">
+    <div class="form-container" style="max-width: 800px; margin: 0 auto; padding-top: 8px;">
         <div class="card-form">
             <!-- Arahkan Action Form ke rute update -->
             <form action="{{ url('/Kasir/update/' . $transaksi->trans_kode) }}" method="POST">

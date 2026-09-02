@@ -1,354 +1,322 @@
-<?php if ($voucher->count() > 0): ?>
+@if ($voucher->count() > 0)
     <div class="intro-y w-full">
         <table class="table table-report -mt-2 w-full min-w-full">
             <thead>
                 <tr>
                     <th class="whitespace-nowrap text-center" style="width: 50px;">NO</th>
                     <th class="whitespace-nowrap text-center" style="width: 70px;">GAMBAR</th>
-                    <th class="whitespace-nowrap" style="width: 120px;">VOUCHER CODE</th>
-                    <th class="whitespace-nowrap" style="width: 150px;">DESCRIPTION</th>
-                    <th class="whitespace-nowrap text-center" style="width: 80px;">DISCOUNT</th>
-                    <th class="whitespace-nowrap text-center" style="width: 90px;">START DATE</th>
-                    <th class="whitespace-nowrap text-center" style="width: 90px;">END DATE</th>
-                    <th class="whitespace-nowrap text-center" style="width: 70px;">STATUS</th>
-                    <th class="text-center whitespace-nowrap" style="width: 100px;">AKSI</th>
+                    <th class="whitespace-nowrap" style="width: 140px;">VOUCHER CODE</th>
+                    <th class="whitespace-nowrap" style="width: 180px;">DESCRIPTION</th>
+                    <th class="whitespace-nowrap text-center" style="width: 90px;">DISCOUNT</th>
+                    <th class="whitespace-nowrap text-center" style="width: 100px;">START DATE</th>
+                    <th class="whitespace-nowrap text-center" style="width: 100px;">END DATE</th>
+                    <th class="whitespace-nowrap text-center" style="width: 80px;">STATUS</th>
+                    <th class="text-center whitespace-nowrap" style="width: 110px;">AKSI</th>
                 </tr>
             </thead>
             <tbody>
-                <?php
-                $no = $offset + 1;
-
-                foreach ($voucher->result() as $row):
-                ?>
-                <tr class="intro-x" id="row-<?= $row->voucher_id ?>">
-                    <td class="text-center"><?= $no++ ?></td>
+                @php
+                    $no = ($offset ?? 0) + 1;
+                @endphp
+                @foreach ($voucher as $row)
+                <tr class="intro-x" id="row-{{ $row->voucher_id }}">
+                    <td class="text-center font-medium">{{ $no++ }}</td>
 
                     <!-- GAMBAR -->
                     <td class="text-center">
-                        <?php if ($row->voucher_gambar): ?>
-                            <?php $image_url = config('app.url') . '/assets/images/' . $row->voucher_gambar; ?>
+                        @if ($row->voucher_gambar)
+                            @php
+                                $imgSrc = file_exists(public_path('storage/vouchers/' . $row->voucher_gambar))
+                                    ? asset('storage/vouchers/' . $row->voucher_gambar)
+                                    : (file_exists(public_path('assets/images/' . $row->voucher_gambar))
+                                        ? asset('assets/images/' . $row->voucher_gambar)
+                                        : asset('storage/vouchers/' . $row->voucher_gambar));
+                            @endphp
                             <img
-                                src="<?= $image_url ?>"
-                                alt="<?= htmlspecialchars($row->voucher_code) ?>"
+                                src="{{ $imgSrc }}"
+                                alt="{{ $row->voucher_code }}"
                                 class="w-12 h-12 object-cover rounded-lg mx-auto border-2 border-gray-200 shadow-sm hover:border-blue-500 transition-all cursor-pointer"
-                                onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center mx-auto\'><i data-feather=\'image\' class=\'w-5 h-5 text-gray-400\'></i></div>'; feather.replace();"
+                                onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto border border-gray-200\'><i data-feather=\'image\' class=\'w-5 h-5 text-gray-400\'></i></div>'; if(typeof feather !== 'undefined') feather.replace();"
                                 loading="lazy"
-                                onclick="showImageModal('<?= $image_url ?>', '<?= htmlspecialchars($row->voucher_code) ?>')"
+                                onclick="showImageModal('{{ $imgSrc }}', '{{ addslashes($row->voucher_code) }}')"
                                 title="Klik untuk memperbesar"
                             >
-                        <?php else: ?>
-                            <div class="w-12 h-12 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center mx-auto border-2 border-gray-200">
-                                <i data-feather="image" class="w-6 h-6 text-gray-400"></i>
+                        @else
+                            <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto border border-gray-200">
+                                <i data-feather="image" class="w-5 h-5 text-gray-400"></i>
                             </div>
-                        <?php endif; ?>
+                        @endif
                     </td>
 
                     <!-- VOUCHER CODE -->
                     <td>
-                        <div class="font-medium truncate text-theme-1" style="max-width: 110px;" title="<?= htmlspecialchars($row->voucher_code) ?>">
-                            <?= htmlspecialchars($row->voucher_code) ?>
+                        <div class="font-bold text-blue-600 truncate" style="max-width: 140px;" title="{{ $row->voucher_code }}">
+                            {{ $row->voucher_code }}
                         </div>
                     </td>
 
                     <!-- DESCRIPTION -->
                     <td>
-                        <div class="text-gray-600 text-xs truncate" style="max-width: 140px;" title="<?= htmlspecialchars($row->description) ?>">
-                            <?= $row->description ? htmlspecialchars($row->description) : '-' ?>
+                        <div class="text-gray-600 text-xs" style="max-width: 180px;" title="{{ $row->description }}">
+                            {{ $row->description ?: '-' }}
                         </div>
                     </td>
 
                     <!-- DISCOUNT -->
                     <td class="text-center">
-                        <div class="text-theme-9 font-medium whitespace-nowrap">
-                            <?= $row->discount_percent ?>%
-                        </div>
+                        <span class="inline-block px-2.5 py-1 bg-green-100 text-green-700 font-bold rounded-lg text-xs">
+                            {{ $row->discount_percent }}%
+                        </span>
                     </td>
 
                     <!-- START DATE -->
                     <td class="text-center">
-                        <div class="text-gray-600 whitespace-nowrap">
-                            <?= date('d/m/Y', strtotime($row->start_date)) ?>
+                        <div class="text-gray-600 text-xs whitespace-nowrap">
+                            {{ $row->start_date ? date('d/m/Y', strtotime($row->start_date)) : '-' }}
                         </div>
                     </td>
 
                     <!-- END DATE -->
                     <td class="text-center">
-                        <div class="text-gray-600 whitespace-nowrap">
-                            <?= date('d/m/Y', strtotime($row->end_date)) ?>
+                        <div class="text-gray-600 text-xs whitespace-nowrap">
+                            {{ $row->end_date ? date('d/m/Y', strtotime($row->end_date)) : '-' }}
                         </div>
                     </td>
 
                     <!-- STATUS -->
                     <td class="text-center">
-                        <span class="px-2 py-1 rounded text-xs <?php echo $row->status == 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'; ?>">
-                            <?= ucfirst($row->status) ?>
+                        <span class="px-2.5 py-1 rounded-full text-xs font-semibold {{ ($row->status == 'active' || $row->status == 'aktif') ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800' }}">
+                            {{ ucfirst($row->status) }}
                         </span>
                     </td>
 
                     <!-- AKSI -->
                     <td class="table-report__action">
-                        <div class="flex justify-center items-center gap-1">
+                        <div class="flex justify-center items-center gap-1.5">
                             <button
-                                class="flex items-center px-2 py-1 text-xs detail-btn"
-                                data-id="<?= $row->voucher_id ?>"
-                                data-code="<?= htmlspecialchars($row->voucher_code) ?>"
-                                data-description="<?= htmlspecialchars($row->description) ?>"
-                                data-discount="<?= $row->discount_percent ?>"
-                                data-start="<?= date('d/m/Y', strtotime($row->start_date)) ?>"
-                                data-end="<?= date('d/m/Y', strtotime($row->end_date)) ?>"
-                                data-max="<?= $row->max_usage ?>"
-                                data-status="<?= $row->status ?>"
-                                title="Detail">
-                                <i data-feather="eye" class="w-3 h-3"></i>
+                                type="button"
+                                class="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors detail-btn"
+                                data-id="{{ $row->voucher_id }}"
+                                data-code="{{ $row->voucher_code }}"
+                                data-description="{{ $row->description }}"
+                                data-discount="{{ $row->discount_percent }}"
+                                data-start="{{ $row->start_date ? date('d/m/Y', strtotime($row->start_date)) : '-' }}"
+                                data-end="{{ $row->end_date ? date('d/m/Y', strtotime($row->end_date)) : '-' }}"
+                                data-max="{{ $row->max_usage ?? '-' }}"
+                                data-status="{{ $row->status }}"
+                                title="Detail Voucher">
+                                <i data-feather="eye" class="w-4 h-4"></i>
                             </button>
                             <a
-                                class="flex items-center px-2 py-1 text-xs"
-                                href="<?= url('Voucher/edit/'.$row->voucher_id) ?>"
-                                title="Edit">
-                                <i data-feather="edit" class="w-3 h-3"></i>
+                                class="p-1.5 text-gray-500 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors"
+                                href="{{ route('admin.voucher.edit', $row->voucher_id) }}"
+                                title="Edit Voucher">
+                                <i data-feather="edit" class="w-4 h-4"></i>
                             </a>
                             <button
-                                class="flex items-center px-2 py-1 text-xs text-red-600 delete-btn"
-                                data-id="<?= $row->voucher_id ?>"
-                                data-name="<?= htmlspecialchars($row->voucher_code) ?>"
-                                title="Delete">
-                                <i data-feather="trash-2" class="w-3 h-3"></i>
+                                type="button"
+                                class="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors delete-btn"
+                                data-id="{{ $row->voucher_id }}"
+                                data-name="{{ $row->voucher_code }}"
+                                data-url="{{ route('admin.voucher.delete', $row->voucher_id) }}"
+                                title="Hapus Voucher">
+                                <i data-feather="trash-2" class="w-4 h-4"></i>
                             </button>
                         </div>
                     </td>
                 </tr>
-                <?php endforeach; ?>
+                @endforeach
             </tbody>
         </table>
     </div>
-<?php else: ?>
-    <div class="intro-y box px-5 py-10" id="empty-state">
+@else
+    <div class="intro-y box px-5 py-12 bg-white rounded-xl shadow-sm border border-gray-100" id="empty-state">
         <div class="text-center">
-            <div class="flex justify-center">
-                <i data-feather="inbox" class="w-16 h-16 text-theme-13"></i>
+            <div class="flex justify-center mb-3">
+                <div class="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center">
+                    <i data-feather="percent" class="w-8 h-8"></i>
+                </div>
             </div>
-            <h3 class="text-lg font-medium mt-5">Tidak ada voucher ditemukan</h3>
-            <p class="text-gray-600 mt-2">Belum ada voucher yang ditambahkan atau tidak ditemukan dengan kata kunci tersebut</p>
-            <a href="{{ route('admin.voucher.add') }}" class="button inline-block bg-theme-1 text-white mt-5">
-                <i data-feather="plus" class="w-4 h-4 mr-2"></i>
-                Tambah Voucher
+            <h3 class="text-lg font-bold text-gray-800">Tidak ada voucher ditemukan</h3>
+            <p class="text-gray-500 text-sm mt-1 max-w-sm mx-auto">Belum ada voucher yang dibuat atau tidak ada data yang cocok dengan pencarian.</p>
+            <a href="{{ route('admin.voucher.add') }}" class="button inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-4 py-2.5 rounded-lg mt-5 shadow-sm transition-all">
+                <i data-feather="plus" class="w-4 h-4"></i>
+                Tambah Voucher Baru
             </a>
         </div>
     </div>
-<?php endif; ?>
+@endif
+
 <!-- Pagination Info -->
-<?php if ($pagination && $total_records > 0): ?>
-<div class="pagination-info-wrapper intro-y flex flex-wrap sm:flex-row sm:flex-nowrap items-center mt-3">
-    <div class="w-full sm:w-auto sm:mr-auto">
-        <div class="text-gray-600">
-            Menampilkan
-            <span class="font-medium"><?= $offset + 1 ?></span> -
-            <span class="font-medium"><?= min($offset + $per_page, $total_records) ?></span> dari
-            <span class="font-medium"><?= number_format($total_records, 0, ',', '.') ?></span> voucher
-        </div>
+@if (isset($total_records) && $total_records > 0)
+<div class="pagination-info-wrapper intro-y flex flex-wrap sm:flex-row sm:flex-nowrap items-center justify-between mt-4">
+    <div class="text-gray-600 text-xs font-medium">
+        Menampilkan
+        <span class="font-bold text-gray-800">{{ ($offset ?? 0) + 1 }}</span> -
+        <span class="font-bold text-gray-800">{{ min(($offset ?? 0) + ($per_page ?? 15), $total_records) }}</span> dari
+        <span class="font-bold text-gray-800">{{ number_format($total_records, 0, ',', '.') }}</span> voucher
     </div>
-    <div class="w-full sm:w-auto mt-3 sm:mt-0 ml-5">
-        <div class="pagination-wrapper-custom">
-            <?= $pagination ?>
-        </div>
+    <div class="mt-2 sm:mt-0">
+        {{ $voucher->links() }}
     </div>
 </div>
-<?php endif; ?>
+@endif
 
 <script>
-console.log('Script loaded'); // Debug
-
 // Function: Show Image Modal
 function showImageModal(imageUrl, voucherCode) {
-    Swal.fire({
-        title: `<strong>${voucherCode}</strong>`,
-        imageUrl: imageUrl,
-        imageAlt: voucherCode,
-        showCloseButton: true,
-        showConfirmButton: false,
-        width: '600px',
-        customClass: {
-            popup: 'rounded-lg'
-        }
-    });
-}
-
-// Detail button handler
-document.querySelectorAll('.detail-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const voucherId = this.getAttribute('data-id');
-        const voucherCode = this.getAttribute('data-code');
-        const description = this.getAttribute('data-description');
-        const discountPercent = this.getAttribute('data-discount');
-        const startDate = this.getAttribute('data-start');
-        const endDate = this.getAttribute('data-end');
-        const maxUsage = this.getAttribute('data-max');
-        const status = this.getAttribute('data-status');
-
+    if (typeof Swal !== 'undefined') {
         Swal.fire({
-            title: '<strong>' + voucherCode + '</strong>',
-            icon: 'info',
-            html: `
-                <div class="text-left">
-                    <table class="w-full">
-                        <tr>
-                            <td class="py-2 font-medium">Voucher Code</td>
-                            <td class="py-2">: ${voucherCode}</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 font-medium">Description</td>
-                            <td class="py-2">: ${description || '-'}</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 font-medium">Discount Percent</td>
-                            <td class="py-2 font-bold text-green-600">: ${discountPercent}%</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 font-medium">Start Date</td>
-                            <td class="py-2">: ${startDate}</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 font-medium">End Date</td>
-                            <td class="py-2">: ${endDate}</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 font-medium">Max Usage</td>
-                            <td class="py-2">: ${maxUsage}</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 font-medium">Status</td>
-                            <td class="py-2">: <span class="px-2 py-1 rounded text-xs ${status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${status}</span></td>
-                        </tr>
-                    </table>
-                </div>
-            `,
-            showCancelButton: true,
-            confirmButtonText: 'Edit Voucher',
-            cancelButtonText: 'Tutup',
-            confirmButtonColor: '#1e40af',
-            width: '700px'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = '<?= url("Voucher/edit/") ?>' + voucherId;
+            title: `<strong>${voucherCode}</strong>`,
+            imageUrl: imageUrl,
+            imageAlt: voucherCode,
+            showCloseButton: true,
+            showConfirmButton: false,
+            width: '500px',
+            customClass: {
+                popup: 'rounded-2xl'
             }
         });
-    });
-});
+    }
+}
 
-// Delete button handler
-document.querySelectorAll('.delete-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const id = this.getAttribute('data-id');
-        const name = this.getAttribute('data-name');
+// Attach Event Listeners to rendered buttons
+function attachVoucherTableEvents() {
+    // Detail button handler
+    document.querySelectorAll('.detail-btn').forEach(btn => {
+        btn.onclick = function() {
+            const voucherCode = this.getAttribute('data-code');
+            const description = this.getAttribute('data-description');
+            const discountPercent = this.getAttribute('data-discount');
+            const startDate = this.getAttribute('data-start');
+            const endDate = this.getAttribute('data-end');
+            const maxUsage = this.getAttribute('data-max');
+            const status = this.getAttribute('data-status');
+            const voucherId = this.getAttribute('data-id');
 
-        Swal.fire({
-            title: 'Yakin ingin menghapus?',
-            html: `Voucher <strong>${name}</strong> akan dihapus secara permanen!`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#dc2626',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal',
-            reverseButtons: true,
-            showLoaderOnConfirm: true,
-            preConfirm: () => {
-                return fetch('<?= url("Voucher/delete/") ?>' + id, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (!data.success) {
-                        throw new Error(data.message);
-                    }
-                    return data;
-                })
-                .catch(error => {
-                    Swal.showValidationMessage(`Error: ${error}`);
-                });
-            },
-            allowOutsideClick: () => !Swal.isLoading()
-        }).then((result) => {
-            if (result.isConfirmed) {
+            if (typeof Swal !== 'undefined') {
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Terhapus!',
-                    text: 'Voucher berhasil dihapus.',
-                    timer: 2000,
-                    showConfirmButton: false
+                    title: '<strong>' + voucherCode + '</strong>',
+                    icon: 'info',
+                    html: `
+                        <div class="text-left text-sm" style="line-height: 1.8;">
+                            <table class="w-full text-sm">
+                                <tr>
+                                    <td class="py-1 font-semibold text-gray-600" style="width: 40%;">Kode Voucher</td>
+                                    <td class="py-1 font-bold text-blue-600">: ${voucherCode}</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-1 font-semibold text-gray-600">Deskripsi</td>
+                                    <td class="py-1 text-gray-800">: ${description || '-'}</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-1 font-semibold text-gray-600">Diskon</td>
+                                    <td class="py-1 font-bold text-green-600">: ${discountPercent}%</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-1 font-semibold text-gray-600">Mulai Berlaku</td>
+                                    <td class="py-1 text-gray-800">: ${startDate}</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-1 font-semibold text-gray-600">Berakhir</td>
+                                    <td class="py-1 text-gray-800">: ${endDate}</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-1 font-semibold text-gray-600">Maks Penggunaan</td>
+                                    <td class="py-1 text-gray-800">: ${maxUsage}</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-1 font-semibold text-gray-600">Status</td>
+                                    <td class="py-1">: <span class="px-2 py-0.5 rounded-full text-xs font-semibold ${status === 'active' || status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${status}</span></td>
+                                </tr>
+                            </table>
+                        </div>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: '<i data-feather="edit" class="w-4 h-4 inline mr-1"></i> Edit Voucher',
+                    cancelButtonText: 'Tutup',
+                    confirmButtonColor: '#2563eb',
+                    cancelButtonColor: '#64748b',
+                    width: '550px'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{{ url('Admin/voucher/edit') }}/" + voucherId;
+                    }
                 });
-
-                setTimeout(() => {
-                    loadData(currentPage, currentSearch);
-                }, 1000);
             }
-        });
+        };
     });
-});
 
-// Re-init feather icons
-if (typeof feather !== 'undefined') {
-    feather.replace();
+    // Delete button handler
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.onclick = function() {
+            const name = this.getAttribute('data-name');
+            const deleteUrl = this.getAttribute('data-url');
+
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'Hapus Voucher?',
+                    html: `Apakah Anda yakin ingin menghapus voucher <strong>${name}</strong>?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc2626',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true,
+                    showLoaderOnConfirm: true,
+                    preConfirm: () => {
+                        return fetch(deleteUrl, {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                        .then(response => {
+                            if (!response.ok) throw new Error('Gagal menghapus');
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (!data.success) {
+                                throw new Error(data.message || 'Gagal menghapus voucher');
+                            }
+                            return data;
+                        })
+                        .catch(error => {
+                            Swal.showValidationMessage(`Error: ${error.message || error}`);
+                        });
+                    },
+                    allowOutsideClick: () => !Swal.isLoading()
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Voucher telah berhasil dihapus.',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+
+                        setTimeout(() => {
+                            if (typeof loadData === 'function') {
+                                loadData(currentPage, currentSearch);
+                            } else {
+                                window.location.reload();
+                            }
+                        }, 1200);
+                    }
+                });
+            }
+        };
+    });
+
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    }
 }
+
+// Auto-run event attachment
+attachVoucherTableEvents();
 </script>
-
-<style>
-/* Hover effect untuk gambar */
-.table-report tbody tr img {
-    transition: all 0.3s ease;
-}
-
-.table-report tbody tr:hover img {
-    transform: scale(1.05);
-}
-
-/* Compact table styles */
-.table-report th {
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 0.5rem 0.25rem;
-}
-
-.table-report td {
-    font-size: 0.8rem;
-    padding: 0.5rem 0.25rem;
-}
-
-/* Gallery grid responsive */
-@media (max-width: 640px) {
-    .grid-cols-2 {
-        grid-template-columns: repeat(1, minmax(0, 1fr));
-    }
-
-    /* Make table more compact on small screens */
-    .table-report th,
-    .table-report td {
-        padding: 0.5rem 0.25rem;
-        font-size: 0.875rem;
-    }
-
-    /* Hide less important columns on very small screens */
-    .table-report th:nth-child(4),
-    .table-report td:nth-child(4) {
-        display: none;
-    }
-}
-
-@media (max-width: 480px) {
-    .table-report th,
-    .table-report td {
-        padding: 0.25rem;
-        font-size: 0.75rem;
-    }
-
-    /* Hide more columns on very small screens */
-    .table-report th:nth-child(5),
-    .table-report td:nth-child(5),
-    .table-report th:nth-child(6),
-    .table-report td:nth-child(6) {
-        display: none;
-    }
-}
-</style>

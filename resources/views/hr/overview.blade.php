@@ -54,12 +54,78 @@
                 <a href="{{ route('hr.kpi') }}" class="button text-xs font-bold py-2 px-3.5 rounded-xl flex items-center gap-2 shadow" style="background-color: #334155 !important; color: #ffffff !important; border: 1px solid #64748b !important;">
                     <i data-feather="bar-chart-2" class="w-4 h-4 text-green-400"></i> KPI Karyawan
                 </a>
+                <a href="{{ url('HR/interview') }}" class="button text-xs font-bold py-2 px-3.5 rounded-xl flex items-center gap-2 shadow" style="background-color: #334155 !important; color: #ffffff !important; border: 1px solid #64748b !important;">
+                    <i data-feather="user-check" class="w-4 h-4 text-amber-300"></i> Interview
+                </a>
                 <a href="{{ route('hr.rekap') }}" class="button text-xs font-bold py-2 px-3.5 rounded-xl flex items-center gap-2 shadow" style="background-color: #334155 !important; color: #ffffff !important; border: 1px solid #64748b !important;">
                     <i data-feather="file-text" class="w-4 h-4 text-purple-300"></i> Rekap HR
                 </a>
             </div>
         </div>
     </div>
+
+    <!-- Upcoming Interview Reminder Banner -->
+    @if(isset($upcoming_interviews) && $upcoming_interviews->count() > 0)
+        <div class="mb-6 p-5 rounded-2xl shadow-xl relative overflow-hidden" style="background: linear-gradient(135deg, #b45309 0%, #ea580c 50%, #c2410c 100%) !important; border: 2px solid #f59e0b !important; color: #ffffff !important;">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="p-3 rounded-xl shadow-inner animate-pulse" style="background: rgba(255, 255, 255, 0.2) !important; color: #ffffff !important;">
+                        <i data-feather="bell" class="w-6 h-6 text-yellow-200"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <h3 class="font-extrabold text-base md:text-lg" style="color: #ffffff !important; margin: 0; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">
+                                ⏰ Pengingat: Ada {{ $upcoming_interviews->count() }} Jadwal Interview Mendekati Waktu!
+                            </h3>
+                            <span class="px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider text-xs" style="background-color: #fef08a !important; color: #854d0e !important; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
+                                Prioritas HR
+                            </span>
+                        </div>
+                        <p class="text-xs md:text-sm mt-1" style="color: #fef3c7 !important; margin-bottom: 0;">
+                            Harap persiapkan ruang seleksi dan konfirmasi kandidat yang akan segera melakukan interview:
+                        </p>
+                    </div>
+                </div>
+                <a href="{{ url('HR/interview') }}" class="button font-bold text-xs px-4 py-2 rounded-xl shadow-md flex items-center gap-2 self-start md:self-auto transition-transform hover:scale-105" style="background: #ffffff !important; color: #78350f !important;">
+                    <span>Lihat Semua Jadwal</span>
+                    <i data-feather="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                @foreach($upcoming_interviews as $upcoming)
+                @php
+                    $waktuInterview = \Carbon\Carbon::parse($upcoming->tanggal_waktu);
+                    $isPast = $waktuInterview->isPast();
+                    $diff = $waktuInterview->diffForHumans();
+                @endphp
+                <div class="p-4 rounded-xl shadow-md flex flex-col justify-between" style="background: #ffffff !important; color: #1e293b !important; border: 1px solid #fed7aa !important;">
+                    <div>
+                        <div class="flex items-center justify-between gap-2">
+                            <h4 class="font-bold text-sm truncate" style="color: #0f172a !important; margin: 0;">{{ $upcoming->nama_kandidat }}</h4>
+                            <span class="text-xs px-2.5 py-0.5 rounded-full font-bold whitespace-no-wrap" style="{{ $isPast ? 'background-color: #fee2e2 !important; color: #b91c1c !important;' : 'background-color: #fef3c7 !important; color: #b45309 !important;' }}">
+                                {{ $isPast ? 'Sedang / Lewat' : $diff }}
+                            </span>
+                        </div>
+                        <div class="text-xs font-semibold mt-1.5 flex items-center gap-1.5" style="color: #2563eb !important;">
+                            <i data-feather="briefcase" class="w-3.5 h-3.5"></i>
+                            <span>{{ $upcoming->posisi }}</span>
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-2 text-xs flex items-center justify-between" style="border-top: 1px solid #f1f5f9 !important; color: #64748b !important;">
+                        <span class="flex items-center gap-1 font-semibold" style="color: #d97706 !important;">
+                            <i data-feather="clock" class="w-3.5 h-3.5 text-amber-600"></i>
+                            {{ $waktuInterview->format('d M Y, H:i') }} WIB
+                        </span>
+                        @if($upcoming->catatan)
+                            <span class="text-xs italic" style="color: #94a3b8 !important;" title="{{ $upcoming->catatan }}">{{ \Illuminate\Support\Str::limit($upcoming->catatan, 15) }}</span>
+                        @endif
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
 
     <!-- Stat Cards (4 Columns) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">

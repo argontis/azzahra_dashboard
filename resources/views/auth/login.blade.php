@@ -154,17 +154,31 @@
             100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* Wave arm keyframe */
-        @keyframes waveArm {
+        /* Wave arms keyframes (both hands raised and waving) */
+        @keyframes waveArmRight {
             0%   { transform: rotate(0deg); }
-            25%  { transform: rotate(-28deg); }
-            50%  { transform: rotate(0deg); }
-            75%  { transform: rotate(-22deg); }
+            25%  { transform: rotate(-24deg); }
+            50%  { transform: rotate(4deg); }
+            75%  { transform: rotate(-18deg); }
             100% { transform: rotate(0deg); }
         }
-        .wave-arm {
-            transform-origin: 90px 60px;
-            animation: waveArm 1s ease-in-out 1.2s 3;
+
+        @keyframes waveArmLeft {
+            0%   { transform: rotate(0deg); }
+            25%  { transform: rotate(24deg); }
+            50%  { transform: rotate(-4deg); }
+            75%  { transform: rotate(18deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        .wave-arm-right, .wave-arm {
+            transform-origin: 220px 175px;
+            animation: waveArmRight 0.9s ease-in-out 1.2s infinite;
+        }
+
+        .wave-arm-left {
+            transform-origin: 100px 175px;
+            animation: waveArmLeft 0.9s ease-in-out 1.2s infinite;
         }
 
         /* Speech bubble */
@@ -1144,22 +1158,29 @@
                     <rect x="140" y="263" width="40" height="20" rx="6" fill="#374151"/>
                     <text x="160" y="276" fill="#38bdf8" font-size="8" text-anchor="middle">🔧</text>
 
-                    <!-- WAVING ARM (right) -->
-                    <g class="wave-arm">
+                    <!-- WAVING RIGHT ARM -->
+                    <g class="wave-arm-right">
                         <!-- Upper arm -->
-                        <path d="M 220 175 Q 265 150 280 110" stroke="#fed7aa" stroke-width="22" stroke-linecap="round" fill="none"/>
+                        <path d="M 220 175 Q 265 145 280 105" stroke="#fed7aa" stroke-width="22" stroke-linecap="round" fill="none"/>
                         <!-- Forearm -->
-                        <path d="M 280 110 Q 295 80 290 55" stroke="#fed7aa" stroke-width="18" stroke-linecap="round" fill="none"/>
+                        <path d="M 280 105 Q 295 75 290 50" stroke="#fed7aa" stroke-width="18" stroke-linecap="round" fill="none"/>
                         <!-- Hand / fist with wave -->
-                        <ellipse cx="290" cy="50" rx="18" ry="20" fill="#fed7aa"/>
+                        <ellipse cx="290" cy="46" rx="18" ry="20" fill="#fed7aa"/>
                         <!-- Wave emoji sparkle -->
-                        <text x="295" y="28" font-size="22" text-anchor="middle">👋</text>
+                        <text x="295" y="24" font-size="22" text-anchor="middle">👋</text>
                     </g>
 
-                    <!-- LEFT ARM holding wrench -->
-                    <path d="M 100 175 Q 62 200 52 240" stroke="#fed7aa" stroke-width="20" stroke-linecap="round" fill="none"/>
-                    <path d="M 52 240 Q 40 265 48 285" stroke="#fed7aa" stroke-width="16" stroke-linecap="round" fill="none"/>
-                    <text x="38" y="305" font-size="26" text-anchor="middle">🔧</text>
+                    <!-- WAVING LEFT ARM (Both hands raised!) -->
+                    <g class="wave-arm-left">
+                        <!-- Upper arm -->
+                        <path d="M 100 175 Q 55 145 40 105" stroke="#fed7aa" stroke-width="22" stroke-linecap="round" fill="none"/>
+                        <!-- Forearm -->
+                        <path d="M 40 105 Q 25 75 30 50" stroke="#fed7aa" stroke-width="18" stroke-linecap="round" fill="none"/>
+                        <!-- Hand / fist with wave -->
+                        <ellipse cx="30" cy="46" rx="18" ry="20" fill="#fed7aa"/>
+                        <!-- Wave emoji sparkle -->
+                        <text x="25" y="24" font-size="22" text-anchor="middle">👋</text>
+                    </g>
 
                     <!-- NECK -->
                     <rect x="146" y="135" width="28" height="28" rx="8" fill="#fed7aa"/>

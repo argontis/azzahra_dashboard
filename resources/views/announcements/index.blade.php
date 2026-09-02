@@ -15,11 +15,11 @@
             <i data-feather="search" class="search-icon"></i>
             <input type="text" id="filterAnnounceSearch" class="search-input" placeholder="Cari pemberitahuan..." onkeyup="filterAnnouncements()">
         </div>
-        <div class="header-btn" title="Notifikasi">
+        <div class="header-btn header-btn-bell" id="topbar-bell-btn" title="Pemberitahuan Sistem &amp; Maintenance" style="cursor: pointer; position: relative;">
             <i data-feather="bell"></i>
             <div class="badge-dot"></div>
         </div>
-        <div class="header-btn" id="topbar-mail-btn" title="Kotak Pesan">
+        <div class="header-btn header-btn-mail" id="topbar-mail-btn" title="Kotak Pesan" style="cursor: pointer; position: relative;">
             <i data-feather="mail"></i>
         </div>
     </div>

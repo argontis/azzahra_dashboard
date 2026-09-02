@@ -308,9 +308,10 @@
         <p>List Data Customer</p>
     </div>
     <div class="header-actions">
-        <a href="{{ route('customer.export_pdf') }}" target="_blank" class="button box flex items-center text-gray-700 bg-white hover:bg-slate-50 transition-colors shadow-xs px-3 py-2 rounded-lg text-xs font-semibold">
-            <i data-feather="file-text" class="hidden sm:block w-4 h-4 mr-2 text-indigo-600"></i> Export to PDF
-        </a>
+        <div class="search-input-wrapper">
+            <i data-feather="search" class="search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search...">
+        </div>
         <div class="header-btn header-btn-bell" id="topbar-bell-btn" title="Pemberitahuan Sistem & Maintenance" style="cursor: pointer; position: relative;">
             <i data-feather="bell"></i>
             <div class="badge-dot"></div>
@@ -324,7 +325,13 @@
 <div class="content-area">
     <div class="sukses" data-sukses="{{ session('sukses') }}"></div>
 
-    <div class="intro-y datatable-wrapper box p-5 mt-5">
+    <div class="flex justify-end mb-2 mt-2">
+        <a href="{{ route('customer.export_pdf') }}" target="_blank" class="button box flex items-center text-gray-700 bg-white hover:bg-slate-50 transition-colors shadow-xs px-3.5 py-2 rounded-lg text-xs font-semibold border border-gray-200">
+            <i data-feather="file-text" class="w-4 h-4 mr-1.5 text-indigo-600"></i> Export to PDF
+        </a>
+    </div>
+
+    <div class="intro-y datatable-wrapper box p-5 mt-2">
         <!-- Filter Tabs & Search Header -->
         <div class="tier-filter-bar">
             <!-- Tier Filter Tabs -->

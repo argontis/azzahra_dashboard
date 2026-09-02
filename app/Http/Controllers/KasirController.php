@@ -86,7 +86,7 @@ class KasirController extends Controller
             ]);
 
             $transaksi->update([
-                'trans_status' => 'Lunas'
+                'trans_status' => 'Lunas',
             ]);
 
             // Recalculate customer score automatically
@@ -126,7 +126,7 @@ class KasirController extends Controller
 
             Transaksi::where('trans_kode', $kode)
                 ->update([
-                    'trans_status' => 'Pelunasan'
+                    'trans_status' => 'Pelunasan',
                 ]);
         });
 
@@ -140,9 +140,9 @@ class KasirController extends Controller
         $search = $request->input('search');
 
         $query = TransaksiDetail::with([
-                'transaksi.customer',
-                'transaksi.karyawan'
-            ])
+            'transaksi.customer',
+            'transaksi.karyawan',
+        ])
             ->orderBy('dtl_tanggal', 'desc')
             ->orderBy('dtl_jam', 'desc');
 
@@ -181,8 +181,8 @@ class KasirController extends Controller
 
         // DP & Pelunasan today
         $payments = TransaksiDetail::with([
-                'transaksi.customer'
-            ])
+            'transaksi.customer',
+        ])
             ->whereDate('dtl_tanggal', $date)
             ->get();
 

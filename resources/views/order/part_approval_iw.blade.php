@@ -1,11 +1,30 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="content">
-    <div class="intro-y flex flex-col sm:flex-row items-center mt-8">
-        <h2 class="text-2xl font-bold mr-auto text-gray-800">{{ $page_title }}</h2>
+<header class="page-header">
+    <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+        <i data-feather="menu"></i>
     </div>
+    <div class="header-title">
+        <h1>{{ $page_title }}</h1>
+        <p>Approval Part In-Warranty</p>
+    </div>
+    <div class="header-actions">
+        <div class="search-input-wrapper">
+            <i data-feather="search" class="search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search...">
+        </div>
+        <div class="header-btn header-btn-bell" id="topbar-bell-btn" title="Pemberitahuan Sistem & Maintenance" style="cursor: pointer; position: relative;">
+            <i data-feather="bell"></i>
+            <div class="badge-dot"></div>
+        </div>
+        <div class="header-btn header-btn-mail" id="topbar-mail-btn" title="Kotak Pesan" style="cursor: pointer; position: relative;">
+            <i data-feather="mail"></i>
+        </div>
+    </div>
+</header>
 
+<div class="content-area">
     <div class="intro-y box p-5 mt-5">
         <div class="overflow-x-auto">
             <table class="table table-bordered w-full text-sm">

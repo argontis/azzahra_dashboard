@@ -14,10 +14,24 @@
     @endif
 
     <header class="page-header mb-5">
-    <div class="header-title">
-        <h1><i data-feather="layout" class="w-6 h-6 inline-block mr-2"></i>{{ $title ?? 'Admin Dashboard' }}</h1>
-    </div>            
-</header>
+        <div class="header-title">
+            <h1><i data-feather="layout" class="w-6 h-6 inline-block mr-2"></i>{{ $title ?? 'Admin Dashboard' }}</h1>
+        </div>            
+        <div class="header-actions">
+            <div class="search-input-wrapper">
+                <i data-feather="search" class="search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search...">
+            </div>
+            <div class="header-btn header-btn-bell" id="topbar-bell-btn" title="Pemberitahuan Sistem & Maintenance" style="cursor: pointer; position: relative;">
+                <i data-feather="bell"></i>
+                <div class="badge-dot" style="display: none;"></div>
+            </div>
+            <div class="header-btn header-btn-mail" id="topbar-mail-btn" title="Kotak Pesan" style="cursor: pointer; position: relative;">
+                <i data-feather="mail"></i>
+                <span class="topbar-mail-badge" style="display: none; position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; border-radius: 9999px; font-size: 10px; font-weight: bold; min-width: 16px; height: 16px; line-height: 16px; text-align: center; padding: 0 4px;"></span>
+            </div>
+        </div>
+    </header>
 
     <div class="intro-y box px-5 pt-5 mt-5">
         <div class="flex flex-col lg:flex-row border-b border-gray-200 pb-5 -mx-5">

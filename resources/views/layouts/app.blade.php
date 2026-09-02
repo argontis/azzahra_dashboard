@@ -370,45 +370,105 @@
             }
         };
 
-        // Close panel when clicking outside
+        // Helper to check if element is a bell button or inside it
+        function getBellButton(target) {
+            if (!target) return null;
+            return target.closest('#topbar-bell-btn, .header-btn-bell') || 
+                   (target.closest('.header-btn, button') && target.closest('.header-btn, button').querySelector('[data-feather="bell"], svg.feather-bell, i.feather-bell'));
+        }
+
+        // Helper to check if element is a mail button or inside it
+        function getMailButton(target) {
+            if (!target) return null;
+            return target.closest('#topbar-mail-btn, .header-btn-mail') || 
+                   (target.closest('.header-btn, button') && target.closest('.header-btn, button').querySelector('[data-feather="mail"], svg.feather-mail, i.feather-mail'));
+        }
+
+        // Global delegated click handler for Bell & Mail buttons across all roles and pages
         document.addEventListener('click', function (e) {
+            const bellBtn = getBellButton(e.target);
+            if (bellBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleTopbarNotifPanel(e);
+                return;
+            }
+
+            const mailBtn = getMailButton(e.target);
+            if (mailBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleTopbarMsgPanel(e);
+                return;
+            }
+
+            // Close panels when clicking outside
             const msgPanel = document.getElementById('topbar-message-panel');
             const notifPanel = document.getElementById('topbar-notification-panel');
             
-            if (msgPanel && msgPanel.classList.contains('open') && !msgPanel.contains(e.target) && !e.target.closest('.header-btn-mail') && !e.target.closest('#topbar-mail-btn')) {
+            if (msgPanel && msgPanel.classList.contains('open') && !msgPanel.contains(e.target) && !getMailButton(e.target)) {
                 msgPanel.classList.remove('open');
                 msgPanelOpen = false;
             }
-            if (notifPanel && notifPanel.classList.contains('open') && !notifPanel.contains(e.target) && !e.target.closest('.header-btn-bell') && !e.target.closest('#topbar-bell-btn')) {
+            if (notifPanel && notifPanel.classList.contains('open') && !notifPanel.contains(e.target) && !getBellButton(e.target)) {
                 notifPanel.classList.remove('open');
                 notifPanelOpen = false;
             }
         });
 
-        // Wire Mail Buttons — langsung ke id topbar-mail-btn
-        function wireTopbarMailButtons() {
-            const mailBtn = document.getElementById('topbar-mail-btn');
-            if (mailBtn) {
-                mailBtn.style.cursor = 'pointer';
-                mailBtn.onclick = function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    toggleTopbarMsgPanel(e);
-                };
-            }
+        // Universal real-time live search across all tables and cards for any role/page
+        function handleUniversalSearch(query) {
+            const filter = (query || '').toLowerCase().trim();
+            
+            // Filter all tables
+            const tables = document.querySelectorAll('table');
+            tables.forEach(table => {
+                if (table.closest('#topbar-message-panel, #topbar-notification-panel')) return;
+                const rows = table.querySelectorAll('tbody tr');
+                if (rows.length === 0) return;
+                
+                let visibleCount = 0;
+                rows.forEach(row => {
+                    if (row.id === 'noSearchResultRow' || row.id === 'emptyInitialRow') return;
+                    const text = row.textContent || row.innerText;
+                    if (filter === '' || text.toLowerCase().indexOf(filter) > -1) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                const noResultRow = table.querySelector('#noSearchResultRow');
+                if (noResultRow) {
+                    noResultRow.style.display = (filter !== '' && visibleCount === 0) ? '' : 'none';
+                }
+            });
+
+            // Filter searchable cards if any
+            const cards = document.querySelectorAll('.searchable-card, .search-card-item');
+            cards.forEach(card => {
+                const text = card.textContent || card.innerText;
+                card.style.display = (filter === '' || text.toLowerCase().indexOf(filter) > -1) ? '' : 'none';
+            });
         }
 
-        // Wire Bell / Notification Buttons — langsung ke id topbar-bell-btn
-        function wireTopbarBellButtons() {
-            const bellBtn = document.getElementById('topbar-bell-btn');
-            if (bellBtn) {
-                bellBtn.style.cursor = 'pointer';
-                bellBtn.onclick = function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    toggleTopbarNotifPanel(e);
-                };
+        document.addEventListener('input', function (e) {
+            if (e.target && (e.target.classList.contains('search-input') || e.target.id === 'search-input' || e.target.id === 'rekapSearchInput' || e.target.id === 'interviewSearchInput')) {
+                handleUniversalSearch(e.target.value);
             }
+        });
+
+        function wireTopbarMailButtons() {
+            document.querySelectorAll('#topbar-mail-btn, .header-btn-mail').forEach(function(mailBtn) {
+                mailBtn.style.cursor = 'pointer';
+            });
+        }
+
+        function wireTopbarBellButtons() {
+            document.querySelectorAll('#topbar-bell-btn, .header-btn-bell').forEach(function(bellBtn) {
+                bellBtn.style.cursor = 'pointer';
+            });
         }
 
         function loadTopbarMessages() {
@@ -516,12 +576,22 @@
             fetch('{{ route("messages.unread_count") }}')
                 .then(r => r.json())
                 .then(data => {
-                    document.querySelectorAll('.topbar-mail-badge').forEach(b => {
-                        if (data.count > 0) {
-                            b.textContent = data.count > 99 ? '99+' : data.count;
-                            b.style.display = 'block';
+                    const count = data.count || 0;
+                    document.querySelectorAll('#topbar-mail-btn, .header-btn-mail, .header-btn').forEach(btn => {
+                        if (!btn.querySelector('[data-feather="mail"], svg.feather-mail, i.feather-mail') && !btn.classList.contains('header-btn-mail') && btn.id !== 'topbar-mail-btn') return;
+                        let badge = btn.querySelector('.topbar-mail-badge');
+                        if (!badge) {
+                            badge = document.createElement('span');
+                            badge.className = 'topbar-mail-badge';
+                            badge.style.cssText = 'display:none;position:absolute;top:-4px;right:-4px;background:#ef4444;color:white;border-radius:9999px;font-size:10px;font-weight:bold;min-width:16px;height:16px;line-height:16px;text-align:center;padding:0 4px;';
+                            btn.style.position = 'relative';
+                            btn.appendChild(badge);
+                        }
+                        if (count > 0) {
+                            badge.textContent = count > 99 ? '99+' : count;
+                            badge.style.display = 'block';
                         } else {
-                            b.style.display = 'none';
+                            badge.style.display = 'none';
                         }
                     });
                 }).catch(() => {});
@@ -531,8 +601,17 @@
             fetch('{{ route("announcements.unread_count") }}')
                 .then(r => r.json())
                 .then(data => {
-                    document.querySelectorAll('.badge-dot').forEach(b => {
-                        b.style.display = (data.count > 0) ? 'block' : 'none';
+                    const count = data.count || 0;
+                    document.querySelectorAll('#topbar-bell-btn, .header-btn-bell, .header-btn').forEach(btn => {
+                        if (!btn.querySelector('[data-feather="bell"], svg.feather-bell, i.feather-bell') && !btn.classList.contains('header-btn-bell') && btn.id !== 'topbar-bell-btn') return;
+                        let dot = btn.querySelector('.badge-dot');
+                        if (!dot) {
+                            dot = document.createElement('div');
+                            dot.className = 'badge-dot';
+                            btn.style.position = 'relative';
+                            btn.appendChild(dot);
+                        }
+                        dot.style.display = (count > 0) ? 'block' : 'none';
                     });
                 }).catch(() => {});
         }
@@ -544,9 +623,7 @@
                 fetchTopbarUnreadCount();
                 fetchTopbarNotifCount();
             }
-            // Coba wire setelah 200ms (sebelum feather.replace) untuk backup
             setTimeout(initTopbar, 200);
-            // Coba lagi setelah 1000ms (setelah feather.replace pasti selesai)
             setTimeout(initTopbar, 1000);
             setInterval(function () {
                 fetchTopbarUnreadCount();
@@ -554,10 +631,11 @@
             }, 60000);
         });
 
-        // Juga wire saat window load untuk memastikan
         window.addEventListener('load', function () {
             wireTopbarMailButtons();
             wireTopbarBellButtons();
+            fetchTopbarUnreadCount();
+            fetchTopbarNotifCount();
         });
     })();
     </script>
@@ -707,9 +785,20 @@
                                 <div class="nav-icon"><i data-feather="bar-chart-2"></i></div>
                                 <span class="nav-text">KPI</span>
                             </a>
-                            <a href="{{ url('HR/interview') }}" class="nav-link {{ $title == 'Interview Kandidat' ? 'active' : '' }}">
+                            @php
+                                $sidebar_upcoming_interview = \App\Models\Interview::where('status', 'Menunggu')
+                                    ->where('tanggal_waktu', '>=', \Carbon\Carbon::now()->subHours(2))
+                                    ->where('tanggal_waktu', '<=', \Carbon\Carbon::now()->addHours(24))
+                                    ->count();
+                            @endphp
+                            <a href="{{ url('HR/interview') }}" class="nav-link {{ $title == 'Interview Kandidat' || $title == 'Jadwal & Hasil Interview' ? 'active' : '' }}">
                                 <div class="nav-icon"><i data-feather="user-check"></i></div>
                                 <span class="nav-text">Interview</span>
+                                @if($sidebar_upcoming_interview > 0)
+                                    <span style="background:#f59e0b;color:white;border-radius:10px;padding:1px 7px;font-size:11px;margin-left:auto;font-weight:bold;" title="{{ $sidebar_upcoming_interview }} jadwal mendekati jamnya">
+                                        {{ $sidebar_upcoming_interview }}
+                                    </span>
+                                @endif
                             </a>
                             <a href="{{ url('HR/rekap') }}" class="nav-link {{ $title == 'Rekap HR' ? 'active' : '' }}">
                                 <div class="nav-icon"><i data-feather="file-text"></i></div>

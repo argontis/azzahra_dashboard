@@ -1,12 +1,29 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="content">
-    <div class="intro-y flex flex-col sm:flex-row items-center mt-8">
-        <h2 class="text-lg font-medium mr-auto">
-            Data Customer
-        </h2>
+<header class="page-header">
+    <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+        <i data-feather="menu"></i>
     </div>
+    <div class="header-title">
+        <h1><i data-feather="user" class="w-5 h-5 inline-block mr-2"></i>Data Customer</h1>
+        <p>Histori Transaksi Customer</p>
+    </div>
+    <div class="header-actions">
+        <div class="search-input-wrapper">
+            <i data-feather="search" class="search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search...">
+        </div>
+        <div class="header-btn header-btn-bell" id="topbar-bell-btn" title="Pemberitahuan Sistem & Maintenance" style="cursor: pointer; position: relative;">
+            <i data-feather="bell"></i>
+            <div class="badge-dot"></div>
+        </div>
+        <div class="header-btn header-btn-mail" id="topbar-mail-btn" title="Kotak Pesan" style="cursor: pointer; position: relative;">
+            <i data-feather="mail"></i>
+        </div>
+    </div>
+</header>
+<div class="content-area">
     <div class="intro-y chat grid grid-cols-12 gap-5 mt-5">
         <div class="col-span-12 lg:col-span-3 xxl:col-span-2">
             <div class="intro-y box p-5 mt-6">

@@ -9,6 +9,7 @@ use App\Models\Kpi;
 // use App\Models\Pencatatan;
 use App\Models\LaporanMingguan;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -63,6 +64,13 @@ class HrController extends Controller
             ->take(5)
             ->get();
 
+        $now = Carbon::now();
+        $upcoming_interviews = Interview::where('status', 'Menunggu')
+            ->where('tanggal_waktu', '>=', $now->copy()->subHours(2))
+            ->where('tanggal_waktu', '<=', $now->copy()->addHours(24))
+            ->orderBy('tanggal_waktu', 'asc')
+            ->get();
+
         return view('hr.overview', [
             'title' => 'HR Dashboard & Overview',
             'selected_periode' => $periode,
@@ -70,6 +78,7 @@ class HrController extends Controller
             'stats' => $stats,
             'recent_absensi' => $recent_absensi,
             'recent_kpi' => $recent_kpi,
+            'upcoming_interviews' => $upcoming_interviews,
         ]);
     }
 
@@ -766,12 +775,31 @@ class HrController extends Controller
 
     public function Interview(Request $request)
     {
-        // Mengambil data dari database, diurutkan berdasarkan tanggal terbaru
-        $interview_list = Interview::orderBy('tanggal_waktu', 'desc')->get();
+        $query = Interview::orderBy('tanggal_waktu', 'desc');
+
+        if ($request->filled('search')) {
+            $search = $request->query('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_kandidat', 'like', "%{$search}%")
+                    ->orWhere('posisi', 'like', "%{$search}%")
+                    ->orWhere('status', 'like', "%{$search}%")
+                    ->orWhere('catatan', 'like', "%{$search}%");
+            });
+        }
+
+        $interview_list = $query->get();
+
+        $now = Carbon::now();
+        $upcoming_interviews = Interview::where('status', 'Menunggu')
+            ->where('tanggal_waktu', '>=', $now->copy()->subHours(2))
+            ->where('tanggal_waktu', '<=', $now->copy()->addHours(24))
+            ->orderBy('tanggal_waktu', 'asc')
+            ->get();
 
         return view('hr.interview', [
             'title' => 'Jadwal & Hasil Interview',
             'interview_list' => $interview_list,
+            'upcoming_interviews' => $upcoming_interviews,
         ]);
     }
 

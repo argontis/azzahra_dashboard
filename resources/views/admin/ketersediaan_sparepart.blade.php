@@ -2,27 +2,29 @@
 
 @section('content')
 
-<!-- Header Area -->
-<div class="page-header">
-    <div class="flex items-center gap-2 text-white">
-        <i data-feather="package" class="w-5 h-5"></i>
-        <h1 class="text-xl font-bold tracking-wide">Ketersediaan Sparepart</h1>
-        <span class="hidden md:inline-block text-white text-xs opacity-90 ml-4 border-l border-white/20 pl-4">Manage sparepart</span>
+<header class="page-header">
+    <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+        <i data-feather="menu"></i>
+    </div>
+    <div class="header-title">
+        <h1><i data-feather="package" class="w-5 h-5 inline-block mr-2"></i>Ketersediaan Sparepart</h1>
+        <p>Manage dan pantau stok sparepart</p>
     </div>
     
-    <div class="flex items-center gap-3">
-        <div class="relative hidden sm:block">
-            <i data-feather="search" class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-            <input type="text" placeholder="Search..." class="pl-9 pr-4 py-2 rounded-md border-0 focus:ring-2 focus:ring-blue-400 text-gray-700 text-sm w-48 lg:w-80 shadow-sm">
+    <div class="header-actions">
+        <div class="search-input-wrapper">
+            <i data-feather="search" class="search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search...">
         </div>
-        <button class="w-9 h-9 bg-white rounded-md flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors shadow-sm relative">
-            <i data-feather="bell" class="w-4 h-4"></i>
-        </button>
-        <button class="w-9 h-9 bg-white rounded-md flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors shadow-sm relative">
-            <i data-feather="mail" class="w-4 h-4"></i>
-        </button>
+        <div class="header-btn header-btn-bell" id="topbar-bell-btn" title="Pemberitahuan Sistem & Maintenance" style="cursor: pointer; position: relative;">
+            <i data-feather="bell"></i>
+            <div class="badge-dot"></div>
+        </div>
+        <div class="header-btn header-btn-mail" id="topbar-mail-btn" title="Kotak Pesan" style="cursor: pointer; position: relative;">
+            <i data-feather="mail"></i>
+        </div>
     </div>
-</div>
+</header>
 
 <div class="content">
     

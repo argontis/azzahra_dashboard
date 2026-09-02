@@ -110,22 +110,35 @@
     }
 </style>
 
-<div class="content p-4" style="margin-top: 0 !important; padding-top: 12px !important;">
-    <!-- Top Header -->
-    <div class="flex justify-between items-center mb-5">
-        <div class="flex items-center gap-3">
-            <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #3b82f6; flex-shrink: 0;"></div>
-            <div>
-                <h2 class="text-base font-bold text-gray-800 leading-tight">Input Tindakan Perbaikan</h2>
-                <p class="text-xs text-gray-400 mt-0.5">Catat semua langkah perbaikan yang dilakukan</p>
-            </div>
+<header class="page-header">
+    <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+        <i data-feather="menu"></i>
+    </div>
+    <div class="header-title">
+        <h1><i data-feather="tool" class="w-5 h-5 inline-block mr-2"></i>Input Tindakan Perbaikan</h1>
+        <p>Catat semua langkah perbaikan yang dilakukan</p>
+    </div>
+    <div class="header-actions">
+        <div class="search-input-wrapper">
+            <i data-feather="search" class="search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search...">
         </div>
-        <div>
-            <a href="{{ route('teknisi.index') }}" class="btn-action-back">
-                <i data-feather="arrow-left" style="width: 14px; height: 14px;"></i>
-                <span>Kembali ke Dashboard</span>
-            </a>
+        <div class="header-btn header-btn-bell" id="topbar-bell-btn" title="Pemberitahuan Sistem & Maintenance" style="cursor: pointer; position: relative;">
+            <i data-feather="bell"></i>
+            <div class="badge-dot"></div>
         </div>
+        <div class="header-btn header-btn-mail" id="topbar-mail-btn" title="Kotak Pesan" style="cursor: pointer; position: relative;">
+            <i data-feather="mail"></i>
+        </div>
+    </div>
+</header>
+
+<div class="content-area">
+    <div class="mb-4 flex justify-end">
+        <a href="{{ route('teknisi.index') }}" class="btn-action-back" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#f1f5f9;border-radius:8px;font-size:13px;font-weight:600;color:#374151;text-decoration:none;border:1px solid #e2e8f0;">
+            <i data-feather="arrow-left" style="width: 14px; height: 14px;"></i>
+            <span>Kembali ke Dashboard</span>
+        </a>
     </div>
 
     @if(session('sukses'))

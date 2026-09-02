@@ -11,8 +11,15 @@ class VoucherController extends Controller
 {
     public function index(Request $request)
     {
+        $vouchers = Voucher::orderBy('voucher_id', 'DESC')->paginate(15);
+
         $data = [
             'title' => 'Voucher Discount',
+            'voucher' => $vouchers,
+            'pagination' => $vouchers->links(),
+            'total_records' => $vouchers->total(),
+            'offset' => ($vouchers->currentPage() - 1) * $vouchers->perPage(),
+            'per_page' => $vouchers->perPage(),
         ];
 
         return view('voucher.read', $data);
@@ -33,6 +40,9 @@ class VoucherController extends Controller
         return view('voucher.ajax_table', [
             'voucher' => $vouchers,
             'pagination' => $vouchers->links(),
+            'total_records' => $vouchers->total(),
+            'offset' => ($vouchers->currentPage() - 1) * $vouchers->perPage(),
+            'per_page' => $vouchers->perPage(),
         ]);
     }
 
@@ -64,7 +74,7 @@ class VoucherController extends Controller
         $data = $request->only(['voucher_code', 'description', 'discount_percent', 'start_date', 'end_date', 'max_usage', 'status']);
 
         if ($request->hasFile('voucher_gambar')) {
-            $path = $request->file('voucher_gambar')->store('public/vouchers');
+            $path = $request->file('voucher_gambar')->store('vouchers', 'public');
             $data['voucher_gambar'] = basename($path);
         }
 
@@ -112,9 +122,10 @@ class VoucherController extends Controller
         if ($request->hasFile('voucher_gambar')) {
             // Hapus gambar lama jika ada
             if ($voucher->voucher_gambar) {
+                Storage::disk('public')->delete('vouchers/'.$voucher->voucher_gambar);
                 Storage::delete('public/vouchers/'.$voucher->voucher_gambar);
             }
-            $path = $request->file('voucher_gambar')->store('public/vouchers');
+            $path = $request->file('voucher_gambar')->store('vouchers', 'public');
             $data['voucher_gambar'] = basename($path);
         }
 
@@ -132,6 +143,7 @@ class VoucherController extends Controller
         $voucher = Voucher::findOrFail($id);
 
         if ($voucher->voucher_gambar) {
+            Storage::disk('public')->delete('vouchers/'.$voucher->voucher_gambar);
             Storage::delete('public/vouchers/'.$voucher->voucher_gambar);
         }
 

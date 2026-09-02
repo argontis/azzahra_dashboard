@@ -6,19 +6,24 @@
                 <i data-feather="menu"></i>
             </div>
             <div class="header-title">
-                <h1>
-                    <i data-feather="user" class="w-6 h-6 inline-block mr-2"></i>Karyawan</h1>                
+                <h1><i data-feather="users" class="w-5 h-5 inline-block mr-2"></i>Karyawan</h1>                
                 <p>Welcome back, here's your business overview</p>
             </div>
             <div class="header-actions">
-               <a role="button" class="button text-white bg-theme-1 shadow-md mr-2" data-toggle="modal" data-target="#add-new-karyawan">
-        		Tambah Karyawan Baru
-        	</a>
-        	<a href="{{ route('hr.export_karyawan') }}" class="button box flex items-center text-gray-700">
-        		<i data-feather="file-text" class="hidden sm:block w-4 h-4 mr-2"></i> Export to PDF
-        	</a>
+                <div class="search-input-wrapper">
+                    <i data-feather="search" class="search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Search...">
+                </div>
+                <div class="header-btn header-btn-bell" id="topbar-bell-btn" title="Pemberitahuan Sistem & Maintenance" style="cursor: pointer; position: relative;">
+                    <i data-feather="bell"></i>
+                    <div class="badge-dot"></div>
+                </div>
+                <div class="header-btn header-btn-mail" id="topbar-mail-btn" title="Kotak Pesan" style="cursor: pointer; position: relative;">
+                    <i data-feather="mail"></i>
+                </div>
             </div>
         </header>
+
 <div class="content-area">
 	<div class="sukses" data-sukses="{{ session('sukses') }}"></div>
 
@@ -28,8 +33,19 @@
         <span>{{ session('error') }}</span>
     </div>
     @endif
+
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 mb-2 mt-4">
+        <div class="flex items-center gap-2">
+            <a role="button" class="button text-white bg-blue-600 hover:bg-blue-700 shadow-sm px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer" data-toggle="modal" data-target="#add-new-karyawan">
+                <i data-feather="plus" class="w-4 h-4"></i> Tambah Karyawan Baru
+            </a>
+            <a href="{{ route('hr.export_karyawan') }}" class="button bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-all">
+                <i data-feather="file-text" class="w-4 h-4 text-indigo-600"></i> Export to PDF
+            </a>
+        </div>
+    </div>
 	
-    <div class="intro-y datatable-wrapper box p-5 mt-5">
+    <div class="intro-y datatable-wrapper box p-5 mt-3">
     	<table class="table table-report table-report--bordered display datatable w-full mt-5">
     		<thead>
     			<tr>

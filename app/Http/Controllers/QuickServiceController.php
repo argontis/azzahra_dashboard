@@ -7,7 +7,6 @@ use App\Models\OrderList;
 use App\Models\Tindakan;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 

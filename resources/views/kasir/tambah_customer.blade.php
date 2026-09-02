@@ -86,18 +86,32 @@
     }
 </style>
 
-<div class="area-konten">
-    <div class="form-container">
+<header class="page-header">
+    <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+        <i data-feather="menu"></i>
+    </div>
+    <div class="header-title">
+        <h1><i data-feather="user-plus" class="w-5 h-5 inline-block mr-2"></i>Tambah Customer Baru</h1>
+        <p>Input data pelanggan dan detail permasalahan</p>
+    </div>
+    <div class="header-actions">
+        <div class="search-input-wrapper">
+            <i data-feather="search" class="search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search...">
+        </div>
+        <div class="header-btn header-btn-bell" id="topbar-bell-btn" title="Pemberitahuan Sistem & Maintenance" style="cursor: pointer; position: relative;">
+            <i data-feather="bell"></i>
+            <div class="badge-dot"></div>
+        </div>
+        <div class="header-btn header-btn-mail" id="topbar-mail-btn" title="Kotak Pesan" style="cursor: pointer; position: relative;">
+            <i data-feather="mail"></i>
+        </div>
+    </div>
+</header>
+
+<div class="content-area">
+    <div class="form-container" style="max-width: 800px; margin: 0 auto; padding-top: 8px;">
         
-        <!-- Header Halaman -->
-        <div style="display: flex; align-items: center; margin-bottom: 2rem;">
-            <div style="background-color: #e0e7ff; color: #1a3c87; padding: 12px; border-radius: 12px; margin-right: 16px;">
-                <i data-feather="user-plus" style="width: 24px; height: 24px;"></i>
-            </div>
-            <div>
-                <h4 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #1e293b;">Tambah Customer Baru</h4>
-                <span style="font-size: 0.85rem; color: #64748b;">Input data pelanggan dan detail permasalahan</span>
-            </div>
         </div>
 
         <!-- Card Form -->
