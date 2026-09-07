@@ -29,13 +29,12 @@ class CustomerScoringController extends Controller
 
                 return $score !== null ? (float) $score : null;
             } else {
-                Log::error('Flask API merespons dengan error: '.$response->body());
+                Log::error('Flask API merespons dengan error: ' . $response->body());
 
                 return null;
             }
-
         } catch (\Exception $e) {
-            Log::error('Gagal menghubungi server AI Flask: '.$e->getMessage());
+            Log::error('Gagal menghubungi server AI Flask: ' . $e->getMessage());
 
             return null;
         }
@@ -65,7 +64,6 @@ class CustomerScoringController extends Controller
             };
 
             $pelanggan->update([
-                'cos_poin' => $skorBaru,
                 'cos_score' => $skorBaru,
                 'cos_tier' => $tierBaru,
             ]);
@@ -135,7 +133,7 @@ class CustomerScoringController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'pesan' => 'Berhasil memperbarui skor AI untuk '.count($results).' pelanggan.',
+            'pesan' => 'Berhasil memperbarui skor AI untuk ' . count($results) . ' pelanggan.',
             'data' => $results,
         ]);
     }
