@@ -85,7 +85,7 @@
                                     <td class="border-b">{{ e($mou->lokasi) }}</td>
                                     <td class="border-b">{{ date('d/m/Y', strtotime($mou->tanggal)) }}</td>
                                     <td class="border-b">Rp. {{ number_format($mou->grand_total, 0, ',', '.') }},-</td>
-                                    <td class="border-b">{{ e($mou->kry_nama ?? '-') }}</td>
+                                    <td class="border-b">{{ e($mou->kry_nama ?? $mou->karyawan->kry_nama ?? '-') }}</td>
                                     <td class="border-b">
                                         <div class="flex space-x-2">
                                             <a href="{{ route('admin.mou.download', $mou->mou_id) }}" class="button button--sm text-white bg-theme-1" style="display: inline-block; white-space: nowrap;" target="_blank">
@@ -118,11 +118,6 @@
             </div>
             @endif
         </div>
-    </main>
-</div>
-
-<!-- Overlay for mobile -->
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
 
 <!-- Modal Create Mou (Menggunakan class active untuk menampilkan) -->
 <div class="modal" id="createMouModal">
@@ -159,6 +154,16 @@
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Nama Customer *</label>
                     <input type="text" name="customer" id="customer" class="input w-full border" placeholder="Masukkan nama customer" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Pengantar Surat (Opsional)</label>
+                    <textarea name="intro_text" id="intro_text" class="input w-full border" rows="2" placeholder="Kosongkan untuk menggunakan format pengantar default"></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Ketentuan (Opsional)</label>
+                    <textarea name="terms" id="terms" class="input w-full border" rows="3" placeholder="Kosongkan untuk menggunakan format ketentuan default"></textarea>
                 </div>
 
                 <div class="mb-4">
@@ -214,8 +219,8 @@ function openCreateModal() {
         return false;
     }
     
-    // Tambahkan class agar modal tampil
-    modal.classList.add('modal-show');
+    // Tambahkan class agar modal tampil (sesuai global CSS dashboard.css)
+    modal.classList.add('show');
     document.body.style.overflow = 'hidden';
 
     // Reset form dan set nilai default
@@ -244,7 +249,7 @@ function openCreateModal() {
 function closeCreateModal() {
     const modal = getElem('createMouModal');
     if (modal) {
-        modal.classList.remove('modal-show');
+        modal.classList.remove('show');
     }
     document.body.style.overflow = '';
 }
@@ -367,7 +372,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const harga = row.querySelector('input[name="harga[]"]')?.value;
                 if (spesifikasi && qty && harga) items.push({ spesifikasi, qty, harga });
             });
-            if (!items.length) { alert('Minimal harus ada 1 item'); return; }
+            if (!items.length) { 
+                if (typeof Swal !== 'undefined') Swal.fire({icon:'warning', title:'Peringatan', text:'Minimal harus ada 1 item penawaran!'});
+                else alert('Minimal harus ada 1 item penawaran!'); 
+                return; 
+            }
             formData.append('items', JSON.stringify(items));
 
             const submitBtn = this.querySelector('button[type="submit"]');
@@ -379,17 +388,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST', 
                 body: formData,
                 headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
                 }
             })
-            .then(r => r.ok ? r.json() : r.text().then(t => { throw new Error(t || 'Gagal'); }))
+            .then(async response => {
+                const data = await response.json().catch(() => null);
+                if (!response.ok) {
+                    const errorMsg = (data && (data.message || data.error)) ? (data.message || data.error) : 'Terjadi kesalahan saat membuat Mou';
+                    throw new Error(errorMsg);
+                }
+                return data;
+            })
             .then(data => {
-                if (data.status === 'success') {
-                    const done = () => { if (data.pdf_url) window.open(data.pdf_url, '_blank'); closeCreateModal(); location.reload(); };
-                    if (typeof Swal !== 'undefined') Swal.fire({icon:'success',title:'Berhasil!',text:'Mou berhasil dibuat!',confirmButtonColor:'#1e40af'}).then(done);
-                    else { alert('Mou berhasil dibuat!'); done(); }
+                if (data && data.status === 'success') {
+                    closeCreateModal();
+                    const done = () => { 
+                        if (data.pdf_url) window.open(data.pdf_url, '_blank'); 
+                        window.location.href = data.redirect_url || '{{ route("admin.mou.index") }}'; 
+                    };
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Mou berhasil dibuat!',
+                            confirmButtonColor: '#1e40af'
+                        }).then(done);
+                    } else { 
+                        alert('Mou berhasil dibuat!'); 
+                        done(); 
+                    }
                 } else {
-                    const msg = data.message || 'Gagal membuat Mou';
+                    const msg = (data && data.message) ? data.message : 'Gagal membuat Mou';
                     if (typeof Swal !== 'undefined') Swal.fire({icon:'error',title:'Error!',text:msg,confirmButtonColor:'#dc2626'}); else alert(msg);
                 }
             })
@@ -397,7 +428,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const msg = err.message || 'Terjadi kesalahan saat membuat Mou';
                 if (typeof Swal !== 'undefined') Swal.fire({icon:'error',title:'Error!',text:msg,confirmButtonColor:'#dc2626'}); else alert(msg);
             })
-            .finally(() => { submitBtn.disabled = false; submitBtn.innerHTML = originalText; });
+            .finally(() => { 
+                submitBtn.disabled = false; 
+                submitBtn.innerHTML = originalText; 
+            });
         });
     }
 });
@@ -420,12 +454,18 @@ function deleteMou(mouId) {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
                     }
                 })
-                .then(response => response.json())
+                .then(async response => {
+                    const data = await response.json().catch(() => null);
+                    if (!response.ok) throw new Error(data?.message || 'Gagal menghapus Mou');
+                    return data;
+                })
                 .then(data => {
-                    if (data.status === 'success') {
+                    if (data && data.status === 'success') {
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil!',
@@ -438,7 +478,7 @@ function deleteMou(mouId) {
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal!',
-                            text: 'Gagal menghapus Mou: ' + data.message,
+                            text: 'Gagal menghapus Mou: ' + (data?.message || ''),
                             confirmButtonColor: '#dc2626'
                         });
                     }
@@ -459,7 +499,9 @@ function deleteMou(mouId) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
                 }
             })
             .then(response => response.json())
@@ -477,6 +519,25 @@ function deleteMou(mouId) {
         }
     }
 }
+
+@if(session('sukses'))
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: "{{ session('sukses') }}",
+            confirmButtonColor: '#1e40af'
+        });
+    }
+});
+@endif
+
+@if(session('download_pdf'))
+document.addEventListener('DOMContentLoaded', () => {
+    window.open("{{ session('download_pdf') }}", '_blank');
+});
+@endif
 </script>
 
 <style>
@@ -515,22 +576,7 @@ function deleteMou(mouId) {
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
-/* Modal Custom Styles agar pasti tampil saat class modal-show aktif */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 99999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.5);
-}
-
-.modal.modal-show {
-    display: block !important;
-}
+/* Modal dikelola oleh global CSS di dashboard.css (.modal.show) */
 
 .modal-content {
     background-color: #fefefe;

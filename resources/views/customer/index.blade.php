@@ -618,9 +618,9 @@ function updateSkorFlask(idCustomer, btn) {
         btn.disabled = false;
         btn.innerHTML = originalContent;
         if (typeof Swal !== 'undefined') {
-            Swal.fire('Error Connection!', 'Gagal menghubungi server. Pastikan Flask API (http://127.0.0.1:5000) berjalan.', 'error');
+            Swal.fire('Error Connection!', 'Gagal menghubungi server untuk memperbarui skor.', 'error');
         } else {
-            alert('Gagal menghubungi server. Pastikan Flask API running.');
+            alert('Gagal menghubungi server untuk memperbarui skor.');
         }
     });
 }

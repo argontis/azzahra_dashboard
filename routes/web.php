@@ -173,6 +173,13 @@ Route::middleware(['auth'])->group(function () {
     // MODULE MOU (Diletakkan di luar group Admin khusus,
     // agar bisa diakses Admin, HR, Kasir, dan CS tanpa error 403/404)
     // ==========================================
+    Route::get('/mou', function () {
+        return redirect()->route('admin.mou.index');
+    });
+    Route::get('/Mou', function () {
+        return redirect()->route('admin.mou.index');
+    });
+
     Route::prefix('Admin')->middleware('role:Admin,HR,Kasir,Customer Service')->group(function () {
         Route::get('/mou', [MouController::class, 'index'])->name('admin.mou.index');
         Route::get('/mou/create', [MouController::class, 'create_form'])->name('admin.mou.create_form');

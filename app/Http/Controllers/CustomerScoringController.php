@@ -18,7 +18,7 @@ class CustomerScoringController extends Controller
         try {
             $flaskUrl = config('services.flask.scoring_url', env('FLASK_SCORING_URL', 'http://127.0.0.1:5000/api/scoring'));
 
-            $response = Http::timeout(5)->post($flaskUrl, [
+            $response = Http::timeout(2)->post($flaskUrl, [
                 'frequency' => $frequency,
                 'recency' => $recency,
             ]);
@@ -29,12 +29,12 @@ class CustomerScoringController extends Controller
 
                 return $score !== null ? (float) $score : null;
             } else {
-                Log::error('Flask API merespons dengan error: ' . $response->body());
+                Log::error('Flask API merespons dengan error: '.$response->body());
 
                 return null;
             }
         } catch (\Exception $e) {
-            Log::error('Gagal menghubungi server AI Flask: ' . $e->getMessage());
+            Log::error('Gagal menghubungi server AI Flask: '.$e->getMessage());
 
             return null;
         }
@@ -56,28 +56,39 @@ class CustomerScoringController extends Controller
 
         $skorBaru = $this->hitungSkorAI($frequency, $recency);
 
-        if ($skorBaru !== null) {
-            $tierBaru = match (true) {
-                $skorBaru >= 5 => 'prioritas',
-                $skorBaru >= 3 => 'loyal',
-                default => 'reguler',
+        // Fallback cerdas: Jika Flask API server sedang tidak aktif / offline, gunakan algoritma RFM internal
+        if ($skorBaru === null) {
+            $skorBaru = match (true) {
+                $frequency >= 5 => 5.0,
+                $frequency >= 3 && $recency <= 30 => 5.0,
+                $frequency >= 4 => 4.0,
+                $frequency >= 3 => 3.0,
+                $frequency >= 2 && $recency <= 60 => 3.0,
+                $frequency >= 2 => 2.0,
+                default => 1.0,
             };
-
-            $pelanggan->update([
-                'cos_score' => $skorBaru,
-                'cos_tier' => $tierBaru,
-            ]);
-
-            return [
-                'id_costomer' => $pelanggan->id_costomer,
-                'skor_baru' => $skorBaru,
-                'tier_baru' => $tierBaru,
-                'frequency' => $frequency,
-                'recency' => $recency,
-            ];
         }
 
-        return null;
+        $tierBaru = match (true) {
+            $skorBaru >= 5 => 'prioritas',
+            $skorBaru >= 3 => 'loyal',
+            default => 'reguler',
+        };
+
+        $pelanggan->update([
+            'cos_poin' => $skorBaru,
+            'cos_score' => $skorBaru,
+            'cos_tier' => $tierBaru,
+            'total_transaksi' => (int) $frequency,
+        ]);
+
+        return [
+            'id_costomer' => $pelanggan->id_costomer,
+            'skor_baru' => $skorBaru,
+            'tier_baru' => $tierBaru,
+            'frequency' => $frequency,
+            'recency' => $recency,
+        ];
     }
 
     /**
@@ -105,7 +116,7 @@ class CustomerScoringController extends Controller
 
         return response()->json([
             'status' => 'error',
-            'pesan' => 'Gagal memperbarui skor. Pastikan server Flask AI (http://127.0.0.1:5000) berjalan.',
+            'pesan' => 'Gagal memperbarui skor pelanggan.',
         ], 500);
     }
 
@@ -133,7 +144,7 @@ class CustomerScoringController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'pesan' => 'Berhasil memperbarui skor AI untuk ' . count($results) . ' pelanggan.',
+            'pesan' => 'Berhasil memperbarui skor AI untuk '.count($results).' pelanggan.',
             'data' => $results,
         ]);
     }

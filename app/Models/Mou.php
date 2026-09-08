@@ -30,4 +30,9 @@ class Mou extends Model
     {
         return $this->hasMany(MouItem::class, 'mou_id', 'mou_id')->orderBy('item_no', 'asc');
     }
+
+    public function karyawan()
+    {
+        return $this->belongsTo(Karyawan::class, 'kry_kode', 'kry_kode');
+    }
 }

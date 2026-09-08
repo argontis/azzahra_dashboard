@@ -123,18 +123,13 @@
                     </div>
 
                     <div class="flex justify-end mt-5">
-                        <a href="<?= url('Mou')?>" class="button border mr-2">Kembali</a>
+                        <a href="{{ route('admin.mou.index') }}" class="button border mr-2">Kembali</a>
                         <button type="submit" class="button text-white bg-theme-1">Update & Regenerate PDF</button>
                     </div>
                 </form>
             </div>
-            <?php endif; ?>
+        <?php endif; ?>
         </div>
-    </main>
-</div>
-
-<!-- Overlay for mobile -->
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
 
 <script>
 const DEFAULT_DATE = '<?= date('Y-m-d') ?>';
@@ -229,10 +224,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (customIntro) customIntro.addEventListener('change', handleIntroTypeChange);
     if (templateIntro) templateIntro.addEventListener('change', handleIntroTypeChange);
 
-    // form submit: build items JSON lalu submit normal
+    // form submit: build items JSON, kirim via AJAX, buka PDF dan pindah ke halaman index Mou
     const form = $p('mouFormPage');
     if (form) {
         form.addEventListener('submit', function(e) {
+            e.preventDefault();
             const items = [];
             const rows = $p('itemsTableBodyPage')?.querySelectorAll('tr') || [];
             rows.forEach(row => {
@@ -241,10 +237,71 @@ document.addEventListener('DOMContentLoaded', () => {
                 const harga = row.querySelector('input[name="harga[]"]')?.value;
                 if (spesifikasi && qty && harga) items.push({ spesifikasi, qty, harga });
             });
-            if (!items.length) { e.preventDefault(); alert('Minimal harus ada 1 item'); return; }
-            const hidden = $p('itemsHidden');
-            if (hidden) hidden.value = JSON.stringify(items);
-            // biarkan submit normal
+            if (!items.length) { 
+                if (typeof Swal !== 'undefined') Swal.fire({icon: 'warning', title: 'Peringatan', text: 'Minimal harus ada 1 item penawaran!'});
+                else alert('Minimal harus ada 1 item penawaran!'); 
+                return; 
+            }
+
+            const formData = new FormData(this);
+            formData.set('items', JSON.stringify(items));
+
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Memproses...';
+
+            fetch('{{ route("admin.mou.edit", $mou->mou_id) }}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(async response => {
+                const data = await response.json().catch(() => null);
+                if (!response.ok) {
+                    const errorMsg = (data && (data.message || data.error)) ? (data.message || data.error) : 'Terjadi kesalahan saat memperbarui Mou';
+                    throw new Error(errorMsg);
+                }
+                return data;
+            })
+            .then(data => {
+                if (data && data.status === 'success') {
+                    const nextUrl = data.redirect_url || '{{ route("admin.mou.index") }}';
+                    if (data.pdf_url) {
+                        window.open(data.pdf_url, '_blank');
+                    }
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Mou berhasil diperbarui!',
+                            confirmButtonColor: '#1e40af'
+                        }).then(() => {
+                            window.location.href = nextUrl;
+                        });
+                    } else {
+                        alert('Mou berhasil diperbarui!');
+                        window.location.href = nextUrl;
+                    }
+                } else {
+                    const msg = (data && data.message) ? data.message : 'Gagal memperbarui Mou';
+                    if (typeof Swal !== 'undefined') Swal.fire({icon: 'error', title: 'Error!', text: msg, confirmButtonColor: '#dc2626'});
+                    else alert(msg);
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
+                }
+            })
+            .catch(err => {
+                const msg = err.message || 'Terjadi kesalahan saat memperbarui Mou';
+                if (typeof Swal !== 'undefined') Swal.fire({icon: 'error', title: 'Error!', text: msg, confirmButtonColor: '#dc2626'});
+                else alert(msg);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            });
         });
     }
 
