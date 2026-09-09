@@ -33,7 +33,7 @@ class Karyawan extends Authenticatable
 
     public function getAuthPasswordName()
     {
-        return '''kry_pswd''';
+        return 'kry_pswd';
     }
 
     public function getAuthPassword()
