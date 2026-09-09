@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('costomer', function (Blueprint $table) {
+        if (!Schema::hasTable('costomer')) {
+            Schema::create('costomer', function (Blueprint $table) {
             $table->id('id_costomer');
             $table->string('cos_nama');
             $table->string('cos_alamat')->nullable();
@@ -26,6 +27,7 @@ return new class extends Migration
             $table->text('cos_keterangan')->nullable();
             $table->timestamps();
         });
+        }
     }
 
     /**

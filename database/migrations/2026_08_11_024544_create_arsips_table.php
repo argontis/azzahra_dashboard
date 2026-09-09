@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('arsip', function (Blueprint $table) {
+        if (!Schema::hasTable('arsip')) {
+            Schema::create('arsip', function (Blueprint $table) {
             $table->id('arsip_id');
             $table->string('tipe')->nullable();
             $table->string('nama')->nullable();
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->text('alamat')->nullable();
             $table->timestamps();
         });
+        }
     }
 
     /**

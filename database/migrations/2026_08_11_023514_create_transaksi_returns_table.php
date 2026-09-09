@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transaksi_return', function (Blueprint $table) {
+        if (!Schema::hasTable('transaksi_return')) {
+            Schema::create('transaksi_return', function (Blueprint $table) {
             $table->id('ret_kode');
             $table->unsignedBigInteger('trans_kode')->nullable();
             $table->unsignedBigInteger('dtl_kode')->nullable();
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->foreign('trans_kode')->references('trans_kode')->on('transaksi')->onDelete('cascade');
             $table->foreign('dtl_kode')->references('dtl_kode')->on('transaksi_detail')->onDelete('cascade');
         });
+        }
     }
 
     /**

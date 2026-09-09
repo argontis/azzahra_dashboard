@@ -69,7 +69,7 @@
 				    				<td class="text-center border-b">{{ $row->cos_hp ?: 'N/A'; }}</td>
 				    				<td class="text-center">
 				    					<div class="flex sm:justify-center items-center">
-				    						<a href="{{ url('Admin/cus_detail/'.$row->trans_kode) }}" class="button w-32 mr-2 mb-2 flex items-center justify-center bg-theme-7 text-white">
+				    						<a href="{{ url('Admin/konfirmasi/'.$row->trans_kode) }}" class="button w-32 mr-2 mb-2 flex items-center justify-center bg-theme-7 text-white">
 				    							<i data-feather="align-justify" class="w-4 h-4 mr-2"></i> Detail
 				    						</a>
 				    					</div>

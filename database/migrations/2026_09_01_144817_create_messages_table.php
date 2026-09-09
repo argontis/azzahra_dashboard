@@ -8,7 +8,8 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('messages', function (Blueprint $table) {
+        if (!Schema::hasTable('messages')) {
+            Schema::create('messages', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('sender_id');   // kry_kode pengirim
             $table->string('sender_nama');
@@ -18,6 +19,7 @@ return new class extends Migration
             $table->text('isi');
             $table->timestamps();
         });
+        }
 
         // Tabel untuk menandai siapa saja yang sudah membaca pesan
         Schema::create('message_reads', function (Blueprint $table) {

@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('karyawan', function (Blueprint $table) {
+        if (!Schema::hasTable('karyawan')) {
+            Schema::create('karyawan', function (Blueprint $table) {
             $table->id('kry_kode');
             $table->string('kry_username')->unique();
             $table->string('kry_pswd');
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->boolean('kry_status')->default(1);
             $table->timestamps();
         });
+        }
     }
 
     /**

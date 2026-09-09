@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('interviews', function (Blueprint $table) {
+        if (!Schema::hasTable('interviews')) {
+            Schema::create('interviews', function (Blueprint $table) {
             $table->id();
             $table->string('nama_kandidat');
             $table->string('posisi');
@@ -20,6 +21,7 @@ return new class extends Migration
             $table->string('status')->default('Menunggu');
             $table->timestamps();
         });
+        }
     }
 
     /**

@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pencatatan', function (Blueprint $table) {
+        if (!Schema::hasTable('pencatatan')) {
+            Schema::create('pencatatan', function (Blueprint $table) {
             $table->id('pencatatan_id');
             $table->string('batch_id')->nullable();
             $table->string('nama_barang')->nullable();
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->string('kategori_global')->nullable();
             $table->timestamps();
         });
+        }
     }
 
     /**

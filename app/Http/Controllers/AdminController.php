@@ -96,6 +96,7 @@ class AdminController extends Controller
     public function cus_baru()
     {
         $trans = DB::table('transaksi')
+            ->leftJoin('transaksi_detail', 'transaksi.trans_kode', '=', 'transaksi_detail.trans_kode')
             ->leftJoin('costomer', 'transaksi.cos_kode', '=', 'costomer.id_costomer')
             ->leftJoin('karyawan', 'transaksi.kry_kode', '=', 'karyawan.kry_kode')
             ->where('transaksi.trans_status', 'Baru')
@@ -110,6 +111,7 @@ class AdminController extends Controller
     public function cus_proses()
     {
         $trans = DB::table('transaksi')
+            ->leftJoin('transaksi_detail', 'transaksi.trans_kode', '=', 'transaksi_detail.trans_kode')
             ->leftJoin('costomer', 'transaksi.cos_kode', '=', 'costomer.id_costomer')
             ->leftJoin('karyawan', 'transaksi.kry_kode', '=', 'karyawan.kry_kode')
             ->where('transaksi.trans_status', 'Pelunasan')
@@ -121,6 +123,7 @@ class AdminController extends Controller
     public function cus_konf()
     {
         $trans = DB::table('transaksi')
+            ->leftJoin('transaksi_detail', 'transaksi.trans_kode', '=', 'transaksi_detail.trans_kode')
             ->leftJoin('costomer', 'transaksi.cos_kode', '=', 'costomer.id_costomer')
             ->leftJoin('karyawan', 'transaksi.kry_kode', '=', 'karyawan.kry_kode')
             ->where('transaksi.trans_status', 'Diproses')
@@ -146,6 +149,7 @@ class AdminController extends Controller
     public function cus_discount()
     {
         $trans = DB::table('transaksi')
+            ->leftJoin('transaksi_detail', 'transaksi.trans_kode', '=', 'transaksi_detail.trans_kode')
             ->leftJoin('costomer', 'transaksi.cos_kode', '=', 'costomer.id_costomer')
             ->leftJoin('karyawan', 'transaksi.kry_kode', '=', 'karyawan.kry_kode')
             ->where('transaksi.trans_discount', '>', 0)

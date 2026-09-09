@@ -60,6 +60,7 @@
 		    			</tr>
 		    		</thead>
 		    		<tbody>
+						@php $no = 0; @endphp
 		    			@foreach ($trans as $row)
 			    				<tr>
 				    				<td class="text-center border-b">{{ ++$no; }}</td>
@@ -79,7 +80,7 @@
 				    					<div class="tooltip-content">
 	                                        <div id="custom-content-tooltip" class="relative flex items-center py-1">
 	                                            <div class="w-12 h-12 image-fit">
-	                                                <img alt="Midone Tailwind HTML Admin Template" class="rounded-full" src="<?php echo base_url(); ?>assets/template/beck/dist/images/profile-13.jpg">
+	                                                <img alt="Midone Tailwind HTML Admin Template" class="rounded-full" src="{{ asset("/") }}assets/template/beck/dist/images/profile-13.jpg">
 	                                            </div>
 	                                            <div class="ml-4 mr-auto">
 	                                                <div class="font-medium leading-relaxed">{{ $row->cos_nama }}</div>

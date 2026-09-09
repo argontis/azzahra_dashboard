@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('produk', function (Blueprint $table) {
+        if (!Schema::hasTable('produk')) {
+            Schema::create('produk', function (Blueprint $table) {
             $table->string('kode_barang')->primary();
             $table->string('nama_produk');
             $table->text('deskripsi')->nullable();
@@ -19,6 +20,7 @@ return new class extends Migration
             $table->text('gambar')->nullable();
             $table->timestamps();
         });
+        }
     }
 
     /**

@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kpi', function (Blueprint $table) {
+        if (!Schema::hasTable('kpi')) {
+            Schema::create('kpi', function (Blueprint $table) {
             $table->id('kpi_id');
             $table->unsignedBigInteger('id_karyawan')->nullable();
             $table->string('nama_karyawan')->nullable();
@@ -31,6 +32,7 @@ return new class extends Migration
 
             $table->foreign('id_karyawan')->references('kry_kode')->on('karyawan')->onDelete('cascade');
         });
+        }
     }
 
     /**

@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transaksi', function (Blueprint $table) {
+        if (!Schema::hasTable('transaksi')) {
+            Schema::create('transaksi', function (Blueprint $table) {
             $table->id('trans_kode');
             $table->unsignedBigInteger('cos_kode'); // costomer foreign key
             $table->unsignedBigInteger('kry_kode')->nullable(); // karyawan foreign key
@@ -26,6 +27,7 @@ return new class extends Migration
             $table->foreign('cos_kode')->references('id_costomer')->on('costomer')->onDelete('cascade');
             $table->foreign('kry_kode')->references('kry_kode')->on('karyawan')->onDelete('set null');
         });
+        }
     }
 
     /**

@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ci_sessions', function (Blueprint $table) {
+        if (!Schema::hasTable('ci_sessions')) {
+            Schema::create('ci_sessions', function (Blueprint $table) {
             $table->string('id', 128);
             $table->string('ip_address', 45);
             $table->unsignedInteger('timestamp')->default(0)->index('ci_sessions_timestamp');
             $table->binary('data');
             $table->primary('id');
         });
+        }
     }
 
     /**

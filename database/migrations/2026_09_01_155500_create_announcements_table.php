@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('announcements', function (Blueprint $table) {
+        if (!Schema::hasTable('announcements')) {
+            Schema::create('announcements', function (Blueprint $table) {
             $table->id();
             $table->string('judul');
             $table->text('isi');
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->string('status')->default('active'); // active, inactive
             $table->timestamps();
         });
+        }
 
         Schema::create('announcement_reads', function (Blueprint $table) {
             $table->id();

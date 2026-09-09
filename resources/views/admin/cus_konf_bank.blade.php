@@ -61,6 +61,7 @@
 		    			</tr>
 		    		</thead>
 		    		<tbody>
+						@php $no = 0; @endphp
 		    			@foreach ($trans as $row)
 			    				<tr>
 				    				<td class="text-center border-b">{{ ++$no; }}</td>

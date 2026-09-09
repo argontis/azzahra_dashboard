@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('absensi', function (Blueprint $table) {
+        if (!Schema::hasTable('absensi')) {
+            Schema::create('absensi', function (Blueprint $table) {
             $table->id('absensi_id');
             $table->date('tanggal')->nullable();
             $table->unsignedBigInteger('id_karyawan')->nullable();
@@ -25,6 +26,7 @@ return new class extends Migration
 
             $table->foreign('id_karyawan')->references('kry_kode')->on('karyawan')->onDelete('cascade');
         });
+        }
     }
 
     /**

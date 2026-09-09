@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('order_part_approvals', function (Blueprint $table) {
+        if (!Schema::hasTable('order_part_approvals')) {
+            Schema::create('order_part_approvals', function (Blueprint $table) {
             $table->id('approval_id');
             $table->string('trans_kode');
             $table->string('type'); // oow, iw
@@ -25,6 +26,7 @@ return new class extends Migration
             $table->text('note')->nullable();
             $table->timestamps();
         });
+        }
     }
 
     /**

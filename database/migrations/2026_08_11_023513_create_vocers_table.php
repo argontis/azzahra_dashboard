@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vocer', function (Blueprint $table) {
+        if (!Schema::hasTable('vocer')) {
+            Schema::create('vocer', function (Blueprint $table) {
             $table->id('voc_kode');
             $table->unsignedBigInteger('trans_kode')->nullable();
             $table->decimal('voc_jumlah', 15, 2)->default(0);
@@ -22,6 +23,7 @@ return new class extends Migration
 
             $table->foreign('trans_kode')->references('trans_kode')->on('transaksi')->onDelete('cascade');
         });
+        }
     }
 
     /**

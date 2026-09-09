@@ -22,7 +22,8 @@ return new class extends Migration
         Schema::dropIfExists('transaksi');
         Schema::dropIfExists('costomer');
 
-        Schema::create('costomer', function (Blueprint $table) {
+        if (!Schema::hasTable('costomer')) {
+            Schema::create('costomer', function (Blueprint $table) {
             $table->string('id_costomer')->primary();
             $table->string('cos_nama');
             $table->string('username')->nullable();
@@ -47,6 +48,7 @@ return new class extends Migration
             $table->integer('cos_poin')->default(0);
             $table->timestamps();
         });
+        }
 
         Schema::create('transaksi', function (Blueprint $table) {
             $table->string('trans_kode')->primary();

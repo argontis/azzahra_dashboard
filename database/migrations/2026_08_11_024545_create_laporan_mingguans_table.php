@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('laporan_mingguan', function (Blueprint $table) {
+        if (!Schema::hasTable('laporan_mingguan')) {
+            Schema::create('laporan_mingguan', function (Blueprint $table) {
             $table->id('laporan_id');
             $table->unsignedBigInteger('id_karyawan')->nullable();
             $table->string('nama_karyawan')->nullable();
@@ -26,6 +27,7 @@ return new class extends Migration
 
             $table->foreign('id_karyawan')->references('kry_kode')->on('karyawan')->onDelete('cascade');
         });
+        }
     }
 
     /**

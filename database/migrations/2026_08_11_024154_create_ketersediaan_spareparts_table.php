@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ketersediaan_sparepart', function (Blueprint $table) {
+        if (!Schema::hasTable('ketersediaan_sparepart')) {
+            Schema::create('ketersediaan_sparepart', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('trans_kode')->nullable();
             $table->string('cos_nama')->nullable();
@@ -22,6 +23,7 @@ return new class extends Migration
 
             $table->foreign('trans_kode')->references('trans_kode')->on('transaksi')->onDelete('cascade');
         });
+        }
     }
 
     /**

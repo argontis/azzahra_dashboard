@@ -12,6 +12,8 @@ class Karyawan extends Authenticatable
     protected $table = 'karyawan';
 
     protected $primaryKey = 'kry_kode';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'kry_nik',
@@ -28,6 +30,11 @@ class Karyawan extends Authenticatable
     protected $hidden = [
         'kry_pswd',
     ];
+
+    public function getAuthPasswordName()
+    {
+        return '''kry_pswd''';
+    }
 
     public function getAuthPassword()
     {

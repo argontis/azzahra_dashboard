@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('order_part_markings', function (Blueprint $table) {
+        if (!Schema::hasTable('order_part_markings')) {
+            Schema::create('order_part_markings', function (Blueprint $table) {
             $table->id();
             $table->string('trans_kode');
             $table->enum('is_ordered', ['yes', 'no'])->default('no');
@@ -19,6 +20,7 @@ return new class extends Migration
             $table->date('end_warranty_date')->nullable();
             $table->timestamps();
         });
+        }
     }
 
     /**

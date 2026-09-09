@@ -152,6 +152,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/cus_konf_bank', [AdminController::class, 'cus_konf_bank'])->name('admin.cus_konf_bank');
         Route::get('/cus_discount', [AdminController::class, 'cus_discount'])->name('admin.cus_discount');
         Route::get('/konfirmasi/{kode}', [AdminController::class, 'konfirmasi'])->name('admin.konfirmasi');
+        Route::redirect('/cus_detail/{kode}', '/Admin/konfirmasi/{kode}');
+        Route::redirect('/cus_detail', '/Admin/cus_baru');
         Route::post('/update_konf', [AdminController::class, 'update_konf'])->name('admin.update_konf');
         Route::post('/setoran', [AdminController::class, 'setoran'])->name('admin.setoran');
         Route::get('/lap_perhari', [AdminController::class, 'lap_perhari'])->name('admin.lap_perhari');

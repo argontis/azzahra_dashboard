@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('order_list', function (Blueprint $table) {
+        if (!Schema::hasTable('order_list')) {
+            Schema::create('order_list', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('trans_kode')->nullable();
             $table->unsignedBigInteger('cos_kode')->nullable();
@@ -33,6 +34,7 @@ return new class extends Migration
             $table->foreign('cos_kode')->references('id_costomer')->on('costomer')->onDelete('cascade');
             $table->foreign('kry_kode')->references('kry_kode')->on('karyawan')->onDelete('set null');
         });
+        }
     }
 
     /**
