@@ -738,10 +738,11 @@ class HrController extends Controller
 
     public function certificate_generator()
     {
-        // Logika untuk generator sertifikat bisa ditambahkan di sini
+        $karyawan_list = Karyawan::orderBy('kry_nama', 'asc')->get();
 
         return view('hr.certificate_generator', [
             'title' => 'Generator Sertifikat',
+            'karyawan_list' => $karyawan_list,
         ]);
     }
 
