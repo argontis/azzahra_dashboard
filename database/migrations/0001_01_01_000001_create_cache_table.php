@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('cache')) {
+        if (! Schema::hasTable('cache')) {
             Schema::create('cache', function (Blueprint $table) {
-            $table->string('key')->primary();
-            $table->mediumText('value');
-            $table->bigInteger('expiration')->index();
-        });
+                $table->string('key')->primary();
+                $table->mediumText('value');
+                $table->bigInteger('expiration')->index();
+            });
         }
 
         Schema::create('cache_locks', function (Blueprint $table) {

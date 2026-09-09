@@ -310,7 +310,7 @@
     <div class="header-actions">
         <div class="search-input-wrapper">
             <i data-feather="search" class="search-icon"></i>
-            <input type="text" class="search-input" placeholder="Search...">
+            <input type="text" class="search-input" placeholder="Search..." value="{{ request('search') }}">
         </div>
         <div class="header-btn header-btn-bell" id="topbar-bell-btn" title="Pemberitahuan Sistem & Maintenance" style="cursor: pointer; position: relative;">
             <i data-feather="bell"></i>
@@ -516,6 +516,12 @@
                             </td>
                         </tr>
                     @endforelse
+                    <tr id="noSearchResultRow" style="display: none;">
+                        <td colspan="8" class="text-center py-8 text-slate-400 border-b">
+                            <i data-feather="search" class="w-8 h-8 mx-auto mb-2 opacity-40"></i>
+                            <p>Tidak ada customer yang cocok dengan pencarian.</p>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>

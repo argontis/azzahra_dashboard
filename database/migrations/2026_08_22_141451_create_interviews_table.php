@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('interviews')) {
+        if (! Schema::hasTable('interviews')) {
             Schema::create('interviews', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama_kandidat');
-            $table->string('posisi');
-            $table->dateTime('tanggal_waktu'); // Pastikan baris ini ada
-            $table->text('catatan')->nullable();
-            $table->string('status')->default('Menunggu');
-            $table->timestamps();
-        });
+                $table->id();
+                $table->string('nama_kandidat');
+                $table->string('posisi');
+                $table->dateTime('tanggal_waktu'); // Pastikan baris ini ada
+                $table->text('catatan')->nullable();
+                $table->string('status')->default('Menunggu');
+                $table->timestamps();
+            });
         }
     }
 

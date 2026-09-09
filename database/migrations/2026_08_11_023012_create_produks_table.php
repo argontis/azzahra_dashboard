@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('produk')) {
+        if (! Schema::hasTable('produk')) {
             Schema::create('produk', function (Blueprint $table) {
-            $table->string('kode_barang')->primary();
-            $table->string('nama_produk');
-            $table->text('deskripsi')->nullable();
-            $table->decimal('harga', 15, 2)->default(0);
-            $table->text('gambar')->nullable();
-            $table->timestamps();
-        });
+                $table->string('kode_barang')->primary();
+                $table->string('nama_produk');
+                $table->text('deskripsi')->nullable();
+                $table->decimal('harga', 15, 2)->default(0);
+                $table->text('gambar')->nullable();
+                $table->timestamps();
+            });
         }
     }
 

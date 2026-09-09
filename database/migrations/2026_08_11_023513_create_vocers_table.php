@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('vocer')) {
+        if (! Schema::hasTable('vocer')) {
             Schema::create('vocer', function (Blueprint $table) {
-            $table->id('voc_kode');
-            $table->unsignedBigInteger('trans_kode')->nullable();
-            $table->decimal('voc_jumlah', 15, 2)->default(0);
-            $table->date('voc_tanggal')->nullable();
-            $table->time('voc_jam')->nullable();
-            $table->string('voc_status')->nullable();
-            $table->timestamps();
+                $table->id('voc_kode');
+                $table->unsignedBigInteger('trans_kode')->nullable();
+                $table->decimal('voc_jumlah', 15, 2)->default(0);
+                $table->date('voc_tanggal')->nullable();
+                $table->time('voc_jam')->nullable();
+                $table->string('voc_status')->nullable();
+                $table->timestamps();
 
-            $table->foreign('trans_kode')->references('trans_kode')->on('transaksi')->onDelete('cascade');
-        });
+                $table->foreign('trans_kode')->references('trans_kode')->on('transaksi')->onDelete('cascade');
+            });
         }
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 $files = glob('database/migrations/*.php');
 foreach ($files as $file) {
     $content = file_get_contents($file);

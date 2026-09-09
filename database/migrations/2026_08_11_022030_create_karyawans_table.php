@@ -11,19 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('karyawan')) {
+        if (! Schema::hasTable('karyawan')) {
             Schema::create('karyawan', function (Blueprint $table) {
-            $table->id('kry_kode');
-            $table->string('kry_username')->unique();
-            $table->string('kry_pswd');
-            $table->string('kry_nama');
-            $table->string('kry_level')->default('Kasir'); // Admin, Kasir, Customer Service, Teknisi, HR
-            $table->string('kry_telp')->nullable();
-            $table->text('kry_alamat')->nullable();
-            $table->date('kry_join_date')->nullable();
-            $table->boolean('kry_status')->default(1);
-            $table->timestamps();
-        });
+                $table->id('kry_kode');
+                $table->string('kry_username')->unique();
+                $table->string('kry_pswd');
+                $table->string('kry_nama');
+                $table->string('kry_level')->default('Kasir'); // Admin, Kasir, Customer Service, Teknisi, HR
+                $table->string('kry_telp')->nullable();
+                $table->text('kry_alamat')->nullable();
+                $table->date('kry_join_date')->nullable();
+                $table->boolean('kry_status')->default(1);
+                $table->timestamps();
+            });
         }
     }
 

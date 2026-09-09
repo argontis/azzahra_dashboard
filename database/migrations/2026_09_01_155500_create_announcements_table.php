@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('announcements')) {
+        if (! Schema::hasTable('announcements')) {
             Schema::create('announcements', function (Blueprint $table) {
-            $table->id();
-            $table->string('judul');
-            $table->text('isi');
-            $table->string('tipe')->default('maintenance'); // maintenance, penting, info
-            $table->dateTime('mulai_pada')->nullable();
-            $table->dateTime('selesai_pada')->nullable();
-            $table->unsignedBigInteger('created_by')->nullable();
-            $table->string('status')->default('active'); // active, inactive
-            $table->timestamps();
-        });
+                $table->id();
+                $table->string('judul');
+                $table->text('isi');
+                $table->string('tipe')->default('maintenance'); // maintenance, penting, info
+                $table->dateTime('mulai_pada')->nullable();
+                $table->dateTime('selesai_pada')->nullable();
+                $table->unsignedBigInteger('created_by')->nullable();
+                $table->string('status')->default('active'); // active, inactive
+                $table->timestamps();
+            });
         }
 
         Schema::create('announcement_reads', function (Blueprint $table) {

@@ -11,10 +11,12 @@
         <p>Antrean Transaksi Service Customer</p>
     </div>
     <div class="header-actions">
-        <div class="search-input-wrapper">
-            <i data-feather="search" class="search-icon"></i>
-            <input type="text" class="search-input" placeholder="Search...">
-        </div>
+        <form id="serviceAntreanSearchForm" action="{{ route('service.antrean', $current_status) }}" method="GET" style="margin: 0;">
+            <div class="search-input-wrapper">
+                <i data-feather="search" class="search-icon"></i>
+                <input type="text" name="search" id="serviceAntreanSearchInput" class="search-input" placeholder="Search..." value="{{ request('search') }}">
+            </div>
+        </form>
         <div class="header-btn header-btn-bell" id="topbar-bell-btn" title="Pemberitahuan Sistem &amp; Maintenance" style="cursor: pointer; position: relative;">
             <i data-feather="bell"></i>
             <div class="badge-dot"></div>
@@ -133,6 +135,12 @@
                                     </td>
                                 </tr>
                             @endforeach
+                            <tr id="noSearchResultRow" style="display: none;">
+                                <td colspan="6" class="text-center py-6 text-gray-500">
+                                    <i data-feather="search" class="w-8 h-8 mx-auto mb-2 opacity-40"></i>
+                                    <p>Tidak ada transaksi yang cocok dengan pencarian.</p>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -381,4 +389,19 @@
     }
 </script>
 @endif
+
+<script>
+// Auto-submit service antrean search form when typing (debounced 400ms)
+(function() {
+    var searchInput = document.getElementById('serviceAntreanSearchInput');
+    if (!searchInput) return;
+    var debounceTimer;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function() {
+            document.getElementById('serviceAntreanSearchForm').submit();
+        }, 400);
+    });
+})();
+</script>
 @endsection

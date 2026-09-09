@@ -12,7 +12,9 @@ class Karyawan extends Authenticatable
     protected $table = 'karyawan';
 
     protected $primaryKey = 'kry_kode';
+
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $fillable = [

@@ -151,6 +151,7 @@
                 <i data-feather="search" class="search-icon"></i>
                 <input
                     type="text"
+                    id="kasirCustomerSearchInput"
                     name="search"
                     value="{{ request('search') }}"
                     placeholder="Search..."
@@ -433,6 +434,12 @@
                         </tr>
 
                     @endforelse
+                    <tr id="noSearchResultRow" style="display:none;">
+                        <td colspan="7" class="text-center py-8 text-gray-400">
+                            <i data-feather="search" class="w-8 h-8 mx-auto mb-2 opacity-40"></i>
+                            <p>Tidak ada customer yang cocok dengan pencarian.</p>
+                        </td>
+                    </tr>
 
                 </tbody>
 
@@ -519,6 +526,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 });
+</script>
+
+<script>
+// Auto-submit kasir customer search form when typing (debounced 400ms)
+(function() {
+    var searchInput = document.getElementById('kasirCustomerSearchInput');
+    if (!searchInput) return;
+    var debounceTimer;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function() {
+            searchInput.closest('form').submit();
+        }, 400);
+    });
+})();
 </script>
 
 @endsection

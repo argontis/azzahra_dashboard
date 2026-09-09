@@ -19,9 +19,9 @@ class TeknisiSeeder extends Seeder
         // Tambahkan 15 data dummy Teknisi
         for ($i = 1; $i <= 15; $i++) {
             Karyawan::create([
-                'kry_username' => 'teknisi_' . $i . '_' . $faker->userName,
+                'kry_username' => 'teknisi_'.$i.'_'.$faker->userName,
                 'kry_pswd' => Hash::make('password123'),
-                'kry_nama' => 'Teknisi ' . $faker->firstName,
+                'kry_nama' => 'Teknisi '.$faker->firstName,
                 'kry_level' => 'Teknisi',
                 'kry_telp' => $faker->phoneNumber,
                 'kry_alamat' => $faker->address,

@@ -30,9 +30,11 @@ class CustomerController extends Controller
 
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('cos_nama', 'like', "%{$search}%")
-                    ->orWhere('cos_alamat', 'like', "%{$search}%")
-                    ->orWhere('cos_hp', 'like', "%{$search}%");
+                $q->where('costomer.id_costomer', 'like', "%{$search}%")
+                    ->orWhere('costomer.cos_nama', 'like', "%{$search}%")
+                    ->orWhere('costomer.cos_alamat', 'like', "%{$search}%")
+                    ->orWhere('costomer.cos_hp', 'like', "%{$search}%")
+                    ->orWhere('transaksi.trans_kode', 'like', "%{$search}%");
             });
         }
 

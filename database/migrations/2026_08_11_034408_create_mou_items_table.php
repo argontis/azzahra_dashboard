@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('mou_items')) {
+        if (! Schema::hasTable('mou_items')) {
             Schema::create('mou_items', function (Blueprint $table) {
-            $table->id('item_id');
-            $table->unsignedBigInteger('mou_id');
-            $table->integer('item_no');
-            $table->text('spesifikasi');
-            $table->decimal('qty', 10, 2)->default(0.00);
-            $table->decimal('harga', 15, 2)->default(0.00);
-            $table->decimal('total', 15, 2)->default(0.00);
+                $table->id('item_id');
+                $table->unsignedBigInteger('mou_id');
+                $table->integer('item_no');
+                $table->text('spesifikasi');
+                $table->decimal('qty', 10, 2)->default(0.00);
+                $table->decimal('harga', 15, 2)->default(0.00);
+                $table->decimal('total', 15, 2)->default(0.00);
 
-            $table->index('mou_id');
-        });
+                $table->index('mou_id');
+            });
         }
     }
 

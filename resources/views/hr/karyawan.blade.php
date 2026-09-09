@@ -82,7 +82,13 @@
 			                    </td>
 			                </tr>
 	    				@endif
-	    			@endforeach    			
+	    			@endforeach
+						<tr id="noSearchResultRow" style="display: none;">
+							<td colspan="8" class="text-center py-6 text-gray-500">
+								<i data-feather="search" class="w-8 h-8 mx-auto mb-2 opacity-40"></i>
+								<p>Tidak ada karyawan yang cocok dengan pencarian.</p>
+							</td>
+						</tr>
     		</tbody>
     	</table>
     </div>
@@ -134,6 +140,12 @@
                     <td colspan="6" class="text-center border-b p-6 text-gray-500 italic">Belum ada data Magang / PKL.</td>
                 </tr>
                 @endforelse
+                <tr id="noSearchResultRow" style="display: none;">
+                    <td colspan="6" class="text-center py-6 text-gray-500">
+                        <i data-feather="search" class="w-8 h-8 mx-auto mb-2 opacity-40"></i>
+                        <p>Tidak ada data magang yang cocok dengan pencarian.</p>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>

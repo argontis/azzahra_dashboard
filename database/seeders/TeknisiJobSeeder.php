@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Faker\Factory;
 
 class TeknisiJobSeeder extends Seeder
 {
@@ -23,28 +23,28 @@ class TeknisiJobSeeder extends Seeder
 
         $scenarios = [
             [
-                'trans_status' => 'Baru', 
-                'order_status' => 'menunggu', 
-                'has_tindakan' => false
+                'trans_status' => 'Baru',
+                'order_status' => 'menunggu',
+                'has_tindakan' => false,
             ],
             [
-                'trans_status' => 'Diproses', 
-                'order_status' => 'repairing', 
-                'has_tindakan' => true
+                'trans_status' => 'Diproses',
+                'order_status' => 'repairing',
+                'has_tindakan' => true,
             ],
             [
-                'trans_status' => 'Lunas', 
-                'order_status' => 'selesai', 
-                'has_tindakan' => true
-            ]
+                'trans_status' => 'Lunas',
+                'order_status' => 'selesai',
+                'has_tindakan' => true,
+            ],
         ];
 
         // Untuk setiap teknisi, buat 3 transaksi dengan status berbeda
         foreach ($teknisis as $kry_kode) {
             foreach ($scenarios as $scenario) {
                 // Buat customer baru untuk setiap transaksi
-                $cos_kode = 'COS-' . strtoupper(substr(md5(uniqid()), 0, 6));
-                
+                $cos_kode = 'COS-'.strtoupper(substr(md5(uniqid()), 0, 6));
+
                 DB::table('costomer')->insert([
                     'id_costomer' => $cos_kode,
                     'cos_nama' => $faker->name,
@@ -60,7 +60,7 @@ class TeknisiJobSeeder extends Seeder
                     'updated_at' => now(),
                 ]);
 
-                $trans_kode = 'TRX-' . strtoupper(substr(md5(uniqid()), 0, 6));
+                $trans_kode = 'TRX-'.strtoupper(substr(md5(uniqid()), 0, 6));
 
                 DB::table('transaksi')->insert([
                     'trans_kode' => $trans_kode,
@@ -85,11 +85,11 @@ class TeknisiJobSeeder extends Seeder
                     'device' => 'Laptop',
                     'created_at' => now(),
                 ]);
-                
+
                 if ($scenario['has_tindakan']) {
                     DB::table('tindakan')->insert([
                         'trans_kode' => $trans_kode,
-                        'tdkn_barang' => 'Pengecekan dan Service ' . $scenario['trans_status'],
+                        'tdkn_barang' => 'Pengecekan dan Service '.$scenario['trans_status'],
                         'tdkn_harga' => 50000,
                         'tdkn_qty' => 1,
                         'tdkn_subtot' => 50000,

@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('tindakan')) {
+        if (! Schema::hasTable('tindakan')) {
             Schema::create('tindakan', function (Blueprint $table) {
-            $table->id('tdkn_kode');
-            $table->unsignedBigInteger('trans_kode')->nullable();
-            $table->string('tdkn_barang')->nullable();
-            $table->decimal('tdkn_harga', 15, 2)->default(0);
-            $table->integer('tdkn_qty')->default(1);
-            $table->decimal('tdkn_subtot', 15, 2)->default(0);
-            $table->timestamps();
+                $table->id('tdkn_kode');
+                $table->unsignedBigInteger('trans_kode')->nullable();
+                $table->string('tdkn_barang')->nullable();
+                $table->decimal('tdkn_harga', 15, 2)->default(0);
+                $table->integer('tdkn_qty')->default(1);
+                $table->decimal('tdkn_subtot', 15, 2)->default(0);
+                $table->timestamps();
 
-            $table->foreign('trans_kode')->references('trans_kode')->on('transaksi')->onDelete('cascade');
-        });
+                $table->foreign('trans_kode')->references('trans_kode')->on('transaksi')->onDelete('cascade');
+            });
         }
     }
 

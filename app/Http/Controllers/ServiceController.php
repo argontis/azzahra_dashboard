@@ -28,7 +28,7 @@ class ServiceController extends Controller
         ]);
     }
 
-    public function antrean($status = 'baru')
+    public function antrean(Request $request, $status = 'baru')
     {
         $status_map = [
             'baru' => 'Baru',
@@ -42,14 +42,27 @@ class ServiceController extends Controller
             $status = 'baru';
         }
 
-        $transaksis = Transaksi::with(['customer', 'karyawan'])
+        $search = $request->input('search');
+
+        $query = Transaksi::with(['customer', 'karyawan'])
             ->select('transaksi.*')
             ->leftJoin('costomer', 'transaksi.cos_kode', '=', 'costomer.id_costomer')
-            ->where('trans_status', $status_map[$status])
-            ->orderByRaw("CASE WHEN costomer.cos_tier = 'prioritas' OR costomer.cos_score >= 5 THEN 0 WHEN costomer.cos_tier = 'loyal' OR costomer.cos_score >= 3 THEN 1 ELSE 2 END ASC")
+            ->where('trans_status', $status_map[$status]);
+
+        if ($search) {
+            $query->where(function ($sub) use ($search) {
+                $sub->where('transaksi.trans_kode', 'like', "%{$search}%")
+                    ->orWhere('costomer.cos_nama', 'like', "%{$search}%")
+                    ->orWhere('costomer.cos_hp', 'like', "%{$search}%")
+                    ->orWhere('costomer.cos_alamat', 'like', "%{$search}%");
+            });
+        }
+
+        $transaksis = $query->orderByRaw("CASE WHEN costomer.cos_tier = 'prioritas' OR costomer.cos_score >= 5 THEN 0 WHEN costomer.cos_tier = 'loyal' OR costomer.cos_score >= 3 THEN 1 ELSE 2 END ASC")
             ->orderBy('transaksi.cos_tanggal', 'desc')
             ->orderBy('transaksi.trans_kode', 'desc')
-            ->paginate(25);
+            ->paginate(25)
+            ->withQueryString();
 
         return view('service.antrean', [
             'title' => 'Antrean - '.ucfirst($status),
@@ -60,9 +73,7 @@ class ServiceController extends Controller
 
     public function create()
     {
-        return view('service.form_penerimaan', [
-            'title' => 'Penerimaan Servis Baru',
-        ]);
+        return redirect()->route('service.antrean', ['status' => 'baru', 'open_modal' => 1]);
     }
 
     public function save_trans(Request $request)

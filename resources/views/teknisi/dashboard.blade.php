@@ -55,7 +55,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
             </div>
-            <input type="text" name="search" value="{{ $search }}" class="bg-transparent border-0 text-gray-900 text-sm focus:ring-0 w-full pl-10 p-2 placeholder-gray-400" placeholder="Cari berdasarkan nama customer, invoice, atau device...">
+            <input type="text" id="teknisiSearchInput" name="search" value="{{ $search }}" class="bg-transparent border-0 text-gray-900 text-sm focus:ring-0 w-full pl-10 p-2 placeholder-gray-400" placeholder="Cari berdasarkan nama customer, invoice, atau device...">
         </div>
         <div class="flex gap-2 items-center pr-2 border-l border-gray-100 pl-4">
             <select name="status" onchange="this.form.submit()" class="bg-transparent border border-gray-200 text-gray-700 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block p-2 min-w-[130px]">
@@ -178,4 +178,19 @@
         {{ $orders->appends(request()->query())->links() }}
     </div>
 </div>
+
+<script>
+// Auto-submit teknisi filter form when typing in search (debounced 400ms)
+(function() {
+    var searchInput = document.getElementById('teknisiSearchInput');
+    if (!searchInput) return;
+    var debounceTimer;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function() {
+            searchInput.closest('form').submit();
+        }, 400);
+    });
+})();
+</script>
 @endsection

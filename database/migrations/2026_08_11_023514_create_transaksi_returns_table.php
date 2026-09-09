@@ -11,19 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('transaksi_return')) {
+        if (! Schema::hasTable('transaksi_return')) {
             Schema::create('transaksi_return', function (Blueprint $table) {
-            $table->id('ret_kode');
-            $table->unsignedBigInteger('trans_kode')->nullable();
-            $table->unsignedBigInteger('dtl_kode')->nullable();
-            $table->decimal('ret_jml', 15, 2)->default(0);
-            $table->date('ret_tanggal')->nullable();
-            $table->time('ret_jam')->nullable();
-            $table->timestamps();
+                $table->id('ret_kode');
+                $table->unsignedBigInteger('trans_kode')->nullable();
+                $table->unsignedBigInteger('dtl_kode')->nullable();
+                $table->decimal('ret_jml', 15, 2)->default(0);
+                $table->date('ret_tanggal')->nullable();
+                $table->time('ret_jam')->nullable();
+                $table->timestamps();
 
-            $table->foreign('trans_kode')->references('trans_kode')->on('transaksi')->onDelete('cascade');
-            $table->foreign('dtl_kode')->references('dtl_kode')->on('transaksi_detail')->onDelete('cascade');
-        });
+                $table->foreign('trans_kode')->references('trans_kode')->on('transaksi')->onDelete('cascade');
+                $table->foreign('dtl_kode')->references('dtl_kode')->on('transaksi_detail')->onDelete('cascade');
+            });
         }
     }
 

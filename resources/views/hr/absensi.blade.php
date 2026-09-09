@@ -272,6 +272,12 @@
                             @empty
                             <tr><td colspan="7" class="text-center text-gray-500 italic p-6">Data absensi belum tersedia untuk tanggal ini.</td></tr>
                             @endforelse
+                            <tr id="noSearchResultRow" style="display: none;">
+                                <td colspan="7" class="text-center py-6 text-gray-500">
+                                    <i data-feather="search" class="w-8 h-8 mx-auto mb-2 opacity-40"></i>
+                                    <p>Tidak ada data absensi yang cocok dengan pencarian.</p>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

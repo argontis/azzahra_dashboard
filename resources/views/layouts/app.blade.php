@@ -416,14 +416,31 @@
             }
         });
 
-        // Universal real-time live search across all tables and cards for any role/page
+        // Universal real-time live search across all tables, DataTables, and cards for any role/page
         function handleUniversalSearch(query) {
             const filter = (query || '').toLowerCase().trim();
             
-            // Filter all tables
+            // 1. Filter DataTables if active
+            let dataTableHandled = new Set();
+            if (window.jQuery && jQuery.fn && jQuery.fn.DataTable) {
+                jQuery('table').each(function() {
+                    if (jQuery.fn.DataTable.isDataTable(this)) {
+                        dataTableHandled.add(this);
+                        try {
+                            jQuery(this).DataTable().search(filter).draw();
+                        } catch (err) {
+                            console.warn('DataTable search error:', err);
+                        }
+                    }
+                });
+            }
+
+            // 2. Filter normal HTML tables
             const tables = document.querySelectorAll('table');
             tables.forEach(table => {
                 if (table.closest('#topbar-message-panel, #topbar-notification-panel')) return;
+                if (dataTableHandled.has(table)) return;
+
                 const rows = table.querySelectorAll('tbody tr');
                 if (rows.length === 0) return;
                 
@@ -445,17 +462,66 @@
                 }
             });
 
-            // Filter searchable cards if any
-            const cards = document.querySelectorAll('.searchable-card, .search-card-item');
+            // 3. Filter searchable cards (including order cards)
+            const cards = document.querySelectorAll('.searchable-card, .search-card-item, .order-card, .grid > div.border.rounded-lg, .grid > div.border-blue-200');
             cards.forEach(card => {
+                if (card.closest('.modal, .custom-modal, header, .page-header, #topbar-message-panel, #topbar-notification-panel')) return;
                 const text = card.textContent || card.innerText;
                 card.style.display = (filter === '' || text.toLowerCase().indexOf(filter) > -1) ? '' : 'none';
             });
         }
 
+        // Live filtering as user types
         document.addEventListener('input', function (e) {
-            if (e.target && (e.target.classList.contains('search-input') || e.target.id === 'search-input' || e.target.id === 'rekapSearchInput' || e.target.id === 'interviewSearchInput')) {
+            if (e.target && (e.target.classList.contains('search-input') || e.target.id === 'search-input' || e.target.id === 'topbar-search-input' || e.target.id === 'rekapSearchInput' || e.target.id === 'interviewSearchInput')) {
                 handleUniversalSearch(e.target.value);
+            }
+        });
+
+        // Enter key to submit or navigate with ?search= query
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && e.target && (e.target.classList.contains('search-input') || e.target.id === 'search-input' || e.target.id === 'topbar-search-input')) {
+                if (e.target.form) {
+                    // Let form submit naturally
+                    return;
+                }
+                const query = e.target.value.trim();
+                const url = new URL(window.location.href);
+                if (query) {
+                    url.searchParams.set('search', query);
+                } else {
+                    url.searchParams.delete('search');
+                }
+                url.searchParams.delete('page');
+                window.location.href = url.toString();
+            }
+        });
+
+        // Click on search icon or button to trigger search
+        document.addEventListener('click', function(e) {
+            const icon = e.target.closest('.search-icon, .search-btn, [data-feather="search"]');
+            if (icon && icon.closest('.search-input-wrapper, .search-box-container')) {
+                const wrapper = icon.closest('.search-input-wrapper, .search-box-container');
+                const input = wrapper.querySelector('.search-input, input[type="text"]');
+                if (input) {
+                    input.focus();
+                    if (input.form) {
+                        input.form.submit();
+                    } else if (input.value.trim() !== '') {
+                        const url = new URL(window.location.href);
+                        url.searchParams.set('search', input.value.trim());
+                        url.searchParams.delete('page');
+                        window.location.href = url.toString();
+                    }
+                }
+            }
+        });
+
+        // Initialize search filter on page load if query is present in input
+        document.addEventListener('DOMContentLoaded', function() {
+            const initialInput = document.querySelector('.search-input, #search-input, #topbar-search-input');
+            if (initialInput && initialInput.value && initialInput.value.trim() !== '') {
+                handleUniversalSearch(initialInput.value);
             }
         });
 
@@ -765,7 +831,7 @@
                 @elseif ($level == 'HR')
                  <div class="nav-group">
                         <div class="nav-group-title">Menu HR</div>
-                        <a href="{{ url('HR') }}" class="nav-link {{ $title == 'HR Dashboard' ? 'active' : '' }}">
+                        <a href="{{ url('HR') }}" class="nav-link {{ ($title == 'HR Dashboard' || $title == 'HR Dashboard & Overview' || str_contains($title ?? '', 'HR')) ? 'active' : '' }}">
                                 <div class="nav-icon"><i data-feather="home"></i></div>
                                 <span class="nav-text">Overview</span>
                             </a>
@@ -877,8 +943,8 @@
                             <span class="nav-badge">{{ $konf }}</span>
                         @endif
                     </a>
-                     <a href="{{ url('Admin/voucher') }}" class="nav-link {{ $title == 'Discount' ? 'active' : '' }}">
-                        <div class="nav-icon"><i data-feather="message-square"></i></div>
+                     <a href="{{ url('Admin/cus_discount') }}" class="nav-link {{ ($title == 'Discount' || $title == 'Transaksi-Discount') ? 'active' : '' }}">
+                        <div class="nav-icon"><i data-feather="percent"></i></div>
                         <span class="nav-text">Discount</span>
                     </a>
                 </div>

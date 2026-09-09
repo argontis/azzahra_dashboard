@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('ketersediaan_sparepart')) {
+        if (! Schema::hasTable('ketersediaan_sparepart')) {
             Schema::create('ketersediaan_sparepart', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('trans_kode')->nullable();
-            $table->string('cos_nama')->nullable();
-            $table->string('barang_nama')->nullable();
-            $table->string('ketersediaan')->nullable();
-            $table->string('status')->default('menunggu');
-            $table->timestamps();
+                $table->id();
+                $table->unsignedBigInteger('trans_kode')->nullable();
+                $table->string('cos_nama')->nullable();
+                $table->string('barang_nama')->nullable();
+                $table->string('ketersediaan')->nullable();
+                $table->string('status')->default('menunggu');
+                $table->timestamps();
 
-            $table->foreign('trans_kode')->references('trans_kode')->on('transaksi')->onDelete('cascade');
-        });
+                $table->foreign('trans_kode')->references('trans_kode')->on('transaksi')->onDelete('cascade');
+            });
         }
     }
 

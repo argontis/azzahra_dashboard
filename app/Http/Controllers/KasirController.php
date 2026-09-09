@@ -19,15 +19,18 @@ class KasirController extends Controller
             ->where('trans_status', '!=', 'Lunas');
 
         if ($search) {
-            $query->whereHas('customer', function ($q) use ($search) {
-                $q->where('cos_nama', 'like', "%{$search}%")
-                    ->orWhere('cos_alamat', 'like', "%{$search}%")
-                    ->orWhere('cos_hp', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->where('trans_kode', 'like', "%{$search}%")
+                    ->orWhereHas('customer', function ($q2) use ($search) {
+                        $q2->where('cos_nama', 'like', "%{$search}%")
+                            ->orWhere('cos_alamat', 'like', "%{$search}%")
+                            ->orWhere('cos_hp', 'like', "%{$search}%");
+                    });
             });
         }
 
         // Order by latest customer date
-        $transaksis = $query->orderBy('trans_kode', 'desc')->paginate(25);
+        $transaksis = $query->orderBy('trans_kode', 'desc')->paginate(25)->withQueryString();
 
         return view('kasir.customer', [
             'title' => 'Kasir - Customer',
@@ -153,13 +156,17 @@ class KasirController extends Controller
         }
 
         if ($search) {
-            $query->whereHas('transaksi.customer', function ($q) use ($search) {
-                $q->where('cos_nama', 'like', "%{$search}%")
-                    ->orWhere('cos_kode', 'like', "%{$search}%");
+            $query->where(function ($sub) use ($search) {
+                $sub->whereHas('transaksi.customer', function ($q) use ($search) {
+                    $q->where('cos_nama', 'like', "%{$search}%")
+                        ->orWhere('cos_kode', 'like', "%{$search}%");
+                })->orWhereHas('transaksi', function ($q) use ($search) {
+                    $q->where('trans_kode', 'like', "%{$search}%");
+                });
             });
         }
 
-        $pembayarans = $query->paginate(25);
+        $pembayarans = $query->paginate(25)->withQueryString();
 
         $dpCount = TransaksiDetail::where('dtl_status', 'DP')->count();
         $lunasCount = TransaksiDetail::where('dtl_status', 'PELUNASAN')->count();

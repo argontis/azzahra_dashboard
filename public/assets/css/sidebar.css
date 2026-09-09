@@ -783,7 +783,16 @@ body {
     color: #9ca3af !important;
     width: 17px !important;
     height: 17px !important;
-    pointer-events: none;
+    cursor: pointer;
+    z-index: 2;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.search-icon:hover,
+.search-input-wrapper i:hover,
+.search-input-wrapper svg:hover {
+    color: #0041c3 !important;
+    transform: translateY(-50%) scale(1.1);
 }
 
 .header-btn {

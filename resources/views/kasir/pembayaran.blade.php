@@ -155,7 +155,7 @@
         <form action="{{ route('kasir.pembayaran') }}" method="GET" style="margin: 0;">
             <div class="search-input-wrapper">
                 <i data-feather="search" class="search-icon"></i>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." class="search-input">
+                <input type="text" id="kasirPembayaranSearchInput" name="search" value="{{ request('search') }}" placeholder="Search..." class="search-input">
             </div>
         </form>
         <!-- Bell Icon -->
@@ -276,6 +276,12 @@
                             </td>
                         </tr>
                     @endforelse
+                    <tr id="noSearchResultRow" style="display:none;">
+                        <td colspan="6" class="text-center py-8 text-gray-400">
+                            <i data-feather="search" class="w-8 h-8 mx-auto mb-2 opacity-40"></i>
+                            <p>Tidak ada pembayaran yang cocok dengan pencarian.</p>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -319,5 +325,20 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(paginationContainer, { childList: true, subtree: true });
     }
 });
+</script>
+
+<script>
+// Auto-submit kasir pembayaran search form when typing (debounced 400ms)
+(function() {
+    var searchInput = document.getElementById('kasirPembayaranSearchInput');
+    if (!searchInput) return;
+    var debounceTimer;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function() {
+            searchInput.closest('form').submit();
+        }, 400);
+    });
+})();
 </script>
 @endsection

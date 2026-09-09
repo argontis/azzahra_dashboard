@@ -28,7 +28,7 @@ class QuickServiceController extends Controller
         ]);
     }
 
-    public function antrean($status = 'baru')
+    public function antrean(Request $request, $status = 'baru')
     {
         $status_map = [
             'baru' => 'Baru',
@@ -42,6 +42,8 @@ class QuickServiceController extends Controller
             $status = 'baru';
         }
 
+        $search = $request->input('search');
+
         $query = Transaksi::with(['customer', 'karyawan']);
 
         if ($status === 'baru') {
@@ -50,10 +52,22 @@ class QuickServiceController extends Controller
             $query->where('trans_status', $status_map[$status]);
         }
 
+        if ($search) {
+            $query->where(function ($sub) use ($search) {
+                $sub->where('trans_kode', 'like', "%{$search}%")
+                    ->orWhereHas('customer', function ($q) use ($search) {
+                        $q->where('cos_nama', 'like', "%{$search}%")
+                            ->orWhere('cos_hp', 'like', "%{$search}%")
+                            ->orWhere('cos_alamat', 'like', "%{$search}%");
+                    });
+            });
+        }
+
         // Order by latest customer date (assuming trans_tanggal or cos_tanggal logic)
         $transaksis = $query->orderBy('cos_tanggal', 'desc')
             ->orderBy('trans_kode', 'desc')
-            ->paginate(25);
+            ->paginate(25)
+            ->withQueryString();
 
         return view('quickservice.antrean', [
             'title' => 'Quick Service',
@@ -64,9 +78,7 @@ class QuickServiceController extends Controller
 
     public function create()
     {
-        return view('quickservice.form_penerimaan', [
-            'title' => 'Quick Service Baru',
-        ]);
+        return redirect()->route('quickservice.antrean', ['status' => 'baru', 'open_modal' => 1]);
     }
 
     public function save_trans(Request $request)

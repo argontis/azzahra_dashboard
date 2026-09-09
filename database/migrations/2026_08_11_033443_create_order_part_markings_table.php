@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('order_part_markings')) {
+        if (! Schema::hasTable('order_part_markings')) {
             Schema::create('order_part_markings', function (Blueprint $table) {
-            $table->id();
-            $table->string('trans_kode');
-            $table->enum('is_ordered', ['yes', 'no'])->default('no');
-            $table->string('rma_number')->nullable();
-            $table->date('end_warranty_date')->nullable();
-            $table->timestamps();
-        });
+                $table->id();
+                $table->string('trans_kode');
+                $table->enum('is_ordered', ['yes', 'no'])->default('no');
+                $table->string('rma_number')->nullable();
+                $table->date('end_warranty_date')->nullable();
+                $table->timestamps();
+            });
         }
     }
 

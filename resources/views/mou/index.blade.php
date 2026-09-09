@@ -102,7 +102,7 @@
                                 </tr>
                                 @endforeach
                             @else
-                            <tr>
+                            <tr id="emptyInitialRow">
                                 <td colspan="8" class="text-center border-b py-8">
                                     <div class="text-gray-500">
                                         <i data-feather="inbox" class="w-12 h-12 mx-auto mb-2"></i>
@@ -112,6 +112,12 @@
                                 </td>
                             </tr>
                             @endif
+                            <tr id="noSearchResultRow" style="display: none;">
+                                <td colspan="8" class="text-center border-b py-8 text-gray-500">
+                                    <i data-feather="search" class="w-8 h-8 mx-auto mb-2 opacity-40"></i>
+                                    <p>Tidak ada data MOU yang cocok dengan pencarian.</p>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

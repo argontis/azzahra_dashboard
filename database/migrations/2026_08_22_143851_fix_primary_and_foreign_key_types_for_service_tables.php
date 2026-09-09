@@ -22,32 +22,32 @@ return new class extends Migration
         Schema::dropIfExists('transaksi');
         Schema::dropIfExists('costomer');
 
-        if (!Schema::hasTable('costomer')) {
+        if (! Schema::hasTable('costomer')) {
             Schema::create('costomer', function (Blueprint $table) {
-            $table->string('id_costomer')->primary();
-            $table->string('cos_nama');
-            $table->string('username')->nullable();
-            $table->string('password')->nullable();
-            $table->string('cos_alamat')->nullable();
-            $table->string('cos_hp')->nullable();
-            $table->string('cos_cabang')->nullable();
-            $table->string('cos_device')->nullable();
-            $table->string('cos_tipe')->nullable();
-            $table->string('cos_model')->nullable();
-            $table->string('cos_no_seri')->nullable();
-            $table->string('cos_asesoris')->nullable();
-            $table->string('cos_status')->nullable();
-            $table->string('cos_pswd')->nullable();
-            $table->string('cos_pswd_type')->nullable();
-            $table->text('cos_pswd_canvas')->nullable();
-            $table->text('cos_keluhan')->nullable();
-            $table->text('cos_keterangan')->nullable();
-            $table->date('cos_tgl_lahir')->nullable();
-            $table->date('cos_tanggal')->nullable();
-            $table->time('cos_jam')->nullable();
-            $table->integer('cos_poin')->default(0);
-            $table->timestamps();
-        });
+                $table->string('id_costomer')->primary();
+                $table->string('cos_nama');
+                $table->string('username')->nullable();
+                $table->string('password')->nullable();
+                $table->string('cos_alamat')->nullable();
+                $table->string('cos_hp')->nullable();
+                $table->string('cos_cabang')->nullable();
+                $table->string('cos_device')->nullable();
+                $table->string('cos_tipe')->nullable();
+                $table->string('cos_model')->nullable();
+                $table->string('cos_no_seri')->nullable();
+                $table->string('cos_asesoris')->nullable();
+                $table->string('cos_status')->nullable();
+                $table->string('cos_pswd')->nullable();
+                $table->string('cos_pswd_type')->nullable();
+                $table->text('cos_pswd_canvas')->nullable();
+                $table->text('cos_keluhan')->nullable();
+                $table->text('cos_keterangan')->nullable();
+                $table->date('cos_tgl_lahir')->nullable();
+                $table->date('cos_tanggal')->nullable();
+                $table->time('cos_jam')->nullable();
+                $table->integer('cos_poin')->default(0);
+                $table->timestamps();
+            });
         }
 
         Schema::create('transaksi', function (Blueprint $table) {

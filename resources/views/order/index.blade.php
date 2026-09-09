@@ -34,7 +34,7 @@ window.currentUser = '<?php echo addslashes(auth()->user()->name ?? 'Admin'); ?>
     <div class="header-actions">
         <div class="search-input-wrapper">
             <i data-feather="search" class="search-icon"></i>
-            <input type="text" class="search-input" placeholder="Search...">
+            <input type="text" class="search-input" placeholder="Search..." value="{{ request('search') }}">
         </div>
         <div class="header-btn header-btn-bell" id="topbar-bell-btn" title="Pemberitahuan Sistem & Maintenance" style="cursor: pointer; position: relative;">
             <i data-feather="bell"></i>

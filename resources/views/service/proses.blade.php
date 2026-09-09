@@ -269,6 +269,12 @@
                                         </td>
                                     </tr>
                                 @endforeach
+                                    <tr id="noSearchResultRow" style="display: none;">
+                                        <td colspan="6" class="py-6 text-center text-gray-500">
+                                            <i data-feather="search" class="w-6 h-6 mx-auto mb-1 opacity-40"></i>
+                                            <p>Tidak ada tindakan yang cocok dengan pencarian.</p>
+                                        </td>
+                                    </tr>
                             </tbody>
                         @endif
                     </table>

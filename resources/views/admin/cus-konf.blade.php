@@ -63,20 +63,32 @@
 		    			@foreach ($trans as $row)
 			    				<tr>
 				    				<td class="text-center border-b">{{ $loop->iteration }}</td>
-				    				<td class="text-center border-b">{{ $row->cos_kode; }}</td>
-				    				<td class="border-b">{{ $row->cos_nama; }}</td>
-				    				<td class="border-b">{{ $row->cos_alamat; }}</td>
-				    				<td class="text-center border-b">{{ $row->cos_hp; }}</td>
+				    				<td class="text-center border-b font-medium">{{ $row->trans_kode ?: ($row->cos_kode ?? 'N/A') }}</td>
+				    				<td class="border-b">{{ $row->cos_nama ?: 'N/A' }}</td>
+				    				<td class="border-b">{{ $row->cos_alamat ?: 'N/A' }}</td>
+				    				<td class="text-center border-b">{{ $row->cos_hp ?: 'N/A' }}</td>
 				    				<td class="text-center">
 				    					<div class="flex sm:justify-center items-center">
-				    						<a href="{{ url('Admin/konfirmasi/'.$row->trans_kode) }}" class="button w-32 mr-2 mb-2 flex items-center justify-center bg-theme-9 text-white">
-				    							<i data-feather="check-square" class="w-4 h-4 mr-2"></i> Konfirmasi
-				    						</a>
+				    						@if(!empty($row->trans_kode))
+				    							<a href="{{ url('Admin/konfirmasi/'.$row->trans_kode) }}" class="button w-32 mr-2 mb-2 flex items-center justify-center bg-theme-9 text-white">
+				    								<i data-feather="check-square" class="w-4 h-4 mr-2"></i> Konfirmasi
+				    							</a>
+				    						@else
+				    							<button type="button" class="button w-32 mr-2 mb-2 flex items-center justify-center bg-gray-400 text-white cursor-not-allowed" disabled title="Kode transaksi tidak ditemukan">
+				    								<i data-feather="alert-circle" class="w-4 h-4 mr-2"></i> Konfirmasi
+				    							</button>
+				    						@endif
 				    					</div>
 				    					
 				    				</td>
 				    			</tr>
 			    			@endforeach
+						<tr id="noSearchResultRow" style="display:none;">
+							<td colspan="6" class="text-center py-8 text-gray-400">
+								<i data-feather="search" class="w-8 h-8 mx-auto mb-2 opacity-40"></i>
+								<p>Tidak ada konfirmasi yang cocok dengan pencarian.</p>
+							</td>
+						</tr>
 		    		</tbody>
     			</table>
     		</div>

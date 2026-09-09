@@ -8,17 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasTable('messages')) {
+        if (! Schema::hasTable('messages')) {
             Schema::create('messages', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('sender_id');   // kry_kode pengirim
-            $table->string('sender_nama');
-            $table->string('sender_level');
-            $table->string('target_role');             // 'all' or specific role e.g. 'Teknisi'
-            $table->string('judul');
-            $table->text('isi');
-            $table->timestamps();
-        });
+                $table->id();
+                $table->unsignedBigInteger('sender_id');   // kry_kode pengirim
+                $table->string('sender_nama');
+                $table->string('sender_level');
+                $table->string('target_role');             // 'all' or specific role e.g. 'Teknisi'
+                $table->string('judul');
+                $table->text('isi');
+                $table->timestamps();
+            });
         }
 
         // Tabel untuk menandai siapa saja yang sudah membaca pesan

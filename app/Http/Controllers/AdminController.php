@@ -96,12 +96,17 @@ class AdminController extends Controller
     public function cus_baru()
     {
         $trans = DB::table('transaksi')
-            ->leftJoin('transaksi_detail', 'transaksi.trans_kode', '=', 'transaksi_detail.trans_kode')
             ->leftJoin('costomer', 'transaksi.cos_kode', '=', 'costomer.id_costomer')
             ->leftJoin('karyawan', 'transaksi.kry_kode', '=', 'karyawan.kry_kode')
             ->where('transaksi.trans_status', 'Baru')
-            // Tambahkan orderBy di sini.
-            // Ganti 'created_at' jika nama kolom tanggal di database Anda berbeda (misal: 'tgl_transaksi')
+            ->select(
+                'transaksi.*',
+                'costomer.cos_nama',
+                'costomer.cos_alamat',
+                'costomer.cos_hp',
+                'costomer.cos_cabang',
+                'karyawan.kry_nama'
+            )
             ->orderBy('transaksi.created_at', 'desc')
             ->get();
 
@@ -115,6 +120,17 @@ class AdminController extends Controller
             ->leftJoin('costomer', 'transaksi.cos_kode', '=', 'costomer.id_costomer')
             ->leftJoin('karyawan', 'transaksi.kry_kode', '=', 'karyawan.kry_kode')
             ->where('transaksi.trans_status', 'Pelunasan')
+            ->select(
+                'transaksi.*',
+                'transaksi_detail.*',
+                'transaksi.trans_kode as trans_kode',
+                'costomer.cos_nama',
+                'costomer.cos_alamat',
+                'costomer.cos_hp',
+                'costomer.cos_cabang',
+                'karyawan.kry_nama'
+            )
+            ->orderBy('transaksi.created_at', 'desc')
             ->get();
 
         return view('admin.cus_proses', ['title' => 'Transaksi Proses (Pelunasan)', 'trans' => $trans]);
@@ -123,10 +139,18 @@ class AdminController extends Controller
     public function cus_konf()
     {
         $trans = DB::table('transaksi')
-            ->leftJoin('transaksi_detail', 'transaksi.trans_kode', '=', 'transaksi_detail.trans_kode')
             ->leftJoin('costomer', 'transaksi.cos_kode', '=', 'costomer.id_costomer')
             ->leftJoin('karyawan', 'transaksi.kry_kode', '=', 'karyawan.kry_kode')
             ->where('transaksi.trans_status', 'Diproses')
+            ->select(
+                'transaksi.*',
+                'costomer.cos_nama',
+                'costomer.cos_alamat',
+                'costomer.cos_hp',
+                'costomer.cos_cabang',
+                'karyawan.kry_nama'
+            )
+            ->orderBy('transaksi.created_at', 'desc')
             ->get();
 
         return view('admin.cus-konf', ['title' => 'Transaksi Konfirmasi', 'trans' => $trans]);
@@ -141,6 +165,16 @@ class AdminController extends Controller
             ->where('transaksi.trans_status', 'Pelunasan')
             ->where('transaksi_detail.dtl_jenis_bayar', 'TRANFER')
             ->where('transaksi_detail.dtl_stt_stor', 'Menunggu')
+            ->select(
+                'transaksi_detail.*',
+                'transaksi.*',
+                'transaksi_detail.dtl_kode as dtl_kode',
+                'transaksi.trans_kode as trans_kode',
+                'costomer.cos_nama',
+                'costomer.cos_alamat',
+                'costomer.cos_hp',
+                'karyawan.kry_nama'
+            )
             ->get();
 
         return view('admin.cus_konf_bank', ['title' => 'Konfirmasi Bank Transfer', 'trans' => $trans]);
@@ -149,10 +183,18 @@ class AdminController extends Controller
     public function cus_discount()
     {
         $trans = DB::table('transaksi')
-            ->leftJoin('transaksi_detail', 'transaksi.trans_kode', '=', 'transaksi_detail.trans_kode')
             ->leftJoin('costomer', 'transaksi.cos_kode', '=', 'costomer.id_costomer')
             ->leftJoin('karyawan', 'transaksi.kry_kode', '=', 'karyawan.kry_kode')
             ->where('transaksi.trans_discount', '>', 0)
+            ->select(
+                'transaksi.*',
+                'costomer.cos_nama',
+                'costomer.cos_alamat',
+                'costomer.cos_hp',
+                'costomer.cos_cabang',
+                'karyawan.kry_nama'
+            )
+            ->orderBy('transaksi.created_at', 'desc')
             ->get();
 
         return view('admin.cus_discount', ['title' => 'Transaksi-Discount', 'trans' => $trans]);
@@ -162,10 +204,11 @@ class AdminController extends Controller
     {
         $transaksi = Transaksi::with(['customer', 'karyawan'])->where('trans_kode', $kode)->firstOrFail();
         $tindakan = Tindakan::where('trans_kode', $kode)->get();
+        $customerData = $transaksi->customer ? $transaksi->customer->toArray() : [];
 
         return view('admin.konfirmasi', [
             'title' => 'Customer Konfirmasi',
-            'proses' => array_merge($transaksi->toArray(), $transaksi->customer->toArray()),
+            'proses' => array_merge($transaksi->toArray(), $customerData),
             'trans' => $transaksi,
             'data' => $tindakan,
         ]);

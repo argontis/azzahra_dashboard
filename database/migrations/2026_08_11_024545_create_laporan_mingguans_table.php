@@ -11,22 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('laporan_mingguan')) {
+        if (! Schema::hasTable('laporan_mingguan')) {
             Schema::create('laporan_mingguan', function (Blueprint $table) {
-            $table->id('laporan_id');
-            $table->unsignedBigInteger('id_karyawan')->nullable();
-            $table->string('nama_karyawan')->nullable();
-            $table->string('posisi')->nullable();
-            $table->string('periode')->nullable();
-            $table->text('target_mingguan')->nullable();
-            $table->text('tugas_dilakukan')->nullable();
-            $table->text('hasil')->nullable();
-            $table->text('kendala')->nullable();
-            $table->text('solusi')->nullable();
-            $table->timestamps();
+                $table->id('laporan_id');
+                $table->unsignedBigInteger('id_karyawan')->nullable();
+                $table->string('nama_karyawan')->nullable();
+                $table->string('posisi')->nullable();
+                $table->string('periode')->nullable();
+                $table->text('target_mingguan')->nullable();
+                $table->text('tugas_dilakukan')->nullable();
+                $table->text('hasil')->nullable();
+                $table->text('kendala')->nullable();
+                $table->text('solusi')->nullable();
+                $table->timestamps();
 
-            $table->foreign('id_karyawan')->references('kry_kode')->on('karyawan')->onDelete('cascade');
-        });
+                $table->foreign('id_karyawan')->references('kry_kode')->on('karyawan')->onDelete('cascade');
+            });
         }
     }
 

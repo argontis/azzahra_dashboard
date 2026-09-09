@@ -11,19 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('vouchers')) {
+        if (! Schema::hasTable('vouchers')) {
             Schema::create('vouchers', function (Blueprint $table) {
-            $table->id('voucher_id');
-            $table->string('voucher_code')->unique();
-            $table->text('description')->nullable();
-            $table->decimal('discount_percent', 5, 2);
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
-            $table->integer('max_usage')->default(1);
-            $table->string('voucher_gambar')->nullable();
-            $table->string('status')->default('active');
-            $table->timestamps();
-        });
+                $table->id('voucher_id');
+                $table->string('voucher_code')->unique();
+                $table->text('description')->nullable();
+                $table->decimal('discount_percent', 5, 2);
+                $table->date('start_date')->nullable();
+                $table->date('end_date')->nullable();
+                $table->integer('max_usage')->default(1);
+                $table->string('voucher_gambar')->nullable();
+                $table->string('status')->default('active');
+                $table->timestamps();
+            });
         }
     }
 
