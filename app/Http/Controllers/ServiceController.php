@@ -285,12 +285,86 @@ class ServiceController extends Controller
 
     public function pembayaran(Request $request, $filter = null)
     {
-        // Anda dapat menyalin logika dari KasirController::pembayaran()
-        // atau menyesuaikannya dengan kebutuhan Customer Service di sini.
+        $search = $request->input('search');
+
+        $query = Transaksi::with(['customer', 'tindakan', 'transaksi_details', 'karyawan'])
+            ->select('transaksi.*')
+            ->leftJoin('costomer', 'transaksi.cos_kode', '=', 'costomer.id_costomer');
+
+        if ($filter == 'dp' || $filter == 'pelunasan') {
+            $query->where('trans_status', 'Pelunasan');
+        } elseif ($filter == 'lunas') {
+            $query->where('trans_status', 'Lunas');
+        } elseif ($filter == 'proses' || $filter == 'diproses') {
+            $query->where('trans_status', 'Diproses');
+        } elseif ($filter == 'baru') {
+            $query->where('trans_status', 'Baru');
+        }
+
+        if ($search) {
+            $query->where(function ($sub) use ($search) {
+                $sub->where('transaksi.trans_kode', 'like', "%{$search}%")
+                    ->orWhere('costomer.cos_nama', 'like', "%{$search}%")
+                    ->orWhere('costomer.cos_hp', 'like', "%{$search}%")
+                    ->orWhere('costomer.id_costomer', 'like', "%{$search}%")
+                    ->orWhere('costomer.cos_alamat', 'like', "%{$search}%")
+                    ->orWhere('costomer.cos_tipe', 'like', "%{$search}%")
+                    ->orWhere('costomer.cos_model', 'like', "%{$search}%");
+            });
+        }
+
+        $transaksis = $query->orderBy('transaksi.created_at', 'desc')
+            ->orderBy('transaksi.trans_kode', 'desc')
+            ->paginate(25)
+            ->withQueryString();
+
+        $countAll = Transaksi::count();
+        $countLunas = Transaksi::where('trans_status', 'Lunas')->count();
+        $countPelunasan = Transaksi::where('trans_status', 'Pelunasan')->count();
+        $countProses = Transaksi::whereIn('trans_status', ['Diproses', 'Baru'])->count();
 
         return view('service.pembayaran', [
             'title' => 'Pembayaran',
+            'transaksis' => $transaksis,
             'filter' => $filter,
+            'countAll' => $countAll,
+            'countLunas' => $countLunas,
+            'countPelunasan' => $countPelunasan,
+            'countProses' => $countProses,
+        ]);
+    }
+
+    public function detail_pembayaran($kode)
+    {
+        $transaksi = Transaksi::with(['customer', 'tindakan', 'transaksi_details', 'karyawan'])
+            ->where('trans_kode', $kode)
+            ->orWhere('cos_kode', $kode)
+            ->first();
+
+        if (! $transaksi) {
+            $customer = Customer::where('id_costomer', $kode)->first();
+            if ($customer) {
+                $transaksi = Transaksi::with(['customer', 'tindakan', 'transaksi_details', 'karyawan'])
+                    ->where('cos_kode', $customer->id_costomer)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+            }
+        }
+
+        if (! $transaksi) {
+            return redirect()->route('service.pembayaran')->with('gagal', 'Data transaksi tidak ditemukan.');
+        }
+
+        $customer = $transaksi->customer;
+        $tindakans = $transaksi->tindakan;
+        $pembayarans = $transaksi->transaksi_details;
+
+        return view('service.pembayaran_detail', [
+            'title' => 'Detail Pembayaran - '.($customer->cos_nama ?? $transaksi->trans_kode),
+            'transaksi' => $transaksi,
+            'customer' => $customer,
+            'tindakans' => $tindakans,
+            'pembayarans' => $pembayarans,
         ]);
     }
 

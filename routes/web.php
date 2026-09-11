@@ -125,8 +125,12 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/save_trans', [ServiceController::class, 'save_trans'])->name('service.save_trans');
         Route::get('/batal_transaksi/{kode}', [ServiceController::class, 'batal_transaksi'])->name('service.batal_transaksi');
         Route::get('/return_pembayaran/{kode}', [ServiceController::class, 'return_pembayaran'])->name('service.return_pembayaran');
+        Route::get('/pembayaran/detail/{kode}', [ServiceController::class, 'detail_pembayaran'])->name('service.pembayaran.detail');
         Route::get('/pembayaran/{filter?}', [ServiceController::class, 'pembayaran'])->name('service.pembayaran');
         Route::get('/laporan', [ServiceController::class, 'laporan'])->name('service.laporan');
+
+        // Cetak (Service)
+        Route::get('/cetak/print_1/{param}', [CetakController::class, 'print_1'])->name('service.cetak.print_1');
     });
 
     // ==========================================

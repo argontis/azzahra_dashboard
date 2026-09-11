@@ -79,10 +79,10 @@ class CetakController extends Controller
 
         $pdf = Pdf::loadView('cetak.invoice', $data)->setPaper('a4', 'landscape');
         if ($request->get('stream')) {
-            return $pdf->stream('Invoice_'.$trans->trans_kode.'.pdf');
+            return $pdf->stream('Nota_Pembayaran_'.$trans->trans_kode.'.pdf');
         }
 
-        return $pdf->download('Invoice_'.$trans->trans_kode.'.pdf');
+        return $pdf->download('Nota_Pembayaran_'.$trans->trans_kode.'.pdf');
     }
 
     /**

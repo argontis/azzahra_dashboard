@@ -2,6 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
+<title>Nota Pembayaran - {{ $trans->trans_kode ?? '' }}</title>
 <style>
         body{
             background:#e5e5e5;
@@ -54,10 +55,11 @@
         /* } */
 
         .brand-logo{
-            width:40%;
             height:50px;
+            max-width:240px;
             object-fit:contain;
-            margin-bottom:10px;
+            margin-bottom:8px;
+            display:block;
         }
         .brand-title{
             font-size:22px;
@@ -325,7 +327,19 @@
     <!-- HEADER -->
     <div class="header-row">
         <div class="brand-box">
-            <img src="{{ asset('assets/image/logo_tts.png') }}" class="brand-logo" alt="Logo">
+            @php
+                $logoPath = public_path('assets/image/logo_tts.png');
+                $logoBase64 = '';
+                if (file_exists($logoPath)) {
+                    $logoData = file_get_contents($logoPath);
+                    $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
+                }
+            @endphp
+            @if($logoBase64)
+                <img src="{{ $logoBase64 }}" class="brand-logo" alt="Azzahra Computer">
+            @else
+                <div class="brand-title">Azzahra Computer</div>
+            @endif
             <div class="brand-sub">
                 Kantor Pusat  : Ruko Citraland Blok B/11, Kraton Tegal<br>
                 Kantor Cabang : Ruko Kranggan Permai RT.16 No.27, Bekasi<br>
