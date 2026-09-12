@@ -382,7 +382,6 @@ class ServiceController extends Controller
         $transaksi = Transaksi::with(['customer', 'tindakan'])
             ->where('trans_kode', $id)
             ->orWhere('cos_kode', $id)
-            ->orWhere('id', $id)
             ->first();
 
         if (! $transaksi) {
@@ -421,7 +420,11 @@ class ServiceController extends Controller
         if (! $transaksi) {
             $transaksi = Transaksi::whereHas('customer', function ($q) use ($id) {
                 $q->where('id_costomer', $id);
-            })->firstOrFail();
+            })->first();
+        }
+
+        if (! $transaksi) {
+            return back()->with('gagal', 'Data transaksi / customer tidak ditemukan');
         }
 
         $qty = $request->input('qty', 1);
@@ -450,8 +453,10 @@ class ServiceController extends Controller
 
     public function delete_tindakan($id)
     {
-        $tindakan = Tindakan::findOrFail($id);
-        $tindakan->delete();
+        $tindakan = Tindakan::find($id);
+        if ($tindakan) {
+            $tindakan->delete();
+        }
 
         return back()->with('sukses', 'Tindakan perbaikan berhasil dihapus');
     }
@@ -462,7 +467,11 @@ class ServiceController extends Controller
         if (! $transaksi) {
             $transaksi = Transaksi::whereHas('customer', function ($q) use ($id) {
                 $q->where('id_costomer', $id);
-            })->firstOrFail();
+            })->first();
+        }
+
+        if (! $transaksi) {
+            return back()->with('gagal', 'Data transaksi / customer tidak ditemukan');
         }
 
         if ($transaksi->trans_status == 'Baru') {

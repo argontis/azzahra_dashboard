@@ -432,12 +432,16 @@ class HrController extends Controller
 
     public function save_kpi(Request $request)
     {
-        $karyawan = Karyawan::where('kry_kode', $request->id_karyawan)->firstOrFail();
+        $karyawan = Karyawan::where('kry_kode', $request->id_karyawan)->first();
+
+        if (! $karyawan) {
+            return back()->with('gagal', 'Data karyawan tidak ditemukan');
+        }
 
         LaporanMingguan::updateOrCreate(
             [
                 'id_karyawan' => $request->id_karyawan,
-                'periode' => $request->periode,
+                'periode' => $request->periode ?? date('Y-m'),
             ],
             [
                 'nama_karyawan' => $karyawan->kry_nama,
@@ -455,7 +459,10 @@ class HrController extends Controller
 
     public function delete_kpi($id)
     {
-        LaporanMingguan::findOrFail($id)->delete();
+        $laporan = LaporanMingguan::find($id);
+        if ($laporan) {
+            $laporan->delete();
+        }
 
         return back()->with('sukses', 'KPI dihapus');
     }

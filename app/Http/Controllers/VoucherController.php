@@ -89,7 +89,10 @@ class VoucherController extends Controller
 
     public function edit($id)
     {
-        $voucher = Voucher::findOrFail($id);
+        $voucher = Voucher::find($id);
+        if (! $voucher) {
+            return redirect()->route('admin.voucher.index')->with('gagal', 'Voucher tidak ditemukan.');
+        }
 
         $data = [
             'title' => 'Edit Voucher',
@@ -101,7 +104,14 @@ class VoucherController extends Controller
 
     public function update(Request $request, $id)
     {
-        $voucher = Voucher::findOrFail($id);
+        $voucher = Voucher::find($id);
+        if (! $voucher) {
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Voucher tidak ditemukan.']);
+            }
+
+            return redirect()->route('admin.voucher.index')->with('gagal', 'Voucher tidak ditemukan.');
+        }
 
         $validator = Validator::make($request->all(), [
             'voucher_code' => 'required|unique:vouchers,voucher_code,'.$id.',voucher_id',
@@ -140,7 +150,14 @@ class VoucherController extends Controller
 
     public function delete(Request $request, $id)
     {
-        $voucher = Voucher::findOrFail($id);
+        $voucher = Voucher::find($id);
+        if (! $voucher) {
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Voucher tidak ditemukan.']);
+            }
+
+            return redirect()->route('admin.voucher.index')->with('gagal', 'Voucher tidak ditemukan.');
+        }
 
         if ($voucher->voucher_gambar) {
             Storage::disk('public')->delete('vouchers/'.$voucher->voucher_gambar);

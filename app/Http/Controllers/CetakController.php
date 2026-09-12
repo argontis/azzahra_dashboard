@@ -17,9 +17,15 @@ class CetakController extends Controller
         return $this->generate_invoice($param, $request, 'print_1');
     }
 
-    public function download($trans_kode, $dtl_status, Request $request)
+    public function download($trans_kode, $dtl_status = 'PELUNASAN', ?Request $request = null)
     {
-        return $this->generate_invoice($trans_kode, $request, 'download', $dtl_status);
+        $request = $request ?? request();
+        if ($dtl_status instanceof Request) {
+            $request = $dtl_status;
+            $dtl_status = 'PELUNASAN';
+        }
+
+        return $this->generate_invoice($trans_kode, $request, 'download', $dtl_status ?? 'PELUNASAN');
     }
 
     private function generate_invoice($param, $request, $type, $dtl_status = 'PELUNASAN')

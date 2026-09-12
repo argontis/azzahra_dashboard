@@ -3,12 +3,12 @@
 <head>
     <title>Data Customer</title>
     <style>
-        body { font-family: sans-serif; font-size: 12px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        table, th, td { border: 1px solid black; }
-        th, td { padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        h2 { text-align: center; }
+        body { font-family: sans-serif; font-size: 11px; margin: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #999; padding: 5px 7px; text-align: left; }
+        th { background-color: #e2e8f0; font-weight: bold; }
+        h2 { text-align: center; margin-bottom: 5px; }
+        p { font-size: 10px; color: #555; }
     </style>
 </head>
 <body>

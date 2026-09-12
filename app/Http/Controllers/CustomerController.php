@@ -17,15 +17,15 @@ class CustomerController extends Controller
         $search = $request->input('search');
         $tier = $request->input('tier', 'all');
 
+        $latestTransaksi = DB::table('transaksi')
+            ->select('cos_kode', DB::raw('MAX(trans_kode) as latest_trans_kode'))
+            ->groupBy('cos_kode');
+
         $query = DB::table('costomer')
-            ->leftJoin('transaksi', function ($join) {
-                $join->on('transaksi.cos_kode', '=', 'costomer.id_costomer')
-                    ->whereIn('transaksi.trans_kode', function ($q) {
-                        $q->select(DB::raw('MAX(trans_kode)'))
-                            ->from('transaksi')
-                            ->groupBy('cos_kode');
-                    });
+            ->leftJoinSub($latestTransaksi, 'latest_t', function ($join) {
+                $join->on('costomer.id_costomer', '=', 'latest_t.cos_kode');
             })
+            ->leftJoin('transaksi', 'transaksi.trans_kode', '=', 'latest_t.latest_trans_kode')
             ->select('costomer.*', 'transaksi.trans_status', 'transaksi.trans_kode');
 
         if ($search) {
@@ -127,19 +127,36 @@ class CustomerController extends Controller
         ]);
     }
 
-    public function export_pdf()
+    public function export_pdf(Request $request)
     {
-        $customers = DB::table('costomer')
-            ->leftJoin('transaksi', function ($join) {
-                $join->on('transaksi.cos_kode', '=', 'costomer.id_costomer')
-                    ->whereIn('transaksi.trans_kode', function ($q) {
-                        $q->select(DB::raw('MAX(trans_kode)'))
-                            ->from('transaksi')
-                            ->groupBy('cos_kode');
-                    });
+        ini_set('memory_limit', '512M');
+        set_time_limit(120);
+
+        $limit = min(max((int) $request->input('limit', 50), 1), 100);
+        $search = $request->input('search');
+
+        $latestTransaksi = DB::table('transaksi')
+            ->select('cos_kode', DB::raw('MAX(trans_kode) as latest_trans_kode'))
+            ->groupBy('cos_kode');
+
+        $query = DB::table('costomer')
+            ->leftJoinSub($latestTransaksi, 'latest_t', function ($join) {
+                $join->on('costomer.id_costomer', '=', 'latest_t.cos_kode');
             })
-            ->select('costomer.*', 'transaksi.trans_status', 'transaksi.trans_kode')
-            ->orderBy('costomer.id_costomer', 'desc')
+            ->leftJoin('transaksi', 'transaksi.trans_kode', '=', 'latest_t.latest_trans_kode')
+            ->select('costomer.*', 'transaksi.trans_status', 'transaksi.trans_kode');
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('costomer.id_costomer', 'like', "%{$search}%")
+                    ->orWhere('costomer.cos_nama', 'like', "%{$search}%")
+                    ->orWhere('costomer.cos_alamat', 'like', "%{$search}%")
+                    ->orWhere('costomer.cos_hp', 'like', "%{$search}%");
+            });
+        }
+
+        $customers = $query->orderBy('costomer.id_costomer', 'desc')
+            ->limit($limit)
             ->get();
 
         $pdf = Pdf::loadView('customer.export_pdf', ['customers' => $customers])

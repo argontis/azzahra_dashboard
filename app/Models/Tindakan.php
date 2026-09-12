@@ -19,7 +19,22 @@ class Tindakan extends Model
         'tdkn_harga',
         'tdkn_qty',
         'tdkn_subtot',
+        'tdkn_ket',
+        'tdkn_tanggal',
+        'tdkn_jam',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function ($model) {
+            if (empty($model->tdkn_tanggal)) {
+                $model->tdkn_tanggal = date('Y-m-d');
+            }
+            if (empty($model->tdkn_jam)) {
+                $model->tdkn_jam = date('H:i:s');
+            }
+        });
+    }
 
     public function transaksi()
     {

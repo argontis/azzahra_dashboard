@@ -18,6 +18,7 @@ class Karyawan extends Authenticatable
     protected $keyType = 'string';
 
     protected $fillable = [
+        'kry_kode',
         'kry_nik',
         'kry_username',
         'kry_pswd',
@@ -28,6 +29,21 @@ class Karyawan extends Authenticatable
         'kry_join_date',
         'kry_status',
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($karyawan) {
+            if (empty($karyawan->kry_kode)) {
+                $count = static::count() + 1;
+                $candidate = 'K'.str_pad($count, 2, '0', STR_PAD_LEFT);
+                while (static::where('kry_kode', $candidate)->exists()) {
+                    $count++;
+                    $candidate = 'K'.str_pad($count, 2, '0', STR_PAD_LEFT);
+                }
+                $karyawan->kry_kode = $candidate;
+            }
+        });
+    }
 
     protected $hidden = [
         'kry_pswd',

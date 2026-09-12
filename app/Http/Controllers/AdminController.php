@@ -77,19 +77,6 @@ class AdminController extends Controller
 
     public function customer()
     {
-        $customers = DB::table('costomer')
-            ->leftJoin('transaksi', function ($join) {
-                $join->on('transaksi.cos_kode', '=', 'costomer.id_costomer')
-                    ->whereIn('transaksi.trans_kode', function ($query) {
-                        $query->select(DB::raw('MAX(trans_kode)'))
-                            ->from('transaksi')
-                            ->groupBy('cos_kode');
-                    });
-            })
-            ->select('costomer.*', 'transaksi.trans_status', 'transaksi.trans_kode')
-            ->orderBy('costomer.id_costomer', 'desc')
-            ->paginate(20);
-
         return redirect()->route('customer.index');
     }
 
