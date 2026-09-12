@@ -27,7 +27,7 @@ Route::get('/', function () {
 
 Route::get('/Auth', [AuthController::class, 'index'])->name('login');
 Route::post('/Auth/login', [AuthController::class, 'login'])->name('login.post');
-Route::post('/Auth/logout', [AuthController::class, 'logout'])->name('logout');
+Route::match(['get', 'post'], '/Auth/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/Auth/reset', [AuthController::class, 'reset'])->name('password.reset');
 Route::post('/Auth/reset', [AuthController::class, 'postReset'])->name('password.reset.post');
 

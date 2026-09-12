@@ -8,6 +8,12 @@ class OrderList extends Model
 {
     protected $table = 'order_list';
 
+    protected $primaryKey = 'trans_kode';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     protected $fillable = [
         'trans_kode', 'cos_kode', 'kry_kode', 'trans_total', 'trans_discount',
         'trans_tanggal', 'trans_status', 'merek', 'device', 'status_garansi',

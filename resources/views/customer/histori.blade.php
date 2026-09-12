@@ -55,26 +55,26 @@
                             <div class="absolute mb-1 mr-1 flex items-center justify-center bottom-0 right-0 bg-theme-1 rounded-full p-2"> <i class="w-4 h-4 text-white" data-feather="camera"></i> </div>
                         </div>
                         <div class="ml-5">
-                            <div class="w-24 sm:w-40 truncate sm:whitespace-normal font-medium text-lg">{{ $proses['cos_nama'] }}</div>
-                            <div class="text-gray-600">{{ $proses['cos_kode'] }}</div>
+                            <div class="w-24 sm:w-40 truncate sm:whitespace-normal font-medium text-lg">{{ $proses['cos_nama'] ?? '-' }}</div>
+                            <div class="text-gray-600">{{ $proses['cos_kode'] ?? '-' }}</div>
                         </div>
                     </div>
                     <div class="flex mt-6 lg:mt-0 items-center lg:items-start flex-1 flex-col justify-center text-gray-600 px-5 border-l border-r border-gray-400 border-t lg:border-t-0 pt-5 lg:pt-0">
                         <div class="truncate sm:whitespace-normal flex items-center"> 
-                            <i data-feather="phone" class="w-4 h-4 mr-2"></i> {{ $proses['cos_hp'] }} 
+                            <i data-feather="phone" class="w-4 h-4 mr-2"></i> {{ $proses['cos_hp'] ?? '-' }} 
                         </div>
                         <div class="truncate sm:whitespace-normal flex items-center mt-3"> 
-                            <i data-feather="eye" class="w-4 h-4 mr-2"></i> {{ $proses['cos_status'] }} 
+                            <i data-feather="eye" class="w-4 h-4 mr-2"></i> {{ $proses['cos_status'] ?? '-' }} 
                         </div>
                         <div class="truncate sm:whitespace-normal flex items-center mt-3"> 
-                            <i data-feather="hard-drive" class="w-4 h-4 mr-2"></i> {{ $proses['cos_tipe'] }} 
+                            <i data-feather="hard-drive" class="w-4 h-4 mr-2"></i> {{ $proses['cos_tipe'] ?? '-' }} 
                         </div>
                     </div>
                     <div class="mt-6 lg:mt-0 flex-1 px-5 border-t lg:border-0 border-gray-200 pt-5 lg:pt-0">
                         <div class="font-medium text-center lg:text-left lg:mt-5">Alamat</div>
                         <div class="flex items-center justify-center lg:justify-start mt-2">
                             <div class="mr-2 w-80 flex">
-                                <textarea class="ml-3 font-medium" style="width: 300px;" readonly>{{ $proses['cos_alamat'] }}</textarea>
+                                <textarea class="ml-3 font-medium" style="width: 300px;" readonly>{{ $proses['cos_alamat'] ?? '-' }}</textarea>
                             </div>
                         </div>
                     </div>                    
@@ -100,27 +100,27 @@
                             <div class="grid grid-cols-12 gap-4 row-gap-5 mt-5">
                                 <div class="intro-y col-span-12">
                                     <div class="mb-2">Status </div>
-                                    <input type="text" class="input w-full border flex-1" value="{{ $proses['cos_status'] }}" readonly>
+                                    <input type="text" class="input w-full border flex-1" value="{{ $proses['cos_status'] ?? '-' }}" readonly>
                                 </div>
                                 <div class="intro-y col-span-12 sm:col-span-6">
                                     <div class="mb-2">Type </div>
-                                    <input type="text" class="input w-full border flex-1"  value="{{ $proses['cos_tipe'] }}" readonly>
+                                    <input type="text" class="input w-full border flex-1"  value="{{ $proses['cos_tipe'] ?? '-' }}" readonly>
                                 </div>
                                 <div class="intro-y col-span-12 sm:col-span-6">
                                     <div class="mb-2">Model </div>
-                                    <input type="text" class="input w-full border flex-1" value="{{ $proses['cos_model'] }}" readonly>
+                                    <input type="text" class="input w-full border flex-1" value="{{ $proses['cos_model'] ?? '-' }}" readonly>
                                 </div>
                                 <div class="intro-y col-span-12 sm:col-span-6">
                                     <div class="mb-2">No seri </div>
-                                    <input type="text" class="input w-full border flex-1" value="{{ $proses['cos_no_seri'] }}" readonly>
+                                    <input type="text" class="input w-full border flex-1" value="{{ $proses['cos_no_seri'] ?? '-' }}" readonly>
                                 </div>
                                 <div class="intro-y col-span-12 sm:col-span-6">
                                     <div class="mb-2">Password </div>
-                                    <input type="text" class="input w-full border flex-1" value="{{ $proses['cos_pswd'] }}" readonly>
+                                    <input type="text" class="input w-full border flex-1" value="{{ $proses['cos_pswd'] ?? '-' }}" readonly>
                                 </div>
                                 <div class="intro-y col-span-12">
                                     <div class="mb-2">Asesoris</div>
-                                    <textarea class="input w-full border mt-2 flex-1" readonly>{{ $proses['cos_asesoris'] }}</textarea>
+                                    <textarea class="input w-full border mt-2 flex-1" readonly>{{ $proses['cos_asesoris'] ?? '-' }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -139,11 +139,11 @@
                             <div class="grid grid-cols-12 gap-4 row-gap-5 mt-5">
                                 <div class="intro-y col-span-12">
                                     <div class="mb-2">Keluhan</div>
-                                    <textarea class="input w-full border mt-2 flex-1" readonly>{{ $proses['cos_keluhan'] }}</textarea>
+                                    <textarea class="input w-full border mt-2 flex-1" readonly>{{ $proses['cos_keluhan'] ?? '-' }}</textarea>
                                 </div>
                                 <div class="intro-y col-span-12">
                                     <div class="mb-2">Keterangan</div>
-                                    <textarea class="input w-full border mt-2 flex-1" readonly>{{ $proses['cos_keterangan'] }}</textarea>
+                                    <textarea class="input w-full border mt-2 flex-1" readonly>{{ $proses['cos_keterangan'] ?? '-' }}</textarea>
                                 </div>
                             </div>
                         </div>

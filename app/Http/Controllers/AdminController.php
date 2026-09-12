@@ -191,11 +191,27 @@ class AdminController extends Controller
     {
         $transaksi = Transaksi::with(['customer', 'karyawan'])->where('trans_kode', $kode)->firstOrFail();
         $tindakan = Tindakan::where('trans_kode', $kode)->get();
+
+        $defaultCustomer = [
+            'cos_nama' => '-',
+            'cos_kode' => $transaksi->cos_kode ?? '-',
+            'cos_hp' => '-',
+            'cos_status' => '-',
+            'cos_tipe' => '-',
+            'cos_model' => '-',
+            'cos_no_seri' => '-',
+            'cos_pswd' => '-',
+            'cos_asesoris' => '-',
+            'cos_alamat' => '-',
+            'cos_keluhan' => '-',
+            'cos_keterangan' => '-',
+        ];
+
         $customerData = $transaksi->customer ? $transaksi->customer->toArray() : [];
 
         return view('admin.konfirmasi', [
             'title' => 'Customer Konfirmasi',
-            'proses' => array_merge($transaksi->toArray(), $customerData),
+            'proses' => array_merge($defaultCustomer, $transaksi->toArray(), $customerData),
             'trans' => $transaksi,
             'data' => $tindakan,
         ]);

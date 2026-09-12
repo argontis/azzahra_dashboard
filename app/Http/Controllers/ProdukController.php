@@ -7,9 +7,24 @@ use Illuminate\Http\Request;
 
 class ProdukController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('produk.index', ['title' => 'Produk']);
+        $search = $request->input('search');
+        $query = Produk::query();
+
+        if ($search) {
+            $query->where('nama_produk', 'like', "%{$search}%")
+                ->orWhere('deskripsi', 'like', "%{$search}%")
+                ->orWhere('kode_barang', 'like', "%{$search}%")
+                ->orWhere('harga', 'like', "%{$search}%");
+        }
+
+        $produks = $query->orderBy('kode_barang', 'desc')->paginate(25);
+
+        return view('produk.index', [
+            'title' => 'Produk',
+            'produks' => $produks,
+        ]);
     }
 
     public function ajax_search(Request $request)
@@ -25,9 +40,9 @@ class ProdukController extends Controller
                 ->orWhere('harga', 'like', "%{$search}%");
         }
 
-        $produks = $query->orderBy('kode_barang', 'desc')->paginate(15);
+        $produks = $query->orderBy('kode_barang', 'desc')->limit(50)->get();
 
-        return view('produk.ajax_table', compact('produks'));
+        return response()->json($produks);
     }
 
     public function create()
@@ -83,6 +98,11 @@ class ProdukController extends Controller
         }
 
         return redirect('/Produk')->with('sukses', 'Produk berhasil ditambahkan.');
+    }
+
+    public function show($kode_barang)
+    {
+        return $this->edit($kode_barang);
     }
 
     public function edit($kode_barang)

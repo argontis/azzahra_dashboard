@@ -70,6 +70,29 @@ class CustomerController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        return redirect()->route('admin.cus_baru');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'cos_nama' => 'required|string',
+            'cos_hp' => 'nullable|string',
+            'cos_alamat' => 'nullable|string',
+        ]);
+
+        $customer = Customer::create($validated);
+
+        return redirect('/Customer')->with('sukses', 'Customer berhasil ditambahkan');
+    }
+
+    public function show($id)
+    {
+        return $this->edit($id);
+    }
+
     public function edit($id)
     {
         $customer = Customer::findOrFail($id);
@@ -115,8 +138,24 @@ class CustomerController extends Controller
         $tindakan = Tindakan::where('trans_kode', $kode_transaksi)->get();
         $pembayaran = TransaksiDetail::where('trans_kode', $kode_transaksi)->get();
 
+        $defaultCustomer = [
+            'cos_nama' => '-',
+            'cos_kode' => $transaksi->cos_kode ?? '-',
+            'cos_hp' => '-',
+            'cos_status' => '-',
+            'cos_tipe' => '-',
+            'cos_model' => '-',
+            'cos_no_seri' => '-',
+            'cos_pswd' => '-',
+            'cos_asesoris' => '-',
+            'cos_alamat' => '-',
+            'cos_keluhan' => '-',
+            'cos_keterangan' => '-',
+        ];
+
         // Match legacy 'proses' array structure
-        $proses = array_merge($transaksi->toArray(), $transaksi->customer->toArray());
+        $customerData = $transaksi->customer ? $transaksi->customer->toArray() : [];
+        $proses = array_merge($defaultCustomer, $transaksi->toArray(), $customerData);
 
         return view('customer.histori', [
             'title' => 'Customer',
