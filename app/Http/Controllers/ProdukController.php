@@ -13,17 +13,23 @@ class ProdukController extends Controller
         $query = Produk::query();
 
         if ($search) {
-            $query->where('nama_produk', 'like', "%{$search}%")
-                ->orWhere('deskripsi', 'like', "%{$search}%")
-                ->orWhere('kode_barang', 'like', "%{$search}%")
-                ->orWhere('harga', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_produk', 'like', "%{$search}%")
+                    ->orWhere('deskripsi', 'like', "%{$search}%")
+                    ->orWhere('kode_barang', 'like', "%{$search}%")
+                    ->orWhere('harga', 'like', "%{$search}%");
+            });
         }
 
-        $produks = $query->orderBy('kode_barang', 'desc')->paginate(25);
+        $produks = $query->orderByRaw('COALESCE(created_at, "1970-01-01 00:00:00") DESC')
+            ->orderBy('kode_barang', 'desc')
+            ->paginate(25)
+            ->withQueryString();
 
         return view('produk.index', [
             'title' => 'Produk',
             'produks' => $produks,
+            'search' => $search,
         ]);
     }
 
@@ -78,10 +84,17 @@ class ProdukController extends Controller
         // Handle images
         $uploaded_images = [];
         if ($request->hasFile('gambar')) {
-            foreach ($request->file('gambar') as $file) {
-                $filename = 'produk_'.time().'_'.rand(1000, 9999).'.'.$file->getClientOriginalExtension();
-                $file->move(public_path('uploads/produk'), $filename);
-                $uploaded_images[] = $filename;
+            $uploadPath = public_path('uploads/produk');
+            if (! file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+            $files = is_array($request->file('gambar')) ? $request->file('gambar') : [$request->file('gambar')];
+            foreach ($files as $file) {
+                if ($file && $file->isValid()) {
+                    $filename = 'produk_'.time().'_'.rand(1000, 9999).'.'.$file->getClientOriginalExtension();
+                    $file->move($uploadPath, $filename);
+                    $uploaded_images[] = $filename;
+                }
             }
         }
 
@@ -123,14 +136,20 @@ class ProdukController extends Controller
         $harga = str_replace('.', '', $request->harga);
 
         // Simple image handling for now (append new ones)
-        // Note: Full replacement logic like in CI can be added later if needed
         $final_images = $produk->gambar ? explode(',', $produk->gambar) : [];
 
         if ($request->hasFile('gambar')) {
-            foreach ($request->file('gambar') as $file) {
-                $filename = 'produk_'.time().'_'.rand(1000, 9999).'.'.$file->getClientOriginalExtension();
-                $file->move(public_path('uploads/produk'), $filename);
-                $final_images[] = $filename;
+            $uploadPath = public_path('uploads/produk');
+            if (! file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+            $files = is_array($request->file('gambar')) ? $request->file('gambar') : [$request->file('gambar')];
+            foreach ($files as $file) {
+                if ($file && $file->isValid()) {
+                    $filename = 'produk_'.time().'_'.rand(1000, 9999).'.'.$file->getClientOriginalExtension();
+                    $file->move($uploadPath, $filename);
+                    $final_images[] = $filename;
+                }
             }
         }
 

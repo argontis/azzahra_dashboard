@@ -107,7 +107,7 @@ class QuickServiceController extends Controller
             $id_costomer = $date_prefix.str_pad($next_num, 3, '0', STR_PAD_LEFT);
 
             // 2. Insert Customer
-            $password = $request->pswd_type === 'text' ? $request->pswd : ($request->pswd_type === 'pattern_desc' ? $request->pswd_desc : '');
+            $password = $request->pswd_type === 'text' ? ($request->pswd ?? '') : ($request->pswd_type === 'pattern_desc' ? ($request->pswd_desc ?? '') : '');
 
             Customer::create([
                 'id_costomer' => $id_costomer,
@@ -115,18 +115,20 @@ class QuickServiceController extends Controller
                 'username' => $id_costomer,
                 'password' => Hash::make($id_costomer),
                 'cos_tgl_lahir' => $request->cos_tgl_lahir,
-                'cos_alamat' => $request->alamat,
+                'cos_alamat' => $request->alamat ?? '-',
+                'cos_cabang' => $request->cabang ?? 'Tegal',
+                'cos_device' => $request->device ?? '-',
                 'cos_hp' => $request->tlp,
-                'cos_tipe' => $request->type,
-                'cos_model' => $request->model,
-                'cos_no_seri' => $request->seri,
-                'cos_asesoris' => $request->asesoris,
-                'cos_status' => $request->status,
-                'cos_pswd_type' => $request->pswd_type,
+                'cos_tipe' => $request->type ?? '-',
+                'cos_model' => $request->model ?? '-',
+                'cos_no_seri' => $request->seri ?? '-',
+                'cos_asesoris' => $request->asesoris ?? '-',
+                'cos_status' => $request->status ?? 'OOW',
+                'cos_pswd_type' => $request->pswd_type ?? 'text',
                 'cos_pswd' => $password,
                 'cos_pswd_canvas' => $request->pswd_canvas,
-                'cos_keluhan' => $request->keluhan,
-                'cos_keterangan' => $request->ket,
+                'cos_keluhan' => $request->keluhan ?? '-',
+                'cos_keterangan' => $request->ket ?? '-',
                 'cos_tanggal' => date('Y-m-d'),
                 'cos_jam' => date('H:i:s'),
                 'cos_poin' => 0,
@@ -145,8 +147,6 @@ class QuickServiceController extends Controller
             }
             $trans_kode = $date_prefix_trans.str_pad($next_trans_num, 3, '0', STR_PAD_LEFT);
 
-            $is_quick_service = true; // In QS, it's always quick service
-
             // 4. Insert Transaksi
             Transaksi::create([
                 'trans_kode' => $trans_kode,
@@ -154,39 +154,40 @@ class QuickServiceController extends Controller
                 'kry_kode' => auth()->user()->kry_kode ?? null,
                 'trans_total' => 0,
                 'trans_discount' => 0,
-                'trans_status' => 'Baru',
+                'trans_status' => 'Pelunasan',
                 'cos_tanggal' => date('Y-m-d'),
                 'cos_jam' => date('H:i:s'),
                 'trans_tanggal' => date('Y-m-d'),
             ]);
 
-            // 5. If quick service, add default tindakan
-            if ($is_quick_service) {
-                Tindakan::create([
-                    'trans_kode' => $trans_kode,
-                    'tdkn_barang' => 'SERVICE (QUICK)',
-                    'tdkn_qty' => 1,
-                    'tdkn_subtot' => 0,
-                    'tdkn_tanggal' => date('Y-m-d'),
-                    'tdkn_jam' => date('H:i:s'),
-                ]);
-            }
+            // 5. Insert default tindakan for Quick Service
+            Tindakan::create([
+                'trans_kode' => $trans_kode,
+                'tdkn_barang' => 'SERVICE (QUICK)',
+                'tdkn_harga' => 0,
+                'tdkn_qty' => 1,
+                'tdkn_subtot' => 0,
+                'tdkn_ket' => $request->ket ?? 'Quick Service',
+                'tdkn_tanggal' => date('Y-m-d'),
+                'tdkn_jam' => date('H:i:s'),
+            ]);
 
             // 6. Insert OrderList
             OrderList::create([
                 'trans_kode' => $trans_kode,
                 'cos_kode' => $id_costomer,
+                'kry_kode' => auth()->user()->kry_kode ?? null,
                 'trans_total' => 0,
                 'trans_discount' => 0,
                 'trans_tanggal' => date('Y-m-d'),
-                'trans_status' => 'QS', // In QS, status is QS
-                'merek' => $request->type ?? '',
-                'device' => $request->device ?? '',
-                'status_garansi' => $request->status ?? '',
-                'seri' => $request->seri ?? '',
-                'ket_keluhan' => $request->keluhan ?? '',
+                'trans_status' => 'itemSubmitted',
+                'merek' => $request->type ?? '-',
+                'device' => $request->device ?? '-',
+                'status_garansi' => $request->status ?? 'OOW',
+                'seri' => $request->seri ?? '-',
+                'ket_keluhan' => $request->keluhan ?? '-',
                 'email' => 'example@gmail.com',
-                'alamat' => $request->alamat ?? '',
+                'alamat' => $request->alamat ?? 'Tegal',
             ]);
 
             DB::commit();

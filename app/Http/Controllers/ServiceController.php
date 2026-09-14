@@ -162,8 +162,10 @@ class ServiceController extends Controller
                 Tindakan::create([
                     'trans_kode' => $trans_kode,
                     'tdkn_barang' => 'SERVICE',
+                    'tdkn_harga' => 0,
                     'tdkn_qty' => 1,
                     'tdkn_subtot' => 0,
+                    'tdkn_ket' => $request->ket ?? 'Quick Service',
                     'tdkn_tanggal' => date('Y-m-d'),
                     'tdkn_jam' => date('H:i:s'),
                 ]);
@@ -173,17 +175,18 @@ class ServiceController extends Controller
             OrderList::create([
                 'trans_kode' => $trans_kode,
                 'cos_kode' => $id_costomer,
+                'kry_kode' => auth()->user()->kry_kode ?? null,
                 'trans_total' => 0,
                 'trans_discount' => 0,
                 'trans_tanggal' => date('Y-m-d'),
                 'trans_status' => 'itemSubmitted',
-                'merek' => $request->type ?? '',
-                'device' => $request->device ?? '',
-                'status_garansi' => $request->status ?? '',
-                'seri' => $request->seri ?? '',
-                'ket_keluhan' => $request->keluhan ?? '',
+                'merek' => $request->type ?? '-',
+                'device' => $request->device ?? '-',
+                'status_garansi' => $request->status ?? 'OOW',
+                'seri' => $request->seri ?? '-',
+                'ket_keluhan' => $request->keluhan ?? '-',
                 'email' => 'example@gmail.com',
-                'alamat' => $request->alamat ?? '',
+                'alamat' => $request->alamat ?? 'Tegal',
             ]);
 
             DB::commit();

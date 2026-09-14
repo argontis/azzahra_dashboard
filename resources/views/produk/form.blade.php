@@ -49,13 +49,34 @@
             </div>
             
             <div class="mb-4">
-                <label>Deskripsi</label>
-                <textarea name="deskripsi" class="input w-full border">{{ $produk->deskripsi ?? '' }}</textarea>
+                <label class="block font-medium text-gray-700 mb-1">Deskripsi</label>
+                <textarea name="deskripsi" class="input w-full border rounded-lg p-2" rows="3" placeholder="Deskripsi produk atau spesifikasi...">{{ $produk->deskripsi ?? '' }}</textarea>
+            </div>
+
+            <div class="mb-5">
+                <label class="block font-medium text-gray-700 mb-1">Gambar Produk <span class="text-xs text-gray-400 font-normal">(Opsional)</span></label>
+                <input type="file" name="gambar[]" multiple accept="image/*" class="input w-full border rounded-lg p-2">
+                <p class="text-xs text-gray-400 mt-1">Format didukung: JPG, PNG, WEBP. Bisa memilih lebih dari 1 gambar.</p>
+                
+                @if($produk && !empty($produk->gambar))
+                    <div class="mt-3">
+                        <p class="text-xs font-semibold text-gray-600 mb-2">Gambar Saat Ini:</p>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach(explode(',', $produk->gambar) as $img)
+                                @if(trim($img))
+                                    <div class="w-16 h-16 rounded-lg overflow-hidden border border-gray-200 shadow-sm bg-gray-50 flex items-center justify-center">
+                                        <img src="{{ asset('uploads/produk/' . trim($img)) }}" alt="Produk" class="object-cover w-full h-full" onerror="this.src='{{ asset('dist/images/preview-1.jpg') }}'">
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
             </div>
             
-            <div class="mt-5">
-                <button type="submit" class="button bg-theme-1 text-white">Simpan</button>
-                <a href="{{ route('Produk.index') }}" class="button border text-gray-700">Batal</a>
+            <div class="mt-6 flex items-center gap-3">
+                <button type="submit" class="button bg-theme-1 text-white px-5 py-2 rounded-lg font-medium shadow-sm hover:bg-theme-2 transition-all">Simpan</button>
+                <a href="{{ route('Produk.index') }}" class="button border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-all">Batal</a>
             </div>
         </form>
     </div>

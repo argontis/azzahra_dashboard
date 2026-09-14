@@ -33,6 +33,18 @@ class Tindakan extends Model
             if (empty($model->tdkn_jam)) {
                 $model->tdkn_jam = date('H:i:s');
             }
+            if (! isset($model->tdkn_ket) || $model->tdkn_ket === null) {
+                $model->tdkn_ket = '-';
+            }
+            if (! isset($model->tdkn_harga) || $model->tdkn_harga === null) {
+                $model->tdkn_harga = 0;
+            }
+            if (! isset($model->tdkn_subtot) || $model->tdkn_subtot === null) {
+                $model->tdkn_subtot = 0;
+            }
+            if (! isset($model->tdkn_qty) || $model->tdkn_qty === null) {
+                $model->tdkn_qty = 1;
+            }
         });
     }
 

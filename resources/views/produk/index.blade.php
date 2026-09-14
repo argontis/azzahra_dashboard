@@ -7,13 +7,16 @@
     </div>
     <div class="header-title">
         <h1><i data-feather="package" class="w-6 h-6 inline-block mr-2"></i>Produk</h1>                
-        <p>Management Data Produk</p>
+        <p>Management Data Produk & Sparepart</p>
     </div>            
     <div class="header-actions">
-        <div class="search-input-wrapper">
+        <form action="{{ route('Produk.index') }}" method="GET" class="search-input-wrapper">
             <i data-feather="search" class="search-icon"></i>
-            <input type="text" class="search-input" placeholder="Search...">
-        </div>
+            <input type="text" name="search" class="search-input" placeholder="Cari nama, kode, harga..." value="{{ request('search') }}">
+            @if(request('search'))
+                <a href="{{ route('Produk.index') }}" class="text-xs text-gray-400 hover:text-gray-600 mr-2" title="Reset">✕</a>
+            @endif
+        </form>
         <div class="header-btn header-btn-bell" id="topbar-bell-btn" title="Pemberitahuan Sistem & Maintenance" style="cursor: pointer; position: relative;">
             <i data-feather="bell"></i>
             <div class="badge-dot" style="display: none;"></div>
@@ -22,8 +25,8 @@
             <i data-feather="mail"></i>
             <span class="topbar-mail-badge" style="display: none; position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; border-radius: 9999px; font-size: 10px; font-weight: bold; min-width: 16px; height: 16px; line-height: 16px; text-align: center; padding: 0 4px;"></span>
         </div>
-        <a href="{{ route('Produk.create') }}" class="button text-white bg-theme-1 shadow-md hover:bg-theme-2 transition-all">            
-            Tambah Produk
+        <a href="{{ route('Produk.create') }}" class="button text-white bg-theme-1 shadow-md hover:bg-theme-2 transition-all flex items-center gap-1.5 px-4 py-2 rounded-lg font-semibold text-xs">            
+            <i data-feather="plus" class="w-4 h-4"></i> Tambah Produk
         </a>    
     </div>
 </header>
@@ -54,33 +57,61 @@
     @endif
 
     <!-- Data List -->
-    <div class="intro-y box p-5 mt-5">
+    <div class="intro-y box p-5 mt-5 bg-white rounded-xl shadow-sm border border-gray-100">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-3 border-b border-gray-100 gap-2">
+            <div class="text-sm font-semibold text-gray-700">
+                Total Data: <span class="text-theme-1 font-bold">{{ $produks->total() }}</span> Produk
+                @if(request('search'))
+                    <span class="text-xs text-gray-500 font-normal ml-2">(Hasil filter: "{{ request('search') }}")</span>
+                @endif
+            </div>
+        </div>
+
         <div class="overflow-x-auto">
-            <table class="table table-report -mt-2 w-full">
+            <table class="table table-report table-report--bordered display w-full">
                 <thead>
-                    <tr>
+                    <tr class="bg-gray-50 text-gray-600 text-xs uppercase">
+                        <th class="whitespace-no-wrap w-16 text-center">GAMBAR</th>
                         <th class="whitespace-no-wrap">KODE BARANG</th>
                         <th class="whitespace-no-wrap">NAMA PRODUK</th>
-                        <th class="text-center whitespace-no-wrap">HARGA</th>
-                        <th class="text-center whitespace-no-wrap">AKSI</th>
+                        <th class="whitespace-no-wrap">DESKRIPSI</th>
+                        <th class="text-right whitespace-no-wrap">HARGA</th>
+                        <th class="text-center whitespace-no-wrap w-44">AKSI</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($produks ?? [] as $row)
-                    <tr class="intro-x">
-                        <td>{{ $row->kode_barang }}</td>
-                        <td>{{ $row->nama_produk }}</td>
-                        <td class="text-center">Rp {{ number_format($row->harga, 0, ',', '.') }}</td>
-                        <td class="table-report__action w-56">
-                            <div class="flex justify-center items-center">
-                                <a class="flex items-center mr-3" href="{{ route('Produk.edit', $row->kode_barang) }}">
-                                    <i data-feather="check-square" class="w-4 h-4 mr-1"></i> Edit
+                    @php
+                        $firstImg = null;
+                        if (!empty($row->gambar)) {
+                            $imgs = explode(',', $row->gambar);
+                            $firstImg = trim($imgs[0] ?? '');
+                        }
+                    @endphp
+                    <tr class="intro-x hover:bg-gray-50/80 transition-colors">
+                        <td class="text-center py-3">
+                            <div class="w-10 h-10 rounded-lg overflow-hidden border border-gray-200 bg-gray-50 flex items-center justify-center mx-auto shadow-xs">
+                                @if($firstImg)
+                                    <img src="{{ asset('uploads/produk/' . $firstImg) }}" alt="{{ $row->nama_produk }}" class="object-cover w-full h-full" onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'text-gray-400 text-xs font-semibold\'>PRD</span>';">
+                                @else
+                                    <span class="text-gray-400 text-xs font-semibold">PRD</span>
+                                @endif
+                            </div>
+                        </td>
+                        <td class="font-mono text-xs font-bold text-gray-700">{{ $row->kode_barang }}</td>
+                        <td class="font-semibold text-gray-900">{{ $row->nama_produk }}</td>
+                        <td class="text-gray-500 text-xs max-w-xs truncate" title="{{ $row->deskripsi }}">{{ $row->deskripsi ?: '-' }}</td>
+                        <td class="text-right font-bold text-gray-800">Rp {{ number_format($row->harga, 0, ',', '.') }}</td>
+                        <td class="table-report__action">
+                            <div class="flex justify-center items-center gap-2">
+                                <a class="flex items-center text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 px-2.5 py-1.5 rounded-md transition-colors" href="{{ route('Produk.edit', $row->kode_barang) }}">
+                                    <i data-feather="edit-2" class="w-3.5 h-3.5 mr-1"></i> Edit
                                 </a>
-                                <form action="{{ route('Produk.destroy', $row->kode_barang) }}" method="POST" class="inline" onsubmit="return confirm('Hapus produk ini?');">
+                                <form action="{{ route('Produk.destroy', $row->kode_barang) }}" method="POST" class="inline" onsubmit="return confirm('Hapus produk {{ $row->nama_produk }}?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="flex items-center text-theme-6">
-                                        <i data-feather="trash-2" class="w-4 h-4 mr-1"></i> Delete
+                                    <button type="submit" class="flex items-center text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 px-2.5 py-1.5 rounded-md transition-colors">
+                                        <i data-feather="trash-2" class="w-3.5 h-3.5 mr-1"></i> Hapus
                                     </button>
                                 </form>
                             </div>
@@ -88,18 +119,21 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="4" class="text-center p-5 text-gray-600">Tidak ada data produk.</td>
-                    </tr>
-                    @endforelse
-                    <tr id="noSearchResultRow" style="display: none;">
-                        <td colspan="4" class="text-center py-6 text-gray-500">
-                            <i data-feather="search" class="w-8 h-8 mx-auto mb-2 opacity-40"></i>
-                            <p>Tidak ada produk yang cocok dengan pencarian.</p>
+                        <td colspan="6" class="text-center py-8 text-gray-500">
+                            <i data-feather="package" class="w-10 h-10 mx-auto mb-2 opacity-30"></i>
+                            <p class="font-medium text-gray-600">Tidak ada data produk yang ditemukan.</p>
                         </td>
                     </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
+
+        @if($produks instanceof \Illuminate\Pagination\LengthAwarePaginator && $produks->hasPages())
+        <div class="mt-5 pt-4 border-t border-gray-100">
+            {{ $produks->links() }}
+        </div>
+        @endif
     </div>
 </div>
 @endsection
