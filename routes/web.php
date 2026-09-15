@@ -68,6 +68,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/input_tindakan/{kode}', [TeknisiController::class, 'input_tindakan'])->name('teknisi.input_tindakan');
         Route::post('/save_tindakan', [TeknisiController::class, 'save_tindakan'])->name('teknisi.save_tindakan');
         Route::post('/order_sparepart', [TeknisiController::class, 'order_sparepart'])->name('teknisi.order_sparepart');
+        Route::get('/my_orders', [TeknisiController::class, 'my_orders'])->name('teknisi.my_orders');
     });
 
     // ==========================================
@@ -182,10 +183,10 @@ Route::middleware(['auth'])->group(function () {
     // ==========================================
     Route::get('/mou', function () {
         return redirect()->route('admin.mou.index');
-    });
+    })->name('mou.redirect.lowercase');
     Route::get('/Mou', function () {
         return redirect()->route('admin.mou.index');
-    });
+    })->name('mou.redirect');
 
     Route::prefix('Admin')->middleware('role:Admin,HR,Kasir,Customer Service')->group(function () {
         Route::get('/mou', [MouController::class, 'index'])->name('admin.mou.index');
@@ -203,6 +204,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/order/approve', [OrderController::class, 'approve_order'])->name('admin.order.approve_order');
         Route::post('/order/complete', [OrderController::class, 'service_complete'])->name('admin.order.service_complete');
         Route::post('/order/failed', [OrderController::class, 'service_failed'])->name('admin.order.service_failed');
+        Route::post('/order/pickup_item', [OrderController::class, 'pickup_item'])->name('admin.order.pickup_item');
         Route::post('/order/inform_unavailable', [OrderController::class, 'inform_unavailable'])->name('admin.order.inform_unavailable');
         Route::post('/order/update_trans_total', [OrderController::class, 'update_trans_total'])->name('admin.order.update_trans_total');
 

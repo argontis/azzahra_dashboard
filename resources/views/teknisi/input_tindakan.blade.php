@@ -338,18 +338,17 @@
             <button type="button" data-dismiss="modal" class="button border text-gray-700">&times;</button>
         </div>
 
-        <form action="{{ route('teknisi.order_sparepart') }}" method="POST" class="space-y-4">
-            @csrf
-            <input type="hidden" name="trans_kode" value="{{ $transaksi->trans_kode }}">
+        <form id="formOrderSparepart" class="space-y-4">
+            <input type="hidden" id="orderTransKode" value="{{ $transaksi->trans_kode }}">
 
             <div>
                 <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Barang / Sparepart *</label>
-                <input type="text" name="barang_nama" class="input w-full border rounded-lg p-2 text-xs" placeholder="Contoh: LCD Asus A416 / Keyboard Acer Nitro 5..." required>
+                <input type="text" id="inputBarangNama" class="input w-full border rounded-lg p-2 text-xs" placeholder="Contoh: LCD Asus A416 / Keyboard Acer Nitro 5..." required>
             </div>
 
             <div>
                 <label class="block text-xs font-semibold text-gray-700 mb-1">Status Ketersediaan di Teknisi *</label>
-                <select name="ketersediaan" class="input w-full border rounded-lg p-2 text-xs" required>
+                <select id="selectKetersediaan" class="input w-full border rounded-lg p-2 text-xs" required>
                     <option value="tersedia">Tersedia (Bisa langsung dipasang)</option>
                     <option value="tidak_ada">Tidak Ada (Minta ke Admin / Gudang)</option>
                 </select>
@@ -361,7 +360,7 @@
 
             <div class="flex justify-end gap-2 pt-3 border-t border-gray-200">
                 <button type="button" data-dismiss="modal" class="button border text-gray-700 px-4 py-2 text-xs rounded-lg">Batal</button>
-                <button type="submit" class="btn-order-part px-4 py-2 text-xs font-semibold rounded-lg">Kirim Permintaan</button>
+                <button type="button" id="btnKirimPermintaan" class="btn-order-part px-4 py-2 text-xs font-semibold rounded-lg">Kirim Permintaan</button>
             </div>
         </form>
     </div>
@@ -369,6 +368,60 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // === AJAX Order Sparepart ===
+    document.getElementById('btnKirimPermintaan').addEventListener('click', function() {
+        const barangNama = document.getElementById('inputBarangNama').value.trim();
+        const ketersediaan = document.getElementById('selectKetersediaan').value;
+        const transKode = document.getElementById('orderTransKode').value;
+
+        if (!barangNama) {
+            Swal.fire({ icon: 'warning', title: 'Form Tidak Lengkap', text: 'Nama barang/sparepart wajib diisi.' });
+            return;
+        }
+
+        const btn = document.getElementById('btnKirimPermintaan');
+        btn.disabled = true;
+        btn.textContent = 'Mengirim...';
+
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        fetch('{{ route("teknisi.order_sparepart") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                trans_kode: transKode,
+                barang_nama: barangNama,
+                ketersediaan: ketersediaan,
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json().catch(() => ({ success: true }));
+            }
+            return response.json().catch(() => { throw new Error('Server error ' + response.status); });
+        })
+        .then(data => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: data.message || 'Order sparepart berhasil diajukan!',
+                timer: 2000,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href = '{{ route("teknisi.index") }}';
+            });
+        })
+        .catch(err => {
+            btn.disabled = false;
+            btn.textContent = 'Kirim Permintaan';
+            Swal.fire({ icon: 'error', title: 'Gagal', text: 'Terjadi kesalahan. Silakan coba lagi.' });
+        });
+    });
+
     const btnAddTindakan = document.getElementById('btnAddTindakan');
     const selectTindakan = document.getElementById('selectTindakan');
     const inputKeterangan = document.getElementById('inputKeterangan');

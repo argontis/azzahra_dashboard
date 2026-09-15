@@ -22,20 +22,24 @@ window.todayOrderCount = <?php echo count($today_orders); ?>;
 window.currentUser = '<?php echo addslashes(auth()->user()->name ?? 'Admin'); ?>'; 
 </script>  
 
-<header class="page-header">
-    <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
-        <i data-feather="menu"></i>
-    </div>
-    <div class="header-title">
-        <h1><i data-feather="shopping-cart" class="w-5 h-5 inline-block mr-2"></i>Order</h1>
-        <p>Kelola dan pantau order sparepart customer</p>
+<header class="page-header" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%;">
+    <div style="display: flex; align-items: center; gap: 16px;">
+        <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+            <i data-feather="menu"></i>
+        </div>
+        <div class="header-title">
+            <h1><i data-feather="shopping-cart" class="w-5 h-5 inline-block mr-2"></i>Order</h1>
+            <p>Kelola dan pantau order sparepart customer</p>
+        </div>
     </div>
     
-    <div class="header-actions">
-        <div class="search-input-wrapper">
-            <i data-feather="search" class="search-icon"></i>
-            <input type="text" class="search-input" placeholder="Search..." value="{{ request('search') }}">
-        </div>
+    <div class="header-actions" style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
+        <form action="{{ route('admin.order.index', $filter ?? 'pending') }}" method="GET" style="margin: 0;">
+            <div class="search-input-wrapper">
+                <i data-feather="search" class="search-icon"></i>
+                <input type="text" name="search" class="search-input" placeholder="Search..." value="{{ request('search') }}">
+            </div>
+        </form>
         <div class="header-btn header-btn-bell" id="topbar-bell-btn" title="Pemberitahuan Sistem & Maintenance" style="cursor: pointer; position: relative;">
             <i data-feather="bell"></i>
             <div class="badge-dot"></div>
@@ -67,7 +71,6 @@ window.currentUser = '<?php echo addslashes(auth()->user()->name ?? 'Admin'); ?>
             <?php endif; ?>
         </div>
     </div>
-</div>
 
 <div class="content-area">
   <div class="sukses" data-sukses="<?php echo $suksesMsg; ?>"></div>
@@ -545,6 +548,7 @@ window.currentUser = '<?php echo addslashes(auth()->user()->name ?? 'Admin'); ?>
 
                     <div class="flex items-center gap-2 mt-4 lg:mt-0 lg:ml-6">
                       <form method="post" action="{{ route('admin.order.pickup_item') }}" style="display: inline;">
+                        @csrf
                         <input type="hidden" name="trans_kode" value="<?= $row->trans_kode; ?>">
                         <input type="hidden" name="order_type" value="completed">
                         <button type="submit" class="flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-200 font-medium text-sm mr-2">
@@ -656,6 +660,7 @@ window.currentUser = '<?php echo addslashes(auth()->user()->name ?? 'Admin'); ?>
 
                     <div class="flex items-center gap-2 mt-4 lg:mt-0 lg:ml-6">
                       <form method="post" action="{{ route('admin.order.pickup_item') }}" style="display: inline;">
+                        @csrf
                         <input type="hidden" name="trans_kode" value="<?= $row->trans_kode; ?>">
                         <input type="hidden" name="order_type" value="failed">
                         <button type="submit" class="flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-200 font-medium text-sm mr-2">

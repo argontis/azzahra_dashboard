@@ -13,7 +13,7 @@ return new class extends Migration
     {
         if (! Schema::hasTable('karyawan')) {
             Schema::create('karyawan', function (Blueprint $table) {
-                $table->id('kry_kode');
+                $table->string('kry_kode')->primary();
                 $table->string('kry_username')->unique();
                 $table->string('kry_pswd');
                 $table->string('kry_nama');

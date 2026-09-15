@@ -100,6 +100,7 @@ body {
     right: 0 !important;
     width: auto !important;
     display: flex !important;
+    flex-direction: row !important;
     justify-content: space-between !important;
     align-items: center !important;
     flex-wrap: nowrap !important;
@@ -111,15 +112,29 @@ body {
     transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1), margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1), width 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
+/* Page header specifically for multi-row dashboard (with export buttons) */
+.page-header.dashboard-header,
+.dashboard-page-header {
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: stretch !important;
+    gap: 10px;
+}
+
 /* Follow sidebar slider collapse movement */
 .sidebar.collapsed ~ .main-content .page-header {
     left: 80px !important;
 }
 
 .content-area {
-    margin-top: 75px !important;
+    margin-top: 70px !important;
     padding-top: 12px !important;
     transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Dashboard has a 2-row header (title + export buttons), needs extra margin */
+.dashboard-content-area {
+    margin-top: 145px !important;
 }
 
 .sidebar.collapsed ~ .main-content .content-area {

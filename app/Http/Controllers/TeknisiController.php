@@ -119,6 +119,7 @@ class TeknisiController extends Controller
                     'tdkn_barang' => $nama,
                     'tdkn_qty' => $qty,
                     'tdkn_subtot' => $subtot,
+                    'tdkn_ket' => $ket ?: '-',
                     'tdkn_tanggal' => now()->toDateString(),
                     'tdkn_jam' => now()->toTimeString(),
                 ]);
@@ -196,14 +197,48 @@ class TeknisiController extends Controller
 
                 DB::commit();
 
-                return redirect()->route('teknisi.index')->with('sukses', 'Order sparepart berhasil diajukan! Menunggu barang sampai.');
+                $message = 'Order sparepart berhasil diajukan! Menunggu barang sampai.';
+
+                if ($request->expectsJson()) {
+                    return response()->json(['success' => true, 'message' => $message]);
+                }
+
+                return redirect()->route('teknisi.index')->with('sukses', $message);
             } catch (\Exception $e) {
                 DB::rollBack();
 
-                return back()->with('gagal', 'Terjadi kesalahan saat order sparepart.');
+                $error = 'Terjadi kesalahan saat order sparepart.';
+
+                if ($request->expectsJson()) {
+                    return response()->json(['success' => false, 'message' => $error], 500);
+                }
+
+                return back()->with('gagal', $error);
             }
         }
 
-        return redirect()->route('teknisi.index')->with('sukses', 'Barang tersedia, silahkan input tindakan.');
+        $message = 'Barang tersedia, silahkan input tindakan.';
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => $message]);
+        }
+
+        return redirect()->route('teknisi.index')->with('sukses', $message);
+    }
+
+    public function my_orders()
+    {
+        $orders = KetersediaanSparepart::orderBy('created_at', 'desc')
+            ->paginate(15);
+
+        $totalMenunggu = KetersediaanSparepart::where('status', 'menunggu')->count();
+        $totalSampai = KetersediaanSparepart::whereIn('status', ['sampai', 'Sampai'])->count();
+
+        return view('teknisi.order_sparepart', [
+            'title' => 'Order Sparepart Saya',
+            'orders' => $orders,
+            'totalMenunggu' => $totalMenunggu,
+            'totalSampai' => $totalSampai,
+        ]);
     }
 }

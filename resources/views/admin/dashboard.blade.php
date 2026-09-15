@@ -2,7 +2,7 @@
 @extends('layouts.app')
 @section('content')
 
-<div class="page-header" style="display: flex; flex-direction: column; align-items: stretch; gap: 12px; padding: 16px 32px;">
+<div class="page-header dashboard-page-header" style="display: flex; flex-direction: column; align-items: stretch; gap: 12px; padding: 16px 32px;">
     <!-- Top Row: Title Left, Actions Right (Sejajar dengan Dashboard Overview di Pojok Kanan Atas) -->
     <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
         <div class="page-header-left">
@@ -61,7 +61,7 @@
 </div>
         
 <!-- Content Area (dari template sidebar Anda) -->
-<div class="content-area" style="margin-top: 130px;">        
+<div class="content-area dashboard-content-area">        
     <!-- Dashboard Container -->
     <div class="dashboard-container">        
         <!-- Page Header -->

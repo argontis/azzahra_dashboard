@@ -60,7 +60,7 @@
                     </td>
                     <td>
                         @if ($row->status=='menunggu')
-                        <a href="{{ url('Ketersediaan_sparepart/barang_sampai/'.$row->id) }}" class="btn btn-success">Barang Telah Sampai</a>
+                        <a href="{{ route('admin.ketersediaan_sparepart.barang_sampai', $row->id) }}" class="btn btn-success">Barang Telah Sampai</a>
                         @else
                         <span class="text-success">Selesai</span>
                         @endif

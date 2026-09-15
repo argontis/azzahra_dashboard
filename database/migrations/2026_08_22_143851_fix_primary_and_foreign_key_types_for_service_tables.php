@@ -70,6 +70,7 @@ return new class extends Migration
             $table->decimal('tdkn_harga', 15, 2)->default(0);
             $table->integer('tdkn_qty')->default(1);
             $table->decimal('tdkn_subtot', 15, 2)->default(0);
+            $table->text('tdkn_ket')->nullable();
             $table->date('tdkn_tanggal')->nullable();
             $table->time('tdkn_jam')->nullable();
             $table->timestamps();

@@ -19,7 +19,7 @@ class KetersediaanSparepartController extends Controller
             ->join('transaksi', 'ketersediaan_sparepart.trans_kode', '=', 'transaksi.trans_kode')
             ->join('costomer', 'transaksi.cos_kode', '=', 'costomer.id_costomer')
             ->join('karyawan', 'transaksi.kry_kode', '=', 'karyawan.kry_kode')
-            ->where('ketersediaan_sparepart.status', 'Menunggu')
+            ->where('ketersediaan_sparepart.status', 'menunggu')
             ->get();
 
         $data = [

@@ -9,6 +9,7 @@
         <!-- Security Headers -->
         <meta http-equiv="X-Content-Type-Options" content="nosniff">
         <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         
         <!-- SEO -->
         <meta name="description" content="Dashboard Admin - Azzahra Computer Tegal">
@@ -775,8 +776,7 @@
                         <span class="nav-text">Order</span>
                     </a>
                     @php
-                        // To be migrated: count sparepart
-                        $count_sparepart = 0;
+                        $count_sparepart = \App\Models\KetersediaanSparepart::where('status', 'menunggu')->count();
                     @endphp
                     <a href="{{ url('Admin/ketersediaan_sparepart') }}" class="nav-link {{ $title == 'Ketersediaan Sparepart' ? 'active' : '' }}">
                         <div class="nav-icon"><i data-feather="package"></i></div>
@@ -825,6 +825,19 @@
                     <a href="{{ url('Teknisi') }}" class="nav-link {{ $title == 'Dashboard Teknisi' ? 'active' : '' }}">
                         <div class="nav-icon"><i data-feather="home"></i></div>
                         <span class="nav-text">Dashboard</span>
+                    </a>
+                    @php
+                        $countMenunggu = \App\Models\KetersediaanSparepart::where('status', 'menunggu')->count();
+                    @endphp
+                    <a href="{{ route('teknisi.my_orders') }}" class="nav-link {{ $title == 'Order Sparepart Saya' ? 'active' : '' }}">
+                        <div class="nav-icon"><i data-feather="package"></i></div>
+                        <span class="nav-text">Order Sparepart
+                            @if($countMenunggu > 0)
+                                <span style="background:#d97706;color:white;border-radius:10px;padding:1px 7px;font-size:11px;margin-left:auto;font-weight:bold;">
+                                    {{ $countMenunggu }}
+                                </span>
+                            @endif
+                        </span>
                     </a>
                 </div>
                 
@@ -933,8 +946,7 @@
                     </a>
 
                     @php
-                        // To be migrated: count transaksi diproses
-                        $konf = 0;
+                        $konf = \App\Models\Transaksi::where('trans_status', 'Diproses')->count();
                     @endphp
                     <a href="{{ url('Admin/cus_konf') }}" class="nav-link {{ $title == 'Transaksi-Konfirmasi' ? 'active' : '' }}">
                         <div class="nav-icon"><i data-feather="bell"></i></div>
@@ -979,8 +991,7 @@
                         <span class="nav-text">Voucher Discount</span>
                     </a>
                     @php
-                        // To be migrated
-                        $count_sparepart = 0;
+                        $count_sparepart = \App\Models\KetersediaanSparepart::where('status', 'menunggu')->count();
                     @endphp
                     <a href="{{ url('Admin/ketersediaan_sparepart') }}" class="nav-link {{ $title == 'Ketersediaan Sparepart' ? 'active' : '' }}">
                         <div class="nav-icon"><i data-feather="package"></i></div>

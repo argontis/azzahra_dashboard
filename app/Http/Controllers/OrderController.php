@@ -293,4 +293,19 @@ class OrderController extends Controller
             return redirect()->route('admin.order.index', 'pending')->with('gagal', 'Gagal mengupdate trans total dan status.');
         }
     }
+
+    public function pickup_item(Request $request)
+    {
+        $trans_kode = trim($request->input('trans_kode'));
+        $order_type = $request->input('order_type', 'completed');
+
+        if (! $trans_kode) {
+            return redirect()->route('admin.order.index', $order_type)->with('gagal', 'trans_kode tidak ditemukan.');
+        }
+
+        $new_status = ($order_type === 'failed') ? 'failed_picked_up' : 'completed_picked_up';
+        OrderList::where('trans_kode', $trans_kode)->update(['trans_status' => $new_status]);
+
+        return redirect()->route('admin.order.index', $order_type)->with('sukses', 'Barang berhasil ditandai sudah diambil oleh customer.');
+    }
 }
