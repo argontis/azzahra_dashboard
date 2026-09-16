@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Karyawan;
 use App\Models\OrderList;
+use App\Models\OrderPartMarking;
 use App\Models\Tindakan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -45,9 +46,15 @@ class OrderController extends Controller
             $data['show_modal'] = true;
         } elseif ($filter == 'waiting') {
             // Waiting approval (OOW/IW parts)
-            // Simulating M_order->get_waiting_approval_orders()
             $orders = DB::table('order_list')
-                ->select('order_list.*', 'costomer.cos_nama', 'order_list.ket_keluhan as keluhan')
+                ->select(
+                    'tindakan.tdkn_kode', 'tindakan.tdkn_barang', 'tindakan.tdkn_qty',
+                    'order_list.trans_kode', 'order_list.device', 'order_list.merek', 'order_list.seri',
+                    'order_list.status_garansi', 'costomer.cos_nama', 'order_list.ket_keluhan as keluhan',
+                    DB::raw('(SELECT COALESCE(SUM(tdkn_subtot), 0) FROM tindakan WHERE trans_kode = order_list.trans_kode) as total_subtot'),
+                    DB::raw('(SELECT COALESCE(SUM(dtl_jml_bayar), 0) FROM transaksi_detail WHERE TRIM(trans_kode) = TRIM(order_list.trans_kode)) as total_bayar')
+                )
+                ->leftJoin('tindakan as tindakan', 'order_list.trans_kode', '=', 'tindakan.trans_kode')
                 ->leftJoin('costomer', 'order_list.cos_kode', '=', 'costomer.id_costomer')
                 ->where('order_list.trans_status', 'waitingApproval')
                 ->orderBy('order_list.trans_tanggal', 'DESC')
@@ -55,6 +62,7 @@ class OrderController extends Controller
 
             $data['orders'] = $orders;
             $data['table_title'] = 'Waiting Approval Orders';
+            $data['karyawan'] = Karyawan::all();
             $data['show_modal'] = false;
         } elseif ($filter == 'confirm') {
             $orders = DB::table('order_list')
@@ -307,5 +315,28 @@ class OrderController extends Controller
         OrderList::where('trans_kode', $trans_kode)->update(['trans_status' => $new_status]);
 
         return redirect()->route('admin.order.index', $order_type)->with('sukses', 'Barang berhasil ditandai sudah diambil oleh customer.');
+    }
+
+    public function update_part_marking(Request $request)
+    {
+        $trans_kode = trim($request->input('trans_kode'));
+        $rma_number = $request->input('rma_number');
+        $end_warranty_date = $request->input('end_warranty_date');
+        $is_ordered = $request->input('is_ordered', 'yes');
+
+        if (! $trans_kode) {
+            return redirect()->back()->with('gagal', 'trans_kode tidak ditemukan.');
+        }
+
+        OrderPartMarking::updateOrCreate(
+            ['trans_kode' => $trans_kode],
+            [
+                'rma_number' => $rma_number,
+                'end_warranty_date' => $end_warranty_date,
+                'is_ordered' => $is_ordered,
+            ]
+        );
+
+        return redirect()->back()->with('sukses', 'Part marking berhasil diupdate.');
     }
 }

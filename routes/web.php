@@ -169,17 +169,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/export_excel_lap_perhari', [ExportController::class, 'lap_perhari_excel'])->name('admin.export_excel_lap_perhari');
         Route::get('/export_excel_laporan', [ExportController::class, 'lap_excel'])->name('admin.export_excel_laporan');
         Route::get('/export_dashboard', [AdminController::class, 'export_dashboard'])->name('admin.export_dashboard');
-        // Order Approval Routes
-        Route::get('/order_approval/oow', [OrderApprovalController::class, 'pending_oow'])->name('admin.order_approval.oow');
-        Route::get('/order_approval/iw', [OrderApprovalController::class, 'pending_iw'])->name('admin.order_approval.iw');
-        Route::post('/order_approval/{id}/approve', [OrderApprovalController::class, 'approve'])->name('admin.order_approval.approve');
-        Route::post('/order_approval/{id}/reject', [OrderApprovalController::class, 'reject'])->name('admin.order_approval.reject');
-
     }); // <-- Batas akhir Group Admin khusus Admin
 
     // ==========================================
-    // MODULE MOU (Diletakkan di luar group Admin khusus,
-    // agar bisa diakses Admin, HR, Kasir, dan CS tanpa error 403/404)
+    // MODULE MOU & SHARED MODULES
+    // (Dapat diakses Admin, HR, Kasir, dan Customer Service)
     // ==========================================
     Route::get('/mou', function () {
         return redirect()->route('admin.mou.index');
@@ -197,6 +191,12 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/mou/delete/{id}', [MouController::class, 'delete'])->name('admin.mou.delete');
         Route::get('/mou/download/{id}', [MouController::class, 'download'])->name('admin.mou.download');
 
+        // Order Approval Routes (Accessible to Admin & Customer Service)
+        Route::get('/order_approval/oow', [OrderApprovalController::class, 'pending_oow'])->name('admin.order_approval.oow');
+        Route::get('/order_approval/iw', [OrderApprovalController::class, 'pending_iw'])->name('admin.order_approval.iw');
+        Route::post('/order_approval/{id}/approve', [OrderApprovalController::class, 'approve'])->name('admin.order_approval.approve');
+        Route::post('/order_approval/{id}/reject', [OrderApprovalController::class, 'reject'])->name('admin.order_approval.reject');
+
         // Order Routes
         Route::get('/order/{filter?}', [OrderController::class, 'index'])->name('admin.order.index');
         Route::post('/order/update_status', [OrderController::class, 'update_status'])->name('admin.order.update_status');
@@ -207,6 +207,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/order/pickup_item', [OrderController::class, 'pickup_item'])->name('admin.order.pickup_item');
         Route::post('/order/inform_unavailable', [OrderController::class, 'inform_unavailable'])->name('admin.order.inform_unavailable');
         Route::post('/order/update_trans_total', [OrderController::class, 'update_trans_total'])->name('admin.order.update_trans_total');
+        Route::post('/order/update_part_marking', [OrderController::class, 'update_part_marking'])->name('admin.order.update_part_marking');
 
         // Ketersediaan Sparepart Routes
         Route::get('/ketersediaan_sparepart', [KetersediaanSparepartController::class, 'index'])->name('admin.ketersediaan_sparepart');

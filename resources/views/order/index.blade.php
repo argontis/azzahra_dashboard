@@ -22,18 +22,16 @@ window.todayOrderCount = <?php echo count($today_orders); ?>;
 window.currentUser = '<?php echo addslashes(auth()->user()->name ?? 'Admin'); ?>'; 
 </script>  
 
-<header class="page-header" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%;">
-    <div style="display: flex; align-items: center; gap: 16px;">
-        <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
-            <i data-feather="menu"></i>
-        </div>
-        <div class="header-title">
-            <h1><i data-feather="shopping-cart" class="w-5 h-5 inline-block mr-2"></i>Order</h1>
-            <p>Kelola dan pantau order sparepart customer</p>
-        </div>
+<header class="page-header">
+    <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+        <i data-feather="menu"></i>
+    </div>
+    <div class="header-title">
+        <h1><i data-feather="shopping-cart" class="w-6 h-6 inline-block mr-2"></i>Order</h1>
+        <p>Kelola dan pantau order sparepart customer</p>
     </div>
     
-    <div class="header-actions" style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
+    <div class="header-actions">
         <form action="{{ route('admin.order.index', $filter ?? 'pending') }}" method="GET" style="margin: 0;">
             <div class="search-input-wrapper">
                 <i data-feather="search" class="search-icon"></i>

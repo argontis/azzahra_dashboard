@@ -189,39 +189,26 @@
     </script>
     @endif
 
-    <div class="intro-y datatable-wrapper box p-5 mt-5">
-
-        <!-- Title -->
-        <h2 class="text-xl font-bold text-gray-700 pb-3">
-            Data Customer
-        </h2>
-
-        <div class="border-b-2 border-blue-600 mb-5 w-full"></div>
-
-        <!-- Search Input -->
-        <div class="mb-4">
-            <form action="{{ route('kasir.index') }}" method="GET" class="w-full">
-
-                <input
-                    type="text"
-                    name="search"
-                    id="search-input"
-                    value="{{ request('search') }}"
-                    placeholder="Search customers..."
-                    class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-
-            </form>
+    <!-- Customer Summary & Stats Bar -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+        <div class="text-sm font-semibold text-gray-700">
+            Total Data: <span class="text-blue-600 font-bold">{{ $transaksis->total() }}</span> Transaksi Belum Lunas
+            @if(request('search'))
+                <span class="text-xs text-gray-500 font-normal ml-2">(Hasil pencarian: "{{ request('search') }}")</span>
+            @endif
         </div>
-
-        <!-- Pagination Top -->
-        <div class="flex justify-center mb-6 mt-2">
-            {{ $transaksis->links() }}
+        <div class="flex items-center gap-2">
+            @if(request('search'))
+                <a href="{{ route('kasir.index') }}" class="button inline-flex items-center gap-1 text-gray-600 bg-white hover:bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg text-xs font-semibold">
+                    <i data-feather="x" class="w-3.5 h-3.5"></i> Reset Filter
+                </a>
+            @endif
         </div>
+    </div>
 
+    <div class="intro-y datatable-wrapper box p-4 sm:p-5 bg-white rounded-xl shadow-sm border border-gray-100 w-full">
         <!-- Table -->
-        <div class="overflow-x-auto">
-
+        <div class="table-responsive-container overflow-x-auto w-full">
             <table class="table table-report table-report--bordered w-full">
 
                 <thead>

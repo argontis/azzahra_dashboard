@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<header class="page-header mb-5">
+<header class="page-header">
     <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
         <i data-feather="menu"></i>
     </div>
@@ -25,13 +25,10 @@
             <i data-feather="mail"></i>
             <span class="topbar-mail-badge" style="display: none; position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; border-radius: 9999px; font-size: 10px; font-weight: bold; min-width: 16px; height: 16px; line-height: 16px; text-align: center; padding: 0 4px;"></span>
         </div>
-        <a href="{{ route('Produk.create') }}" class="button hidden sm:inline-flex text-white bg-theme-1 shadow-md hover:bg-theme-2 transition-all items-center gap-1.5 px-4 py-2 rounded-lg font-semibold text-xs shrink-0">            
-            <i data-feather="plus" class="w-4 h-4"></i> Tambah Produk
-        </a>    
     </div>
 </header>
 
-<div class="content mt-5">   
+<div class="content-area">   
     @if(session('sukses'))
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -47,7 +44,7 @@
     @endif
 
     @if(session('error'))
-    <div class="intro-y mt-5">
+    <div class="intro-y mb-4">
         <div class="alert alert-danger show mb-2" role="alert">
             <div class="flex items-center">
                 <div class="font-medium text-lg">{{ session('error') }}</div>
@@ -56,23 +53,22 @@
     </div>
     @endif
 
-    <!-- Data List -->
-    <div class="intro-y box p-4 sm:p-5 mt-5 bg-white rounded-xl shadow-sm border border-gray-100">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-3 border-b border-gray-100 gap-3">
-            <div class="text-sm font-semibold text-gray-700">
-                Total Data: <span class="text-theme-1 font-bold">{{ $produks->total() }}</span> Produk
-                @if(request('search'))
-                    <span class="text-xs text-gray-500 font-normal ml-2">(Hasil filter: "{{ request('search') }}")</span>
-                @endif
-            </div>
-            <div class="sm:hidden">
-                <a href="{{ route('Produk.create') }}" class="button text-white bg-theme-1 shadow-sm px-3.5 py-2 rounded-lg font-semibold text-xs inline-flex items-center gap-1.5 w-full justify-center">            
-                    <i data-feather="plus" class="w-4 h-4"></i> Tambah Produk Baru
-                </a>
-            </div>
+    <!-- Top Action Bar -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+        <div class="text-sm font-semibold text-gray-700">
+            Total Data: <span class="text-blue-600 font-bold">{{ $produks->total() }}</span> Produk
+            @if(request('search'))
+                <span class="text-xs text-gray-500 font-normal ml-2">(Hasil filter: "{{ request('search') }}")</span>
+            @endif
         </div>
+        <a href="{{ route('Produk.create') }}" class="button inline-flex items-center gap-2 text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition-all px-4 py-2 rounded-lg font-semibold text-xs shrink-0">            
+            <i data-feather="plus" class="w-4 h-4"></i> Tambah Produk
+        </a>
+    </div>
 
-        <div class="overflow-x-auto">
+    <!-- Data List -->
+    <div class="intro-y datatable-wrapper box p-4 sm:p-5 bg-white rounded-xl shadow-sm border border-gray-100 w-full">
+        <div class="table-responsive-container overflow-x-auto w-full">
             <table class="table table-report table-report--bordered display w-full">
                 <thead>
                     <tr class="bg-gray-50 text-gray-600 text-xs uppercase">

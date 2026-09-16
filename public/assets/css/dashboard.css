@@ -126,10 +126,15 @@ body {
     left: 80px !important;
 }
 
-.content-area {
+.content-area,
+.content {
+    margin-left: 260px !important;
+    width: calc(100% - 260px) !important;
+    max-width: calc(100% - 260px) !important;
+    box-sizing: border-box !important;
     margin-top: 70px !important;
-    padding-top: 12px !important;
-    transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    padding: 16px 24px 36px !important;
+    transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1), width 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 /* Dashboard has a 2-row header (title + export buttons), needs extra margin */
@@ -137,8 +142,11 @@ body {
     margin-top: 140px !important;
 }
 
-.sidebar.collapsed ~ .main-content .content-area {
+.sidebar.collapsed ~ .main-content .content-area,
+.sidebar.collapsed ~ .main-content .content {
     margin-left: 80px !important;
+    width: calc(100% - 80px) !important;
+    max-width: calc(100% - 80px) !important;
 }
 
 @media (max-width: 1024px) {
@@ -149,9 +157,18 @@ body {
     }
     .sidebar.collapsed ~ .main-content .page-header {
         left: 0 !important;
+        width: 100% !important;
     }
-    .sidebar.collapsed ~ .main-content .content-area {
+    .main-content,
+    .main-content .content,
+    .main-content .content-area,
+    .sidebar.collapsed ~ .main-content .content-area,
+    .sidebar.collapsed ~ .main-content .content,
+    .content-area,
+    .content {
         margin-left: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
     }
 }
 
