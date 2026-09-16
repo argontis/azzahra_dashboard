@@ -2,16 +2,19 @@
 @extends('layouts.app')
 @section('content')
 
-<div class="page-header dashboard-page-header" style="display: flex; flex-direction: column; align-items: stretch; gap: 12px; padding: 16px 32px;">
-    <!-- Top Row: Title Left, Actions Right (Sejajar dengan Dashboard Overview di Pojok Kanan Atas) -->
-    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-        <div class="page-header-left">
+<div class="page-header dashboard-page-header" style="display: flex; flex-direction: column; align-items: stretch; gap: 10px;">
+    <!-- Top Row: Title Left, Actions Right -->
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 8px;" class="page-header-left">
+            <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+                <i data-feather="menu"></i>
+            </div>
             <div class="page-title-section">
                 <h1 class="page-title" style="margin: 0; display: flex; align-items: center;">
-                    <i data-feather="home" class="w-8 h-8 inline-block mr-2"></i>Dashboard Overview
+                    <i data-feather="home" class="w-6 h-6 sm:w-8 sm:h-8 inline-block mr-1.5 sm:mr-2"></i>Dashboard Overview
                 </h1>
-                <p class="page-subtitle" style="margin-top: 4px;">
-                    <i data-feather="calendar"></i>
+                <p class="page-subtitle" style="margin-top: 2px;">
+                    <i data-feather="calendar" class="w-3.5 h-3.5"></i>
                     {{ date('l, d F Y') ?? '0' }}
                 </p>
             </div>

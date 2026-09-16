@@ -25,7 +25,7 @@
     </div>
 </header>
 
-<div class="content" style="margin-top: 40px; padding: 1.5rem 2rem;">
+<div class="content-area">
 
     @if(session('sukses'))
         <div class="alert alert-success d-flex align-items-center mb-5" role="alert" style="background:#ecfdf5;border:1.5px solid #a7f3d0;color:#065f46;border-radius:12px;padding:12px 18px;display:flex;gap:10px;align-items:center;">

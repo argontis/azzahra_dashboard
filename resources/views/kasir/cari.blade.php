@@ -164,66 +164,70 @@
                 </table>
 
                 <h2 class="font-bold text-lg border-b pb-2 mb-4">Rincian Tindakan / Servis</h2>
-                <table class="table table-report w-full mb-6">
-                    <thead>
-                        <tr>
-                            <th>BARANG / JASA</th>
-                            <th class="text-right">HARGA</th>
-                            <th class="text-center">QTY</th>
-                            <th class="text-right">SUBTOTAL</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($tindakan as $item)
-                        <tr>
-                            <td>{{ $item->tdkn_barang }}</td>
-                            <td class="text-right">Rp {{ number_format($item->tdkn_harga, 0, ',', '.') }}</td>
-                            <td class="text-center">{{ $item->tdkn_qty }}</td>
-                            <td class="text-right font-medium">Rp {{ number_format($item->tdkn_subtot, 0, ',', '.') }}</td>
-                        </tr>
-                        @empty
-                        <tr><td colspan="4" class="text-center">Belum ada rincian.</td></tr>
-                        @endforelse
-                        <tr>
-                            <td colspan="3" class="text-right font-bold">TOTAL KESELURUHAN</td>
-                            <td class="text-right font-bold text-theme-6">Rp {{ number_format($trans->trans_total, 0, ',', '.') }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="overflow-x-auto mb-6">
+                    <table class="table table-report w-full">
+                        <thead>
+                            <tr>
+                                <th>BARANG / JASA</th>
+                                <th class="text-right">HARGA</th>
+                                <th class="text-center">QTY</th>
+                                <th class="text-right">SUBTOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($tindakan as $item)
+                            <tr>
+                                <td>{{ $item->tdkn_barang }}</td>
+                                <td class="text-right">Rp {{ number_format($item->tdkn_harga, 0, ',', '.') }}</td>
+                                <td class="text-center">{{ $item->tdkn_qty }}</td>
+                                <td class="text-right font-medium">Rp {{ number_format($item->tdkn_subtot, 0, ',', '.') }}</td>
+                            </tr>
+                            @empty
+                            <tr><td colspan="4" class="text-center">Belum ada rincian.</td></tr>
+                            @endforelse
+                            <tr>
+                                <td colspan="3" class="text-right font-bold">TOTAL KESELURUHAN</td>
+                                <td class="text-right font-bold text-theme-6">Rp {{ number_format($trans->trans_total, 0, ',', '.') }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
                 <h2 class="font-bold text-lg border-b pb-2 mb-4">Riwayat Pembayaran</h2>
-                <table class="table table-report w-full">
-                    <thead>
-                        <tr>
-                            <th>TANGGAL</th>
-                            <th>STATUS</th>
-                            <th>METODE</th>
-                            <th class="text-right">JUMLAH</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php $totalBayar = 0; @endphp
-                        @forelse($bayar as $b)
-                        @php $totalBayar += $b->dtl_jml_bayar; @endphp
-                        <tr>
-                            <td>{{ $b->dtl_tanggal }} {{ $b->dtl_jam }}</td>
-                            <td><span class="px-2 py-1 bg-blue-100 text-blue-800 rounded">{{ $b->dtl_status }}</span></td>
-                            <td>{{ $b->dtl_jenis_bayar }} {{ $b->dtl_bank != '-' ? '('.$b->dtl_bank.')' : '' }}</td>
-                            <td class="text-right">Rp {{ number_format($b->dtl_jml_bayar, 0, ',', '.') }}</td>
-                        </tr>
-                        @empty
-                        <tr><td colspan="4" class="text-center">Belum ada pembayaran.</td></tr>
-                        @endforelse
-                        <tr>
-                            <td colspan="3" class="text-right font-bold">TOTAL TERBAYAR</td>
-                            <td class="text-right font-bold text-theme-9">Rp {{ number_format($totalBayar, 0, ',', '.') }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="3" class="text-right font-bold">SISA TAGIHAN</td>
-                            <td class="text-right font-bold text-theme-6">Rp {{ number_format(max(0, $trans->trans_total - $totalBayar), 0, ',', '.') }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="overflow-x-auto">
+                    <table class="table table-report w-full">
+                        <thead>
+                            <tr>
+                                <th>TANGGAL</th>
+                                <th>STATUS</th>
+                                <th>METODE</th>
+                                <th class="text-right">JUMLAH</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php $totalBayar = 0; @endphp
+                            @forelse($bayar as $b)
+                            @php $totalBayar += $b->dtl_jml_bayar; @endphp
+                            <tr>
+                                <td>{{ $b->dtl_tanggal }} {{ $b->dtl_jam }}</td>
+                                <td><span class="px-2 py-1 bg-blue-100 text-blue-800 rounded">{{ $b->dtl_status }}</span></td>
+                                <td>{{ $b->dtl_jenis_bayar }} {{ $b->dtl_bank != '-' ? '('.$b->dtl_bank.')' : '' }}</td>
+                                <td class="text-right">Rp {{ number_format($b->dtl_jml_bayar, 0, ',', '.') }}</td>
+                            </tr>
+                            @empty
+                            <tr><td colspan="4" class="text-center">Belum ada pembayaran.</td></tr>
+                            @endforelse
+                            <tr>
+                                <td colspan="3" class="text-right font-bold">TOTAL TERBAYAR</td>
+                                <td class="text-right font-bold text-theme-9">Rp {{ number_format($totalBayar, 0, ',', '.') }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-right font-bold">SISA TAGIHAN</td>
+                                <td class="text-right font-bold text-theme-6">Rp {{ number_format(max(0, $trans->trans_total - $totalBayar), 0, ',', '.') }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 

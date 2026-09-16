@@ -25,7 +25,7 @@
             <i data-feather="mail"></i>
             <span class="topbar-mail-badge" style="display: none; position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; border-radius: 9999px; font-size: 10px; font-weight: bold; min-width: 16px; height: 16px; line-height: 16px; text-align: center; padding: 0 4px;"></span>
         </div>
-        <a href="{{ route('Produk.create') }}" class="button text-white bg-theme-1 shadow-md hover:bg-theme-2 transition-all flex items-center gap-1.5 px-4 py-2 rounded-lg font-semibold text-xs">            
+        <a href="{{ route('Produk.create') }}" class="button hidden sm:inline-flex text-white bg-theme-1 shadow-md hover:bg-theme-2 transition-all items-center gap-1.5 px-4 py-2 rounded-lg font-semibold text-xs shrink-0">            
             <i data-feather="plus" class="w-4 h-4"></i> Tambah Produk
         </a>    
     </div>
@@ -57,13 +57,18 @@
     @endif
 
     <!-- Data List -->
-    <div class="intro-y box p-5 mt-5 bg-white rounded-xl shadow-sm border border-gray-100">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-3 border-b border-gray-100 gap-2">
+    <div class="intro-y box p-4 sm:p-5 mt-5 bg-white rounded-xl shadow-sm border border-gray-100">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-3 border-b border-gray-100 gap-3">
             <div class="text-sm font-semibold text-gray-700">
                 Total Data: <span class="text-theme-1 font-bold">{{ $produks->total() }}</span> Produk
                 @if(request('search'))
                     <span class="text-xs text-gray-500 font-normal ml-2">(Hasil filter: "{{ request('search') }}")</span>
                 @endif
+            </div>
+            <div class="sm:hidden">
+                <a href="{{ route('Produk.create') }}" class="button text-white bg-theme-1 shadow-sm px-3.5 py-2 rounded-lg font-semibold text-xs inline-flex items-center gap-1.5 w-full justify-center">            
+                    <i data-feather="plus" class="w-4 h-4"></i> Tambah Produk Baru
+                </a>
             </div>
         </div>
 

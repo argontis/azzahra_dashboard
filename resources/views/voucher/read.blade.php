@@ -11,7 +11,7 @@
     </div>
     
     <div class="header-actions">
-        <a href="{{ route('admin.voucher.add') }}" class="button text-white bg-blue-600 shadow-sm mr-2 hover:bg-blue-700 transition-all px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1">
+        <a href="{{ route('admin.voucher.add') }}" class="button hidden sm:inline-flex text-white bg-blue-600 shadow-sm mr-1 hover:bg-blue-700 transition-all px-3 py-2 rounded-lg text-xs font-semibold items-center gap-1">
             <i data-feather="plus" class="w-4 h-4"></i> Tambah Voucher
         </a>
         <div class="search-input-wrapper">

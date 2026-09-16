@@ -26,19 +26,21 @@
 
 <div class="content-area" style="margin-top: 75px; padding-top: 15px;">
     <!-- Header Banner -->
-    <div class="intro-y p-6 rounded-2xl shadow-xl mb-6 border-2 border-blue-600" style="background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%) !important; color: #ffffff !important;">
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div class="flex items-center gap-4">
-                <div class="p-3.5 bg-blue-800 rounded-2xl border border-blue-400/30 shadow-inner">
-                    <i data-feather="grid" class="w-10 h-10 text-yellow-300"></i>
+    <div class="intro-y p-4 sm:p-6 rounded-2xl shadow-xl mb-6 border-2 border-blue-600" style="background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%) !important; color: #ffffff !important;">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6">
+            <div class="flex items-center gap-3 sm:gap-4">
+                <div class="p-2.5 sm:p-3.5 bg-blue-800 rounded-2xl border border-blue-400/30 shadow-inner shrink-0">
+                    <i data-feather="grid" class="w-7 h-7 sm:w-10 sm:h-10 text-yellow-300"></i>
                 </div>
                 <div>
-                    <h1 class="text-2xl font-extrabold tracking-wide" style="margin: 0; color: #ffffff !important;">HR Control Center & Overview</h1>
-                    <div class="flex items-center gap-2 text-xs font-semibold mt-1" style="color: #cbd5e1 !important;">
-                        <i data-feather="calendar" class="w-4 h-4 text-yellow-400"></i>
-                        <span>{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}</span>
-                        <span class="mx-1">•</span>
-                        <span class="px-2.5 py-0.5 rounded-full font-bold text-white" style="background-color: #3b82f6 !important;">Role: Human Resources</span>
+                    <h1 class="text-lg sm:text-2xl font-extrabold tracking-wide leading-tight" style="margin: 0; color: #ffffff !important;">HR Control Center & Overview</h1>
+                    <div class="flex flex-wrap items-center gap-2 text-xs font-semibold mt-1" style="color: #cbd5e1 !important;">
+                        <span class="flex items-center gap-1">
+                            <i data-feather="calendar" class="w-3.5 h-3.5 text-yellow-400"></i>
+                            <span>{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}</span>
+                        </span>
+                        <span class="hidden sm:inline mx-1">•</span>
+                        <span class="px-2.5 py-0.5 rounded-full font-bold text-white text-[11px]" style="background-color: #3b82f6 !important;">Role: Human Resources</span>
                     </div>
                 </div>
             </div>

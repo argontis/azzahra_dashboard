@@ -134,7 +134,7 @@ body {
 
 /* Dashboard has a 2-row header (title + export buttons), needs extra margin */
 .dashboard-content-area {
-    margin-top: 145px !important;
+    margin-top: 140px !important;
 }
 
 .sidebar.collapsed ~ .main-content .content-area {
@@ -144,9 +144,51 @@ body {
 @media (max-width: 1024px) {
     .page-header {
         left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
     }
     .sidebar.collapsed ~ .main-content .page-header {
         left: 0 !important;
+    }
+    .sidebar.collapsed ~ .main-content .content-area {
+        margin-left: 0 !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-header.dashboard-header,
+    .dashboard-page-header {
+        padding: 8px 12px !important;
+        gap: 8px !important;
+    }
+    .dashboard-content-area {
+        margin-top: 118px !important;
+    }
+    .export-buttons {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        gap: 6px !important;
+        padding-bottom: 4px !important;
+        width: 100% !important;
+        scrollbar-width: none;
+    }
+    .export-buttons::-webkit-scrollbar {
+        display: none;
+    }
+    .export-btn {
+        padding: 5px 10px !important;
+        font-size: 11px !important;
+        height: 32px !important;
+        flex-shrink: 0 !important;
+        border-radius: 6px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-content-area {
+        margin-top: 105px !important;
     }
 }
 
@@ -1376,13 +1418,21 @@ body {
     color: #4a5568 !important;
 }
 
-/* ===== DATATABLE HORIZONTAL DISPLAY ===== */
-.datatable-wrapper {
+/* ===== DATATABLE & TABLE HORIZONTAL RESPONSIVENESS ===== */
+.datatable-wrapper,
+.table-responsive,
+.overflow-x-auto,
+.datatable-container {
+    width: 100% !important;
+    max-width: 100% !important;
     overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
 }
 
 .datatable-wrapper table.dataTable,
-.datatable-wrapper table.table {
+.datatable-wrapper table.table,
+.table-responsive table,
+.overflow-x-auto table {
     width: 100% !important;
     white-space: nowrap !important;
 }
@@ -1390,8 +1440,51 @@ body {
 .datatable-wrapper table.dataTable th,
 .datatable-wrapper table.dataTable td,
 .datatable-wrapper table.table th,
-.datatable-wrapper table.table td {
+.datatable-wrapper table.table td,
+.table-responsive th,
+.table-responsive td,
+.overflow-x-auto th,
+.overflow-x-auto td {
     white-space: nowrap !important;
+}
+
+/* Custom smooth scrollbar for table containers */
+.datatable-wrapper::-webkit-scrollbar,
+.overflow-x-auto::-webkit-scrollbar,
+.table-responsive::-webkit-scrollbar {
+    height: 5px;
+}
+
+.datatable-wrapper::-webkit-scrollbar-track,
+.overflow-x-auto::-webkit-scrollbar-track,
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.datatable-wrapper::-webkit-scrollbar-thumb,
+.overflow-x-auto::-webkit-scrollbar-thumb,
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.datatable-wrapper::-webkit-scrollbar-thumb:hover,
+.overflow-x-auto::-webkit-scrollbar-thumb:hover,
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Auto make direct tables inside .box scrollable on mobile */
+@media (max-width: 1024px) {
+    .box > table,
+    .intro-y.box > table,
+    .intro-y > table {
+        display: block !important;
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
 }
 
 /* Hide DataTables responsive + control icons and child rows */
@@ -1418,6 +1511,7 @@ table.dataTable tr.child {
     bottom: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
+    height: 100dvh !important;
     margin: 0 !important;
     padding: 20px !important;
     z-index: 99999 !important;
@@ -1444,6 +1538,7 @@ table.dataTable tr.child {
     width: 100% !important;
     max-width: 650px !important;
     max-height: 90vh !important;
+    max-height: 90dvh !important;
     overflow-y: auto !important;
     position: relative !important;
     z-index: 100000 !important;
@@ -1496,5 +1591,120 @@ table.dataTable tr.child {
     100% {
         opacity: 1;
         transform: scale(1) translateY(0);
+    }
+}
+
+/* Modal Responsive Mobile (< 768px) */
+@media (max-width: 768px) {
+    .modal {
+        padding: 8px !important;
+    }
+
+    .modal__content,
+    .modal__content--lg,
+    .modal__content--xl {
+        width: 96vw !important;
+        max-width: 96vw !important;
+        margin: 0 auto !important;
+        padding: 14px 12px !important;
+        max-height: 92vh !important;
+        max-height: 92dvh !important;
+        border-radius: 12px !important;
+    }
+
+    .modal__content .px-5,
+    .modal__content .px-20,
+    .modal__content .sm\:px-20 {
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+    }
+
+    .modal__content .p-10,
+    .modal__content .sm\:py-15 {
+        padding: 12px 8px !important;
+    }
+
+    .modal__content .mt-10,
+    .modal__content .pt-10 {
+        margin-top: 14px !important;
+        padding-top: 14px !important;
+    }
+
+    .modal__content .nav-tabs.wizard {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+        justify-content: center !important;
+        padding: 0 4px !important;
+    }
+
+    .modal__content .wizard .intro-x {
+        margin-top: 0 !important;
+        flex: 1 1 auto !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    .modal__content .wizard .intro-x a {
+        width: 28px !important;
+        height: 28px !important;
+        min-width: 28px !important;
+        font-size: 11px !important;
+        padding: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .modal__content .wizard .intro-x div {
+        font-size: 11px !important;
+        margin-left: 4px !important;
+        white-space: nowrap !important;
+    }
+
+    .modal__content .grid-cols-12 > [class*="col-span-"] {
+        grid-column: span 12 / span 12 !important;
+    }
+}
+
+/* ===== MOBILE PILL NAVIGATION & TABS ===== */
+@media (max-width: 1024px) {
+    .mobile-tab-scroll,
+    .filter-pill-bar,
+    .status-pill-nav {
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        gap: 8px !important;
+        padding: 4px 2px 8px !important;
+        width: 100% !important;
+        scrollbar-width: none;
+    }
+
+    .mobile-tab-scroll::-webkit-scrollbar,
+    .filter-pill-bar::-webkit-scrollbar,
+    .status-pill-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .mobile-tab-scroll > *,
+    .filter-pill-bar > *,
+    .status-pill-nav > * {
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+    }
+}
+
+/* ===== TOPBAR POPUP PANELS ON MOBILE ===== */
+@media (max-width: 640px) {
+    #topbar-message-panel,
+    #topbar-notification-panel {
+        top: 60px !important;
+        right: 8px !important;
+        left: 8px !important;
+        width: auto !important;
+        max-width: calc(100vw - 16px) !important;
+        border-radius: 14px !important;
     }
 }

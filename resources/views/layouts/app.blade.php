@@ -1100,9 +1100,29 @@
             }, 300); // Add a tiny delay for visual effect
         });
 
-        // Initialize Feather Icons
+        // Initialize Feather Icons & Mobile UX helpers
         document.addEventListener('DOMContentLoaded', function() {
             feather.replace();
+
+            // Auto close mobile sidebar when navigating to a link
+            document.querySelectorAll('.nav-menu a.nav-link, .nav-dropdown-menu a, .user-dropdown-menu a').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 1024 && !this.classList.contains('laporan-toggle') && !this.classList.contains('order-approval-toggle')) {
+                        closeMobileSidebar();
+                    }
+                });
+            });
+
+            // Close on ESC key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeMobileSidebar();
+                    const msgPanel = document.getElementById('topbar-message-panel');
+                    const notifPanel = document.getElementById('topbar-notification-panel');
+                    if (msgPanel) msgPanel.classList.remove('open');
+                    if (notifPanel) notifPanel.classList.remove('open');
+                }
+            });
         });
     </script>
             

@@ -86,98 +86,98 @@ window.currentUser = '<?php echo addslashes(auth()->user()->name ?? 'Admin'); ?>
   <div class="intro-y grid grid-cols-12 gap-6 mt-4">
     <!-- Sidebar Filter -->
     <div class="col-span-12 lg:col-span-3">
-      <div class="box p-5 sticky top-5">
-        <h3 class="font-semibold text-base mb-4 text-gray-700">Filter Status</h3>
-        <div class="space-y-2">
+      <div class="box p-3 lg:p-5 lg:sticky lg:top-5">
+        <h3 class="font-semibold text-sm lg:text-base mb-2 lg:mb-4 text-gray-700 hidden lg:block">Filter Status</h3>
+        <div class="flex flex-row lg:flex-col overflow-x-auto lg:overflow-visible gap-2 pb-2 lg:pb-0 filter-pill-bar">
           <a href="{{ route('admin.order.index', 'pending') }}"
-             class="filter-link flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 <?php echo ($isPending) ? 'bg-yellow-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
+             class="filter-link flex items-center justify-between px-3.5 py-2 lg:px-4 lg:py-3 rounded-lg transition-all duration-200 shrink-0 whitespace-nowrap <?php echo ($isPending) ? 'bg-yellow-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
             <div class="flex items-center">
-              <i data-feather="clock" class="w-5 h-5 mr-3"></i>
-              <span class="font-medium">Pending</span>
+              <i data-feather="clock" class="w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3"></i>
+              <span class="font-medium text-xs lg:text-sm">Pending</span>
             </div>
             <?php if ($isPending): ?>
-              <span class="bg-white text-yellow-500 text-xs font-bold px-2 py-1 rounded-full">
+              <span class="bg-white text-yellow-500 text-[10px] lg:text-xs font-bold px-1.5 py-0.5 lg:px-2 lg:py-1 rounded-full ml-2">
                 <?= $orders->count() ?>
               </span>
             <?php endif; ?>
           </a>
 
           <a href="{{ route('admin.order.index', 'waiting') }}"
-             class="filter-link flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 <?php echo ($isWaiting) ? 'bg-blue-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
+             class="filter-link flex items-center justify-between px-3.5 py-2 lg:px-4 lg:py-3 rounded-lg transition-all duration-200 shrink-0 whitespace-nowrap <?php echo ($isWaiting) ? 'bg-blue-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
             <div class="flex items-center">
-              <i data-feather="alert-circle" class="w-5 h-5 mr-3"></i>
-              <span class="font-medium">Waiting Approval</span>
+              <i data-feather="alert-circle" class="w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3"></i>
+              <span class="font-medium text-xs lg:text-sm">Waiting Approval</span>
             </div>
             <?php if ($isWaiting): ?>
-              <span class="bg-white text-blue-500 text-xs font-bold px-2 py-1 rounded-full">
+              <span class="bg-white text-blue-500 text-[10px] lg:text-xs font-bold px-1.5 py-0.5 lg:px-2 lg:py-1 rounded-full ml-2">
                 <?= $orders->count() ?>
               </span>
             <?php endif; ?>
           </a>
 
           <a href="{{ route('admin.order.index', 'confirm') }}"
-             class="filter-link flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 <?php echo ($isConfirm) ? 'bg-purple-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
+             class="filter-link flex items-center justify-between px-3.5 py-2 lg:px-4 lg:py-3 rounded-lg transition-all duration-200 shrink-0 whitespace-nowrap <?php echo ($isConfirm) ? 'bg-purple-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
             <div class="flex items-center">
-              <i data-feather="check-circle" class="w-5 h-5 mr-3"></i>
-              <span class="font-medium">Confirm</span>
+              <i data-feather="check-circle" class="w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3"></i>
+              <span class="font-medium text-xs lg:text-sm">Confirm</span>
             </div>
             <?php if ($isConfirm): ?>
-              <span class="bg-white text-purple-500 text-xs font-bold px-2 py-1 rounded-full">
+              <span class="bg-white text-purple-500 text-[10px] lg:text-xs font-bold px-1.5 py-0.5 lg:px-2 lg:py-1 rounded-full ml-2">
                 <?= $orders->count() ?>
               </span>
             <?php endif; ?>
           </a>
 
-          <!-- Service Section Separator -->
-          <div class="mt-4 mb-2 px-4">
+          <!-- Service Section Separator (Desktop only) -->
+          <div class="mt-4 mb-2 px-4 hidden lg:block">
             <h4 class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Service</h4>
             <hr class="border-gray-300 mt-2">
           </div>
 
           <a href="{{ route('admin.order.index', 'repairing') }}"
-             class="filter-link flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 <?php echo ($isRepairing) ? 'bg-orange-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
+             class="filter-link flex items-center justify-between px-3.5 py-2 lg:px-4 lg:py-3 rounded-lg transition-all duration-200 shrink-0 whitespace-nowrap <?php echo ($isRepairing) ? 'bg-orange-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
             <div class="flex items-center">
-              <i data-feather="settings" class="w-5 h-5 mr-3"></i>
-              <span class="font-medium">Repairing</span>
+              <i data-feather="settings" class="w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3"></i>
+              <span class="font-medium text-xs lg:text-sm">Repairing</span>
             </div>
             <?php if ($isRepairing): ?>
-              <span class="bg-white text-orange-500 text-xs font-bold px-2 py-1 rounded-full">
+              <span class="bg-white text-orange-500 text-[10px] lg:text-xs font-bold px-1.5 py-0.5 lg:px-2 lg:py-1 rounded-full ml-2">
                 <?= isset($total_repairing) ? $total_repairing : $orders->count() ?>
               </span>
             <?php endif; ?>
           </a>
 
           <a href="{{ route('admin.order.index', 'completed') }}"
-             class="filter-link flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 <?php echo ($isCompleted) ? 'bg-green-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
+             class="filter-link flex items-center justify-between px-3.5 py-2 lg:px-4 lg:py-3 rounded-lg transition-all duration-200 shrink-0 whitespace-nowrap <?php echo ($isCompleted) ? 'bg-green-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
             <div class="flex items-center">
-              <i data-feather="check-square" class="w-5 h-5 mr-3"></i>
-              <span class="font-medium">Completed</span>
+              <i data-feather="check-square" class="w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3"></i>
+              <span class="font-medium text-xs lg:text-sm">Completed</span>
             </div>
             <?php if ($isCompleted): ?>
-              <span class="bg-white text-green-500 text-xs font-bold px-2 py-1 rounded-full">
+              <span class="bg-white text-green-500 text-[10px] lg:text-xs font-bold px-1.5 py-0.5 lg:px-2 lg:py-1 rounded-full ml-2">
                 <?= $orders->count() ?>
               </span>
             <?php endif; ?>
           </a>
 
           <a href="{{ route('admin.order.index', 'failed') }}"
-             class="filter-link flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 <?php echo (isset($filter) && $filter === 'failed') ? 'bg-red-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
+             class="filter-link flex items-center justify-between px-3.5 py-2 lg:px-4 lg:py-3 rounded-lg transition-all duration-200 shrink-0 whitespace-nowrap <?php echo (isset($filter) && $filter === 'failed') ? 'bg-red-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
             <div class="flex items-center">
-              <i data-feather="x-circle" class="w-5 h-5 mr-3"></i>
-              <span class="font-medium">Failed</span>
+              <i data-feather="x-circle" class="w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3"></i>
+              <span class="font-medium text-xs lg:text-sm">Failed</span>
             </div>
             <?php if (isset($filter) && $filter === 'failed'): ?>
-              <span class="bg-white text-red-500 text-xs font-bold px-2 py-1 rounded-full">
+              <span class="bg-white text-red-500 text-[10px] lg:text-xs font-bold px-1.5 py-0.5 lg:px-2 lg:py-1 rounded-full ml-2">
                 <?= $orders->count() ?>
               </span>
             <?php endif; ?>
           </a>
 
           <a href="{{ route('admin.order.index', 'orderpart') }}"
-             class="filter-link flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 <?php echo (isset($filter) && $filter === 'orderpart') ? 'bg-indigo-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
+             class="filter-link flex items-center justify-between px-3.5 py-2 lg:px-4 lg:py-3 rounded-lg transition-all duration-200 shrink-0 whitespace-nowrap <?php echo (isset($filter) && $filter === 'orderpart') ? 'bg-indigo-500 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
             <div class="flex items-center">
-              <i data-feather="package" class="w-5 h-5 mr-3"></i>
-              <span class="font-medium">Marking Order Part</span>
+              <i data-feather="package" class="w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3"></i>
+              <span class="font-medium text-xs lg:text-sm">Marking Order Part</span>
             </div>
           </a>
         </div>

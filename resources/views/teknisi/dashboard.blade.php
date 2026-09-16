@@ -48,29 +48,29 @@
     @endif
 
     <!-- Filter Bar -->
-    <form method="GET" action="{{ route('teknisi.index') }}" class="flex flex-col md:flex-row gap-4 mb-6 bg-white p-2 rounded-lg shadow-sm border border-gray-100 items-stretch md:items-center">
+    <form method="GET" action="{{ route('teknisi.index') }}" class="flex flex-col md:flex-row gap-3 mb-6 bg-white p-3 rounded-xl shadow-sm border border-gray-100 items-stretch md:items-center">
         <div class="relative flex-1">
             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
                 <svg class="w-4 h-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
             </div>
-            <input type="text" id="teknisiSearchInput" name="search" value="{{ $search }}" class="bg-transparent border-0 text-gray-900 text-sm focus:ring-0 w-full pl-10 p-2 placeholder-gray-400" placeholder="Cari berdasarkan nama customer, invoice, atau device...">
+            <input type="text" id="teknisiSearchInput" name="search" value="{{ $search }}" class="bg-gray-50 md:bg-transparent border border-gray-200 md:border-0 rounded-lg md:rounded-none text-gray-900 text-sm focus:ring-0 w-full pl-10 p-2.5 md:p-2 placeholder-gray-400" placeholder="Cari nama, invoice, device...">
         </div>
-        <div class="flex gap-2 items-center pr-2 border-l border-gray-100 pl-4">
-            <select name="status" onchange="this.form.submit()" class="bg-transparent border border-gray-200 text-gray-700 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block p-2 min-w-[130px]">
+        <div class="flex flex-wrap sm:flex-nowrap gap-2 items-center border-t md:border-t-0 md:border-l border-gray-100 pt-2 md:pt-0 pl-0 md:pl-4">
+            <select name="status" onchange="this.form.submit()" class="bg-gray-50 md:bg-transparent border border-gray-200 text-gray-700 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 flex-1 sm:flex-initial p-2 min-w-[120px]">
                 <option value="Semua Status" {{ $status_filter == 'Semua Status' ? 'selected' : '' }}>Semua Status</option>
                 <option value="Order Baru" {{ $status_filter == 'Order Baru' ? 'selected' : '' }}>Order Baru</option>
                 <option value="Sedang Dikerjakan" {{ $status_filter == 'Sedang Dikerjakan' ? 'selected' : '' }}>Sedang Dikerjakan</option>
                 <option value="Selesai" {{ $status_filter == 'Selesai' ? 'selected' : '' }}>Selesai</option>
             </select>
-            <select name="periode" onchange="this.form.submit()" class="bg-transparent border border-gray-200 text-gray-700 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block p-2 min-w-[110px]">
+            <select name="periode" onchange="this.form.submit()" class="bg-gray-50 md:bg-transparent border border-gray-200 text-gray-700 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 flex-1 sm:flex-initial p-2 min-w-[105px]">
                 <option value="Semua Waktu" {{ $periode_filter == 'Semua Waktu' ? 'selected' : '' }}>Semua Waktu</option>
                 <option value="Hari Ini" {{ $periode_filter == 'Hari Ini' ? 'selected' : '' }}>Hari Ini</option>
                 <option value="7 Hari Terakhir" {{ $periode_filter == '7 Hari Terakhir' ? 'selected' : '' }}>7 Hari Terakhir</option>
                 <option value="Bulan Ini" {{ $periode_filter == 'Bulan Ini' ? 'selected' : '' }}>Bulan Ini</option>
             </select>
-            <a href="{{ route('teknisi.index') }}" class="px-4 py-2 text-sm font-medium text-white bg-slate-400 rounded-md hover:bg-slate-500 transition-colors">
+            <a href="{{ route('teknisi.index') }}" class="px-3.5 py-2 text-xs sm:text-sm font-medium text-white bg-slate-500 rounded-lg hover:bg-slate-600 transition-colors text-center shrink-0">
                 Reset
             </a>
         </div>
