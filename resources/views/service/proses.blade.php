@@ -43,21 +43,21 @@
     <div class="intro-y grid grid-cols-12 gap-5 mt-3">
         <!-- Sidebar Filter -->
         <div class="col-span-12 lg:col-span-3 xxl:col-span-2">
-            <div class="intro-y box p-5">
-                <div class="mt-1">
-                    <a href="{{ route('service.antrean', 'baru') }}" class="flex items-center px-3 py-2 rounded-md {{ $current_status == 'baru' ? 'bg-theme-1 text-white font-medium' : 'text-gray-700 hover:bg-gray-100' }}">
+            <div class="intro-y box p-3 lg:p-5">
+                <div class="flex flex-row lg:flex-col overflow-x-auto lg:overflow-visible gap-2 pb-1 lg:pb-0 filter-pill-bar">
+                    <a href="{{ route('service.antrean', 'baru') }}" class="flex items-center px-3 py-2 rounded-md shrink-0 whitespace-nowrap text-xs lg:text-sm {{ $current_status == 'baru' ? 'bg-theme-1 text-white font-medium shadow-sm' : 'bg-gray-100 text-gray-700' }}">
                         <i class="w-4 h-4 mr-2" data-feather="user-plus"></i> Transaksi baru
                     </a>
-                    <a href="{{ route('service.antrean', 'proses') }}" class="flex items-center px-3 py-2 mt-2 rounded-md {{ $current_status == 'proses' || $current_status == 'diproses' ? 'bg-theme-1 text-white font-medium' : 'text-gray-700 hover:bg-gray-100' }}"> 
+                    <a href="{{ route('service.antrean', 'proses') }}" class="flex items-center px-3 py-2 rounded-md shrink-0 whitespace-nowrap text-xs lg:text-sm {{ $current_status == 'proses' || $current_status == 'diproses' ? 'bg-theme-1 text-white font-medium shadow-sm' : 'bg-gray-100 text-gray-700' }}"> 
                         <i class="w-4 h-4 mr-2" data-feather="user-check"></i> Transaksi diproses 
                     </a>
-                    <a href="{{ route('service.antrean', 'konfirmasi') }}" class="flex items-center px-3 py-2 mt-2 rounded-md {{ $current_status == 'konfirmasi' ? 'bg-theme-1 text-white font-medium' : 'text-gray-700 hover:bg-gray-100' }}">
+                    <a href="{{ route('service.antrean', 'konfirmasi') }}" class="flex items-center px-3 py-2 rounded-md shrink-0 whitespace-nowrap text-xs lg:text-sm {{ $current_status == 'konfirmasi' ? 'bg-theme-1 text-white font-medium shadow-sm' : 'bg-gray-100 text-gray-700' }}">
                         <i class="w-4 h-4 mr-2" data-feather="phone-outgoing"></i> Konfirmasi
                     </a>
-                    <a href="{{ route('service.antrean', 'pelunasan') }}" class="flex items-center px-3 py-2 mt-2 rounded-md {{ $current_status == 'pelunasan' ? 'bg-theme-1 text-white font-medium' : 'text-gray-700 hover:bg-gray-100' }}"> 
+                    <a href="{{ route('service.antrean', 'pelunasan') }}" class="flex items-center px-3 py-2 rounded-md shrink-0 whitespace-nowrap text-xs lg:text-sm {{ $current_status == 'pelunasan' ? 'bg-theme-1 text-white font-medium shadow-sm' : 'bg-gray-100 text-gray-700' }}"> 
                         <i class="w-4 h-4 mr-2" data-feather="credit-card"></i> Pelunasan 
                     </a>
-                    <a href="{{ route('service.antrean', 'lunas') }}" class="flex items-center px-3 py-2 mt-2 rounded-md {{ $current_status == 'lunas' ? 'bg-theme-1 text-white font-medium' : 'text-gray-700 hover:bg-gray-100' }}"> 
+                    <a href="{{ route('service.antrean', 'lunas') }}" class="flex items-center px-3 py-2 rounded-md shrink-0 whitespace-nowrap text-xs lg:text-sm {{ $current_status == 'lunas' ? 'bg-theme-1 text-white font-medium shadow-sm' : 'bg-gray-100 text-gray-700' }}"> 
                         <i class="w-4 h-4 mr-2" data-feather="users"></i> Customer
                     </a>
                 </div>

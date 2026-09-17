@@ -709,11 +709,6 @@
     @endauth
 
     <div class="app-layout">
-    <!-- Mobile Menu Button -->
-    <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileSidebar()">
-        <i data-feather="menu"></i>
-    </button>
-
     <!-- Sidebar Overlay -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeMobileSidebar()"></div>
 

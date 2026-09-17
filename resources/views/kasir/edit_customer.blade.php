@@ -64,7 +64,7 @@
 </header>
 
 <div class="content-area">
-    <div class="form-container" style="max-width: 800px; margin: 0 auto; padding-top: 8px;">
+    <div class="form-container" style="max-width: 800px; width: 100%; margin: 0 auto; padding-top: 8px;">
         <div class="card-form">
             <!-- Arahkan Action Form ke rute update -->
             <form action="{{ url('/Kasir/update/' . $transaksi->trans_kode) }}" method="POST">
@@ -73,14 +73,14 @@
                 
                 <h5 class="section-title">Informasi Pelanggan</h5>
                 
-                <div class="row">
-                    <div class="col-md-6 form-group">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="form-group">
                         <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
                         <!-- value diisi data dari database -->
                         <input type="text" name="cos_nama" value="{{ old('cos_nama', $transaksi->customer->cos_nama) }}" class="form-control-custom" required>
                     </div>
                     
-                    <div class="col-md-6 form-group">
+                    <div class="form-group">
                         <label class="form-label">No. HP / WhatsApp <span class="text-danger">*</span></label>
                         <input type="number" name="cos_hp" value="{{ old('cos_hp', $transaksi->customer->cos_hp) }}" class="form-control-custom" required>
                     </div>
@@ -104,11 +104,11 @@
                     <textarea name="cos_keluhan" class="form-control-custom" rows="4" required>{{ old('cos_keluhan', $transaksi->customer->cos_keluhan) }}</textarea>
                 </div>
 
-                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px; padding-top: 24px; border-top: 1px solid #f1f5f9;">
-                    <a href="{{ url('/Kasir') }}" style="background-color: #f1f5f9; color: #475569; border-radius: 8px; font-weight: 600; padding: 10px 24px; text-decoration: none; border: 1px solid #e2e8f0; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#e2e8f0'" onmouseout="this.style.backgroundColor='#f1f5f9'">
+                <div class="flex flex-col sm:flex-row justify-end gap-3 mt-6 pt-5 border-t border-gray-100">
+                    <a href="{{ url('/Kasir') }}" class="btn btn-outline text-gray-700 bg-gray-100 hover:bg-gray-200 justify-center" style="border-radius: 8px; font-weight: 600; padding: 10px 24px;">
                         Batal
                     </a>
-                    <button type="submit" style="background-color: #f59e0b; color: white; border-radius: 8px; font-weight: 600; padding: 10px 24px; border: none; display: flex; align-items: center; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#d97706'" onmouseout="this.style.backgroundColor='#f59e0b'">
+                    <button type="submit" class="btn btn-primary justify-center" style="background-color: #f59e0b; color: white; border-radius: 8px; font-weight: 600; padding: 10px 24px; border: none; display: flex; align-items: center; cursor: pointer;">
                         <i data-feather="check" style="width: 18px; height: 18px; margin-right: 8px;"></i> Perbarui Data
                     </button>
                 </div>

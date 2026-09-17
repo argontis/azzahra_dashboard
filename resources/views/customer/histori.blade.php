@@ -73,17 +73,17 @@
                     <div class="mt-6 lg:mt-0 flex-1 px-5 border-t lg:border-0 border-gray-200 pt-5 lg:pt-0">
                         <div class="font-medium text-center lg:text-left lg:mt-5">Alamat</div>
                         <div class="flex items-center justify-center lg:justify-start mt-2">
-                            <div class="mr-2 w-80 flex">
-                                <textarea class="ml-3 font-medium" style="width: 300px;" readonly>{{ $proses['cos_alamat'] ?? '-' }}</textarea>
+                            <div class="w-full flex">
+                                <textarea class="w-full font-medium p-2 border rounded-md text-sm bg-gray-50" rows="3" readonly>{{ $proses['cos_alamat'] ?? '-' }}</textarea>
                             </div>
                         </div>
                     </div>                    
                 </div>
-                <div class="nav-tabs flex flex-col sm:flex-row justify-center lg:justify-start">
-                    <a data-toggle="tab" data-target="#unit" role="button" class="py-4 sm:mr-8 active">Unit</a>
-                    <a data-toggle="tab" data-target="#kelket" role="button" class="py-4 sm:mr-8">Keluhan & Keterangan</a>
-                    <a data-toggle="tab" data-target="#tindakan" role="button" class="py-4 sm:mr-8">Tindakan</a>
-                    <a data-toggle="tab" data-target="#histori" role="button" class="py-4 sm:mr-8">Histori Pembayaran</a>
+                <div class="nav-tabs flex flex-row overflow-x-auto gap-2 pb-1 sm:pb-0 mobile-tab-scroll justify-start">
+                    <a data-toggle="tab" data-target="#unit" role="button" class="py-3 px-4 sm:mr-4 active whitespace-nowrap">Unit</a>
+                    <a data-toggle="tab" data-target="#kelket" role="button" class="py-3 px-4 sm:mr-4 whitespace-nowrap">Keluhan & Keterangan</a>
+                    <a data-toggle="tab" data-target="#tindakan" role="button" class="py-3 px-4 sm:mr-4 whitespace-nowrap">Tindakan</a>
+                    <a data-toggle="tab" data-target="#histori" role="button" class="py-3 px-4 sm:mr-4 whitespace-nowrap">Histori Pembayaran</a>
                 </div>
             </div>
             

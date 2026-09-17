@@ -279,6 +279,11 @@
     }
 }
 @media (max-width: 768px) {
+    .tier-filter-bar { flex-direction: column !important; align-items: stretch !important; gap: 8px !important; }
+    .tier-tabs-group { display: flex !important; flex-wrap: nowrap !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; padding: 4px !important; width: 100% !important; scrollbar-width: none; }
+    .tier-tabs-group::-webkit-scrollbar { display: none; }
+    .tier-tab-link { flex-shrink: 0 !important; }
+    .search-box-container { max-width: 100% !important; min-width: 100% !important; width: 100% !important; }
     .intro-y.datatable-wrapper { border-radius: 12px; }
     .table thead th { padding: 1rem 0.75rem; font-size: 0.75rem; }
     .table tbody td { padding: 1rem 0.75rem; font-size: 0.8rem; }
@@ -378,7 +383,7 @@
 
         <!-- Table Container with Horizontal Scroll Support -->
         <div class="table-responsive-container">
-            <table class="table table-report table-report--bordered" style="width: 100%; min-width: 1200px;">
+            <table class="table table-report table-report--bordered w-full">
                 <thead>
                     <tr>
                         <th class="border-b-2 text-center whitespace-nowrap" style="width: 50px;">NO</th>

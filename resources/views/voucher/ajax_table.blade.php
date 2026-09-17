@@ -1,5 +1,5 @@
 @if ($voucher->count() > 0)
-    <div class="intro-y w-full">
+    <div class="intro-y w-full overflow-x-auto">
         <table class="table table-report -mt-2 w-full min-w-full">
             <thead>
                 <tr>

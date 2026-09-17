@@ -546,18 +546,11 @@ document.addEventListener('DOMContentLoaded', () => {
 @endif
 </script>
 
-<style>
-#sidebarOverlay {
-    display: none !important;
-    pointer-events: none !important;
-    opacity: 0 !important;
-}
-
 .btn-buat-mou {
     display: inline-block !important;
     width: auto !important;
-    min-width: 150px !important;
-    padding: 12px 24px !important;
+    min-width: 130px !important;
+    padding: 10px 20px !important;
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
     color: white !important;
     font-size: 14px !important;
@@ -571,8 +564,6 @@ document.addEventListener('DOMContentLoaded', () => {
     white-space: nowrap !important;
     line-height: 1.5 !important;
     position: relative !important;
-    z-index: 999 !important;
-    pointer-events: auto !important;
     user-select: none !important;
 }
 
@@ -637,6 +628,21 @@ document.addEventListener('DOMContentLoaded', () => {
     padding: 24px;
     max-height: calc(90vh - 120px);
     overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        width: 96% !important;
+        max-width: 96% !important;
+        margin: 4% auto !important;
+        border-radius: 12px !important;
+    }
+    .modal-header {
+        padding: 14px 16px !important;
+    }
+    .modal-body {
+        padding: 16px 12px !important;
+    }
 }
 </style>
 @endsection
