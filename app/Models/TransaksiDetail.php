@@ -13,6 +13,8 @@ class TransaksiDetail extends Model
 
     protected $primaryKey = 'dtl_kode';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'trans_kode',
         'kry_kode',
@@ -25,6 +27,11 @@ class TransaksiDetail extends Model
         'dtl_stt_stor',
         'dtl_payment_method',
         'dtl_transfer_status',
+        'xendit_invoice_id',
+        'xendit_invoice_url',
+        'xendit_status',
+        'xendit_payment_method',
+        'xendit_paid_at',
     ];
 
     public function transaksi()

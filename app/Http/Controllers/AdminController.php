@@ -11,6 +11,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -143,14 +144,31 @@ class AdminController extends Controller
         return view('admin.cus-konf', ['title' => 'Transaksi Konfirmasi', 'trans' => $trans]);
     }
 
-    public function cus_konf_bank()
+    public function cus_konf_bank(Request $request)
     {
+        // Auto-verify if returning from Xendit checkout
+        if ($request->query('status') === 'success' || $request->has('trans')) {
+            $transKode = $request->query('trans');
+            $pendingDetail = TransaksiDetail::where('xendit_status', 'PENDING')
+                ->when($transKode, fn ($q) => $q->where('trans_kode', $transKode))
+                ->first();
+
+            if ($pendingDetail && ! empty($pendingDetail->xendit_invoice_id)) {
+                try {
+                    app(XenditPaymentController::class)->checkStatus($pendingDetail->dtl_kode);
+                    session()->flash('sukses', 'Pembayaran Xendit berhasil diverifikasi dan disetorkan!');
+                } catch (\Exception $e) {
+                    Log::warning('Auto sync Xendit on redirect failed', ['error' => $e->getMessage()]);
+                }
+            }
+        }
+
         $trans = DB::table('transaksi_detail')
             ->leftJoin('transaksi', 'transaksi.trans_kode', '=', 'transaksi_detail.trans_kode')
             ->leftJoin('costomer', 'transaksi.cos_kode', '=', 'costomer.id_costomer')
             ->leftJoin('karyawan', 'transaksi.kry_kode', '=', 'karyawan.kry_kode')
             ->where('transaksi.trans_status', 'Pelunasan')
-            ->where('transaksi_detail.dtl_jenis_bayar', 'TRANFER')
+            ->whereIn('transaksi_detail.dtl_jenis_bayar', ['TRANFER', 'TRANSFER', 'XENDIT'])
             ->where('transaksi_detail.dtl_stt_stor', 'Menunggu')
             ->select(
                 'transaksi_detail.*',

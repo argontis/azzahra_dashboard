@@ -14,6 +14,8 @@ class Transaksi extends Model
 
     protected $keyType = 'string';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'trans_kode',
         'cos_kode',

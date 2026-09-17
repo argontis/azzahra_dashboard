@@ -19,6 +19,7 @@ use App\Http\Controllers\QuickServiceController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TeknisiController;
 use App\Http\Controllers\VoucherController;
+use App\Http\Controllers\XenditPaymentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -169,6 +170,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/export_excel_lap_perhari', [ExportController::class, 'lap_perhari_excel'])->name('admin.export_excel_lap_perhari');
         Route::get('/export_excel_laporan', [ExportController::class, 'lap_excel'])->name('admin.export_excel_laporan');
         Route::get('/export_dashboard', [AdminController::class, 'export_dashboard'])->name('admin.export_dashboard');
+
+        // Xendit Integration Routes
+        Route::post('/xendit/create', [XenditPaymentController::class, 'createInvoice'])->name('admin.xendit.create');
+        Route::get('/xendit/status/{dtl_kode}', [XenditPaymentController::class, 'checkStatus'])->name('admin.xendit.status');
     }); // <-- Batas akhir Group Admin khusus Admin
 
     // ==========================================
@@ -250,3 +255,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/announcements/unread-count', [AnnouncementController::class, 'unreadCount'])->name('announcements.unread_count');
 
 }); // <-- Batas akhir Route::middleware(['auth'])
+
+// ==========================================
+// XENDIT WEBHOOK CALLBACKS (Public)
+// ==========================================
+Route::post('/xendit/webhook', [XenditPaymentController::class, 'webhook'])->name('xendit.webhook');
+Route::post('/api/xendit/webhook', [XenditPaymentController::class, 'webhook'])->name('xendit.webhook.api');

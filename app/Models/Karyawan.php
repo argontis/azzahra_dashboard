@@ -17,6 +17,8 @@ class Karyawan extends Authenticatable
 
     protected $keyType = 'string';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'kry_kode',
         'kry_nik',
@@ -57,5 +59,20 @@ class Karyawan extends Authenticatable
     public function getAuthPassword()
     {
         return $this->kry_pswd;
+    }
+
+    public function getKryTelpAttribute(): ?string
+    {
+        return $this->attributes['kry_telp'] ?? $this->attributes['kry_tlp'] ?? null;
+    }
+
+    public function getKryJoinDateAttribute(): ?string
+    {
+        return $this->attributes['kry_join_date'] ?? $this->attributes['kry_tgl_masuk'] ?? null;
+    }
+
+    public function getKryStatusAttribute(): int
+    {
+        return isset($this->attributes['kry_status']) ? (int) $this->attributes['kry_status'] : 1;
     }
 }

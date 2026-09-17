@@ -17,6 +17,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => CheckRole::class,
         ]);
+        $middleware->validateCsrfTokens(except: [
+            'xendit/*',
+            'api/xendit/*',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
