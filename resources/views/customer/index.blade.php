@@ -12,6 +12,8 @@
     border: 1px solid #e2e8f0;
     overflow: hidden;
     position: relative;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
 }
 
 .intro-y.datatable-wrapper::before {
@@ -119,10 +121,17 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 12px !important;
+    gap: 12px;
+    margin-bottom: 14px !important;
     padding-bottom: 12px !important;
     border-bottom: 1px solid #f1f5f9;
+}
+
+.tier-actions-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .tier-tabs-group {
@@ -279,11 +288,6 @@
     }
 }
 @media (max-width: 768px) {
-    .tier-filter-bar { flex-direction: column !important; align-items: stretch !important; gap: 8px !important; }
-    .tier-tabs-group { display: flex !important; flex-wrap: nowrap !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; padding: 4px !important; width: 100% !important; scrollbar-width: none; }
-    .tier-tabs-group::-webkit-scrollbar { display: none; }
-    .tier-tab-link { flex-shrink: 0 !important; }
-    .search-box-container { max-width: 100% !important; min-width: 100% !important; width: 100% !important; }
     .intro-y.datatable-wrapper { border-radius: 12px; }
     .table thead th { padding: 1rem 0.75rem; font-size: 0.75rem; }
     .table tbody td { padding: 1rem 0.75rem; font-size: 0.8rem; }
@@ -330,12 +334,6 @@
 <div class="content-area">
     <div class="sukses" data-sukses="{{ session('sukses') }}"></div>
 
-    <div class="flex justify-end mb-2 mt-2">
-        <a href="{{ route('customer.export_pdf') }}" target="_blank" class="button box flex items-center text-gray-700 bg-white hover:bg-slate-50 transition-colors shadow-xs px-3.5 py-2 rounded-lg text-xs font-semibold border border-gray-200">
-            <i data-feather="file-text" class="w-4 h-4 mr-1.5 text-indigo-600"></i> Export to PDF
-        </a>
-    </div>
-
     <div class="intro-y datatable-wrapper box p-5 mt-2">
         <!-- Filter Tabs & Search Header -->
         <div class="tier-filter-bar">
@@ -367,33 +365,38 @@
                 </a>
             </div>
 
-            <!-- Search Input -->
-            <div class="search-box-container">
-                <form action="{{ url()->current() }}" method="GET" style="margin:0;">
-                    @if(request('tier'))
-                        <input type="hidden" name="tier" value="{{ request('tier') }}">
-                    @endif
-                    <div style="position: relative;">
-                        <input type="text" name="search" id="search-input" value="{{ request('search') }}" placeholder="Cari nama, alamat, no hp...">
-                        <i data-feather="search" class="search-icon w-4 h-4"></i>
-                    </div>
-                </form>
+            <!-- Action Controls: Export + Search -->
+            <div class="tier-actions-group">
+                <a href="{{ route('customer.export_pdf') }}" target="_blank" class="button box flex items-center text-gray-700 bg-white hover:bg-slate-50 transition-colors shadow-xs px-3.5 py-2 rounded-lg text-xs font-semibold border border-gray-200 whitespace-nowrap">
+                    <i data-feather="file-text" class="w-4 h-4 mr-1.5 text-indigo-600"></i> Export to PDF
+                </a>
+                <div class="search-box-container">
+                    <form action="{{ url()->current() }}" method="GET" style="margin:0;">
+                        @if(request('tier'))
+                            <input type="hidden" name="tier" value="{{ request('tier') }}">
+                        @endif
+                        <div style="position: relative;">
+                            <input type="text" name="search" id="search-input" value="{{ request('search') }}" placeholder="Cari nama, alamat, no hp...">
+                            <i data-feather="search" class="search-icon w-4 h-4"></i>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 
         <!-- Table Container with Horizontal Scroll Support -->
         <div class="table-responsive-container">
-            <table class="table table-report table-report--bordered w-full">
+            <table class="table table-report table-report--bordered" style="width: 100%; min-width: 980px;">
                 <thead>
                     <tr>
-                        <th class="border-b-2 text-center whitespace-nowrap" style="width: 50px;">NO</th>
-                        <th class="border-b-2 text-center whitespace-nowrap" style="width: 130px;">INVOICE</th>
-                        <th class="border-b-2 whitespace-nowrap" style="min-width: 180px;">NAMA CUSTOMER</th>
-                        <th class="border-b-2 text-center whitespace-nowrap" style="min-width: 160px;">SKOR & TIER</th>
-                        <th class="border-b-2 whitespace-nowrap" style="min-width: 160px;">ALAMAT</th>
-                        <th class="border-b-2 text-center whitespace-nowrap" style="width: 130px;">NO HP</th>
-                        <th class="border-b-2 text-center whitespace-nowrap" style="width: 120px;">TANGGAL</th>
-                        <th class="border-b-2 text-center whitespace-nowrap" style="width: 220px; min-width: 220px;">ACTIONS</th>
+                        <th class="border-b-2 text-center whitespace-nowrap" style="width: 45px;">NO</th>
+                        <th class="border-b-2 text-center whitespace-nowrap" style="width: 110px;">INVOICE</th>
+                        <th class="border-b-2 whitespace-nowrap" style="min-width: 160px;">NAMA CUSTOMER</th>
+                        <th class="border-b-2 text-center whitespace-nowrap" style="min-width: 140px;">SKOR & TIER</th>
+                        <th class="border-b-2 whitespace-nowrap" style="min-width: 140px;">ALAMAT</th>
+                        <th class="border-b-2 text-center whitespace-nowrap" style="width: 120px;">NO HP</th>
+                        <th class="border-b-2 text-center whitespace-nowrap" style="width: 110px;">TANGGAL</th>
+                        <th class="border-b-2 text-center whitespace-nowrap" style="width: 180px; min-width: 180px;">ACTIONS</th>
                     </tr>
                 </thead>
                 <tbody id="table-body">
@@ -468,7 +471,7 @@
                                     JAM : {{ $row->created_at ? \Carbon\Carbon::parse($row->created_at)->format('H:i:s') : '-' }}
                                 </div>
                             </td>
-                            <td class="border-b whitespace-nowrap text-center" style="width: 220px; min-width: 220px;">
+                            <td class="border-b whitespace-nowrap text-center" style="width: 180px; min-width: 180px;">
                                 <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
                                     {{-- Tombol Proses --}}
                                     <a href="{{ route('service.proses', $row->trans_kode ?? $row->id_costomer) }}"

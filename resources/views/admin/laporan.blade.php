@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
         </header>
-	<div class="content">	
+	<div class="content-area">
         <div class="col-span-12 lg:col-span-9 xxl:col-span-10">
         	<form action="{{ url('Export/lap_excel') }}" method="post">
 	            <div class="intro-y flex flex-col-reverse sm:flex-row items-center">           	

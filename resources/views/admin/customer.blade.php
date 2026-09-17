@@ -1,8 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="content">
     <header class="page-header mb-5">
+        <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+            <i data-feather="menu"></i>
+        </div>
         <div class="header-title">
             <h1><i data-feather="layout" class="w-6 h-6 inline-block mr-2"></i>{{ $title ?? 'Admin Dashboard' }}</h1>
         </div>            
@@ -21,6 +23,8 @@
             </div>
         </div>
     </header>
+
+<div class="content-area">
 
     
     <div class="intro-y box p-5 mt-5">

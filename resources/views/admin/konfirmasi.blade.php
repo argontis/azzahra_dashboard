@@ -1,19 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="content">
-    @if(session('sukses'))
-        <div class="rounded-md flex items-center px-5 py-4 mb-2 mt-5 bg-theme-9 text-white">
-            <i data-feather="check" class="w-6 h-6 mr-2"></i> {{ session('sukses') }}
-        </div>
-    @endif
-    @if(session('gagal'))
-        <div class="rounded-md flex items-center px-5 py-4 mb-2 mt-5 bg-theme-6 text-white">
-            <i data-feather="x" class="w-6 h-6 mr-2"></i> {{ session('gagal') }}
-        </div>
-    @endif
-
     <header class="page-header mb-5">
+        <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+            <i data-feather="menu"></i>
+        </div>
         <div class="header-title">
             <h1><i data-feather="layout" class="w-6 h-6 inline-block mr-2"></i>{{ $title ?? 'Admin Dashboard' }}</h1>
         </div>            
@@ -32,6 +23,18 @@
             </div>
         </div>
     </header>
+
+<div class="content-area">
+    @if(session('sukses'))
+        <div class="rounded-md flex items-center px-5 py-4 mb-2 mt-5 bg-theme-9 text-white">
+            <i data-feather="check" class="w-6 h-6 mr-2"></i> {{ session('sukses') }}
+        </div>
+    @endif
+    @if(session('gagal'))
+        <div class="rounded-md flex items-center px-5 py-4 mb-2 mt-5 bg-theme-6 text-white">
+            <i data-feather="x" class="w-6 h-6 mr-2"></i> {{ session('gagal') }}
+        </div>
+    @endif
 
     <div class="intro-y box px-5 pt-5 mt-5">
         <div class="flex flex-col lg:flex-row border-b border-gray-200 pb-5 -mx-5">

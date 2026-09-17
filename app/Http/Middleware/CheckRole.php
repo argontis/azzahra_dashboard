@@ -34,9 +34,11 @@ class CheckRole
 
         $roleRoutes = [
             'Admin' => '/Admin',
+            'Pimpinan' => '/Admin',
             'Kasir' => '/Kasir',
             'Customer Service' => '/Service',
             'Teknisi' => '/Teknisi',
+            'Magang / PKL' => '/Teknisi',
             'HR' => '/HR',
         ];
 

@@ -26,12 +26,13 @@
     </div>
 </header>
 
-<div class="content">
+<div class="content-area">
     
     <div class="intro-y box mt-5 p-5">
         <div class="intro-y flex flex-col sm:flex-row items-center my-5">
             <h2 class="text-lg font-medium mr-auto">Order Sparepart</h2>
         </div>
+        <div class="overflow-x-auto">
         <table class="table table-bordered">
             <thead>
                 <tr class="bg-gray-700 text-white">
@@ -69,6 +70,7 @@
                 @endforeach
             </tbody>
         </table>
+        </div>
     </div>
     <div class="intro-y box mt-5 p-5">
             <div class="intro-y flex flex-col sm:flex-row items-center my-5">
@@ -78,7 +80,9 @@
                 <input type="text" id="apiSearch" class="form-control w-1/3 border border-black rounded px-3 py-2" placeholder="Cari sparepart...">
                 <button id="apiSearchBtn" class="btn btn-green ml-2">Cari</button>
             </div>
-            <div id="apiSparepartTable"></div>
+            <div class="overflow-x-auto">
+                <div id="apiSparepartTable"></div>
+            </div>
             <div class="mt-3 flex items-center">
                 <button id="apiPrevPage" class="btn btn-secondary mr-2">Prev</button>
                 <span id="apiPageInfo"></span>

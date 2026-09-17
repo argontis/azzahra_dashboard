@@ -25,7 +25,7 @@
                 </div>
             </div>
         </header>
-<div class="content mt-5">
+<div class="content-area">
 	<div class="sukses" data-sukses="<?php echo session('sukses');?>"></div>	
     <!-- <div class="intro-y chat grid grid-cols-12 gap-5 mt-5">
     	<div class="col-span-12 lg:col-span-3 xxl:col-span-2">

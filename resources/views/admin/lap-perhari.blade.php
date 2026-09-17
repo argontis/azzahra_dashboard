@@ -25,7 +25,7 @@
                 </div>
             </div>
         </header>
-<div class="content">
+<div class="content-area">
     <div class="intro-y box overflow-hidden mt-5">
         <div class="flex flex-col lg:flex-row border-b px-5 sm:px-20 pt-10 pb-10 sm:pb-20 text-center sm:text-left">
             <div class="font-semibold text-theme-1 text-3xl">LAPORAN</div>

@@ -26,19 +26,19 @@ class AuthController extends Controller
             $request->session()->forget('url.intended');
             $user = Auth::user();
 
-            if ($user->kry_level == 'Admin') {
+            if ($user->kry_level == 'Admin' || $user->kry_level == 'Pimpinan') {
                 return redirect('/Admin')->with('show_curtain', true);
             } elseif ($user->kry_level == 'Kasir') {
                 return redirect('/Kasir')->with('show_curtain', true);
             } elseif ($user->kry_level == 'Customer Service') {
                 return redirect('/Service')->with('show_curtain', true);
-            } elseif ($user->kry_level == 'Teknisi') {
+            } elseif ($user->kry_level == 'Teknisi' || $user->kry_level == 'Magang / PKL') {
                 return redirect('/Teknisi')->with('show_curtain', true);
             } elseif ($user->kry_level == 'HR') {
                 return redirect('/HR')->with('show_curtain', true);
             }
 
-            return redirect('/dashboard')->with('show_curtain', true);
+            return redirect('/Admin')->with('show_curtain', true);
         }
 
         return back()->with('gagal', 'Username atau Password salah');

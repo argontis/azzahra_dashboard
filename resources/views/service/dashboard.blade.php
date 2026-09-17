@@ -26,7 +26,7 @@
     </div>
 </header>
 
-<div class="content">
+<div class="content-area">
     <div class="p-6 md:p-8 bg-gray-50/50 min-h-screen">
         <!-- General Report Header -->
         <div class="flex justify-between items-center mb-6">

@@ -26,7 +26,7 @@
             </div>
         </header>
 
-<div class="content mt-5">	
+<div class="content-area">
     <!-- <div class="intro-y chat grid grid-cols-12 gap-5 mt-5">
     	<div class="col-span-12 lg:col-span-3 xxl:col-span-2">
     		<div class="intro-y box p-5 mt-6">

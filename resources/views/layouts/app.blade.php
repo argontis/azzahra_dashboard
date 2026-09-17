@@ -814,9 +814,9 @@
                     </a>
                 </div>
                 
-                @elseif ($level == 'Teknisi')
+                @elseif ($level == 'Teknisi' || $level == 'Magang / PKL')
                 <div class="nav-group">
-                    <div class="nav-group-title">Menu Teknisi</div>
+                    <div class="nav-group-title">{{ $level == 'Magang / PKL' ? 'Menu Magang / PKL' : 'Menu Teknisi' }}</div>
                     <a href="{{ url('Teknisi') }}" class="nav-link {{ $title == 'Dashboard Teknisi' ? 'active' : '' }}">
                         <div class="nav-icon"><i data-feather="home"></i></div>
                         <span class="nav-text">Dashboard</span>
@@ -882,11 +882,56 @@
                                 <div class="nav-icon"><i data-feather="award"></i></div>
                                 <span class="nav-text">Sertifikat</span>
                             </a>
-                             <a href="{{ url('Admin/mou') }}" class="nav-link {{ ($title == 'Mou' || $title == 'Rekap MOU') ? 'active' : '' }}">
+                            <a href="{{ url('Admin/mou') }}" class="nav-link {{ ($title == 'Mou' || $title == 'Rekap MOU') ? 'active' : '' }}">
                                 <div class="nav-icon"><i data-feather="file-text"></i></div>
                                 <span class="nav-text">Mou</span>
                             </a>
                         </div>
+                @elseif ($level == 'Pimpinan')
+                <div class="nav-group">
+                    <div class="nav-group-title">Menu Eksekutif</div>
+                    <a href="{{ url('Admin') }}" class="nav-link {{ $title == 'Dashboard' ? 'active' : '' }}">
+                        <div class="nav-icon"><i data-feather="home"></i></div>
+                        <span class="nav-text">Dashboard Overview</span>
+                    </a>
+                    <a href="{{ url('HR/karyawan') }}" class="nav-link {{ $title == 'Data Karyawan' ? 'active' : '' }}">
+                        <div class="nav-icon"><i data-feather="users"></i></div>
+                        <span class="nav-text">Data Karyawan</span>
+                    </a>
+                    <a href="{{ url('Customer') }}" class="nav-link {{ $title == 'Customer' ? 'active' : '' }}">
+                        <div class="nav-icon"><i data-feather="user-check"></i></div>
+                        <span class="nav-text">Data Customer</span>
+                    </a>
+                    <a role="button" class="nav-link laporan-toggle {{ $title == 'Laporan' ? 'active' : '' }}" onclick="toggleLaporanDropdown()">
+                        <div class="nav-icon"><i data-feather="activity"></i></div>
+                        <span class="nav-text">Laporan Keuangan</span>
+                        <div class="dropdown-chevron">
+                            <i data-feather="chevron-up" class="w-4 h-4"></i>
+                        </div>
+                    </a>
+                    <div class="nav-dropdown-menu" id="laporanDropdownMenu">
+                        <a href="{{ url('Admin/lap_perhari') }}" class="dropdown-menu-item">
+                            <div class="nav-icon"><i data-feather="book-open"></i></div>
+                            <span class="nav-text">Harian</span>
+                        </a>
+                        <a href="{{ url('Admin/laporan') }}" class="dropdown-menu-item">
+                            <div class="nav-icon"><i data-feather="book"></i></div>
+                            <span class="nav-text">Bulanan</span>
+                        </a>
+                    </div>
+                    <a href="{{ url('HR/rekap') }}" class="nav-link {{ $title == 'Rekap HR' ? 'active' : '' }}">
+                        <div class="nav-icon"><i data-feather="bar-chart-2"></i></div>
+                        <span class="nav-text">Rekap Kinerja HR</span>
+                    </a>
+                    <a href="{{ url('Admin/mou') }}" class="nav-link {{ ($title == 'Mou' || $title == 'Rekap MOU') ? 'active' : '' }}">
+                        <div class="nav-icon"><i data-feather="file-text"></i></div>
+                        <span class="nav-text">Rekap MOU</span>
+                    </a>
+                    <a href="{{ url('Admin/order') }}" class="nav-link {{ $title == 'Order' ? 'active' : '' }}">
+                        <div class="nav-icon"><i data-feather="shopping-cart"></i></div>
+                        <span class="nav-text">Monitoring Order</span>
+                    </a>
+                </div>
                 @else
                 <div class="nav-group">
                     <div class="nav-group-title">Menu</div>
@@ -1017,7 +1062,7 @@
                 
                 <!-- Dropdown Menu -->
                 <div class="user-dropdown-menu" id="userDropdownMenu">
-                    @if ($level != 'Customer Service' && $level != 'Kasir' && $level != 'Teknisi')
+                    @if ($level === 'Admin' || $level === 'HR' || $level === 'Pimpinan')
                     <a href="{{ url('HR/karyawan') }}" class="dropdown-menu-item">
                         <div class="nav-icon"><i data-feather="user-plus"></i></div>
                         <span class="nav-text">Add Account</span>

@@ -21,7 +21,7 @@
     </div>
 </header>
 
-<div class="content mt-5">
+<div class="content-area">
     @if(session('sukses'))
     <div class="alert alert-success bg-green-100 text-green-800 p-4 rounded mb-4">{{ session('sukses') }}</div>
     @endif

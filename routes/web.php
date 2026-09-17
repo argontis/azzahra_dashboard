@@ -20,11 +20,28 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TeknisiController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\XenditPaymentController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect('/Auth');
 });
+
+Route::get('/dashboard', function () {
+    $user = Auth::user();
+    if (! $user) {
+        return redirect('/Auth');
+    }
+
+    return match ($user->kry_level) {
+        'Admin', 'Pimpinan' => redirect('/Admin'),
+        'Kasir' => redirect('/Kasir'),
+        'Customer Service' => redirect('/Service'),
+        'Teknisi', 'Magang / PKL' => redirect('/Teknisi'),
+        'HR' => redirect('/HR'),
+        default => redirect('/Admin'),
+    };
+})->middleware('auth')->name('dashboard');
 
 Route::get('/Auth', [AuthController::class, 'index'])->name('login');
 Route::post('/Auth/login', [AuthController::class, 'login'])->name('login.post');
@@ -64,7 +81,7 @@ Route::middleware(['auth'])->group(function () {
     // ==========================================
     // MODULE TEKNISI
     // ==========================================
-    Route::prefix('Teknisi')->middleware('role:Teknisi,Admin')->group(function () {
+    Route::prefix('Teknisi')->middleware('role:Teknisi,Magang / PKL,Admin')->group(function () {
         Route::get('/', [TeknisiController::class, 'index'])->name('teknisi.index');
         Route::get('/input_tindakan/{kode}', [TeknisiController::class, 'input_tindakan'])->name('teknisi.input_tindakan');
         Route::post('/save_tindakan', [TeknisiController::class, 'save_tindakan'])->name('teknisi.save_tindakan');

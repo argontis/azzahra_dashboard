@@ -25,7 +25,7 @@
         </div>
     </div>
 </header>
-<div class="content" style="margin-top: 60px">
+<div class="content-area">
     <div class="sukses" data-sukses="<?php echo session('sukses');?>"></div>	
     <div class="col-span-12 lg:col-span-9 xxl:col-span-10">
         <div class="intro-y datatable-wrapper box p-5 mt-5">

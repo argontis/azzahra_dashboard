@@ -25,7 +25,7 @@
     </div>            
 </header>
 
-<div class="content" style="margin-top: 60px; padding: 2rem;">
+<div class="content-area">
     <!-- Header Section -->
     <div class="intro-y flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 pb-4 border-b border-gray-200">
         <div>

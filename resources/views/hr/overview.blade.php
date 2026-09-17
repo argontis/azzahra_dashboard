@@ -24,7 +24,7 @@
     </div>
 </header>
 
-<div class="content-area" style="margin-top: 75px; padding-top: 15px;">
+<div class="content-area">
     <!-- Header Banner -->
     <div class="intro-y p-4 sm:p-6 rounded-2xl shadow-xl mb-6 border-2 border-blue-600" style="background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%) !important; color: #ffffff !important;">
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6">

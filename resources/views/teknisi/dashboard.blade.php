@@ -25,7 +25,7 @@
     </div>
 </header>
 
-<div class="content-area" style="margin-top: 75px; padding-top: 15px;">
+<div class="content-area">
     <!-- Top Action Bar (Order Baru Badge) -->
     <div class="flex justify-between items-center mb-4">
         <div class="text-sm font-semibold text-gray-700">

@@ -21,7 +21,7 @@
     </div>
 </header>
 
-<div class="content mt-5">
+<div class="content-area">
     @if(session('sukses'))
     <div class="alert alert-success bg-green-100 text-green-800 p-4 rounded-lg mb-4 flex items-center gap-2 border border-green-200">
         <i data-feather="check-circle" class="w-5 h-5 text-green-600"></i>
