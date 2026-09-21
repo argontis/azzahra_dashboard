@@ -515,6 +515,7 @@ class ServiceController extends Controller
                 'cos_no_seri' => $request->input('seri', $customer->cos_no_seri),
                 'cos_pswd_type' => $pswd_type,
                 'cos_pswd' => $password,
+                'cos_pswd_canvas' => $request->filled('pswd_canvas') ? $request->input('pswd_canvas') : ($pswd_type == 'text' ? null : $customer->cos_pswd_canvas),
                 'cos_asesoris' => $request->input('asesoris', $customer->cos_asesoris),
                 'cos_keluhan' => $request->input('keluhan', $customer->cos_keluhan),
                 'cos_keterangan' => $request->input('ket', $customer->cos_keterangan),

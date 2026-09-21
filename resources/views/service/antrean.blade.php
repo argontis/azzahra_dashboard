@@ -234,23 +234,55 @@
                                 <input type="text" class="input w-full border flex-1" name="seri" placeholder="Masukan no seri">
                             </div>
                             <div class="intro-y col-span-12 sm:col-span-6">
-                                <div class="mb-2">Tipe Password</div>
-                                <div class="flex items-center space-x-4">
-                                    <label class="flex items-center">
+                                <div class="mb-2 font-medium">Tipe Password</div>
+                                <div class="flex items-center space-x-4 mt-2">
+                                    <label class="flex items-center cursor-pointer">
                                         <input type="radio" name="pswd_type" value="text" checked class="mr-2" onchange="togglePswd('text')"> Text
                                     </label>
-                                    <label class="flex items-center">
+                                    <label class="flex items-center cursor-pointer">
                                         <input type="radio" name="pswd_type" value="pattern_desc" class="mr-2" onchange="togglePswd('desc')"> Pola
                                     </label>
                                 </div>
                             </div>
                             <div class="intro-y col-span-12 sm:col-span-6 pswd_text" id="pswd_text_div">
-                                <div class="mb-2">Password Text</div>
+                                <div class="mb-2 font-medium">Password Text</div>
                                 <input type="text" class="input w-full border flex-1" name="pswd" placeholder="Masukan password text">
                             </div>
-                            <div class="intro-y col-span-12 sm:col-span-6 pswd_pattern_desc" id="pswd_desc_div" style="display: none;">
-                                <div class="mb-2">Deskripsi Pola Password</div>
-                                <textarea class="input w-full border flex-1" name="pswd_desc" placeholder="Misal: L ke kanan bawah"></textarea>
+                            <!-- Bagian Pola: Gambar Pola di Kiri & Keterangan Pola di Kanan -->
+                            <div class="intro-y col-span-12 pswd_pattern_desc" id="pswd_desc_div" style="display: none;">
+                                <div class="grid grid-cols-12 gap-4 p-4 border rounded-lg bg-gray-50 dark:bg-dark-1">
+                                    <!-- Kolom Kiri: Gambar Pola Interaktif -->
+                                    <div class="col-span-12 sm:col-span-6 flex flex-col items-center justify-center p-4 bg-[#111317] rounded-xl border border-gray-800 shadow-lg">
+                                        <div class="flex items-center justify-between w-full mb-3 px-1">
+                                            <span class="font-semibold text-xs text-gray-200 flex items-center gap-1.5">
+                                                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                                                Gambar Pola (9 Titik)
+                                            </span>
+                                            <button type="button" id="btnClearPattern" class="text-xs text-red-400 hover:text-red-300 font-semibold flex items-center gap-1 bg-red-500/15 hover:bg-red-500/25 px-2.5 py-1 rounded-md transition-all">
+                                                <svg class="w-3.5 h-3.5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                                Reset Pola
+                                            </button>
+                                        </div>
+                                        <div class="relative flex justify-center">
+                                            <canvas id="patternCanvas" width="220" height="220" style="touch-action: none; background: #181b1f; cursor: crosshair; border-radius: 14px;" class="border border-gray-700/80 shadow-inner"></canvas>
+                                        </div>
+                                        <p class="text-[11px] text-gray-400 mt-3 text-center">Tarik garis menghubungkan titik-titik untuk membentuk pola</p>
+                                        <input type="hidden" name="pswd_canvas" id="pswd_canvas">
+                                    </div>
+
+                                    <!-- Kolom Kanan: Keterangan Pola -->
+                                    <div class="col-span-12 sm:col-span-6 flex flex-col justify-between">
+                                        <div>
+                                            <label class="block font-semibold text-xs text-gray-700 mb-1">Keterangan Pola</label>
+                                            <p class="text-[11px] text-gray-500 mb-2">Tuliskan deskripsi pola (contoh: huruf L, segitiga, atau urutan nomor)</p>
+                                            <textarea class="input w-full border rounded-lg p-2.5 text-sm" name="pswd_desc" id="pswd_desc" rows="5" placeholder="Misal: Bentuk huruf L dari kiri atas turun ke bawah lalu ke kanan"></textarea>
+                                        </div>
+                                        <div class="mt-2 text-[11px] text-gray-600 bg-blue-50 border border-blue-200 rounded-lg p-2.5">
+                                            <div class="font-semibold text-blue-800 mb-0.5">ℹ️ Petunjuk:</div>
+                                            Saat menggambar pola pada canvas di sebelah kiri, gambar pola otomatis terekam dan urutan nomor titik akan otomatis terisi pada keterangan ini.
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="intro-y col-span-12">
                                 <div class="mb-2">Asesoris</div>
@@ -288,6 +320,215 @@
 </div>
 
 <script>
+    class PatternLock {
+        constructor(canvasId, hiddenInputId, descInputId = null, clearBtnId = null) {
+            this.canvas = document.getElementById(canvasId);
+            if (!this.canvas) return;
+            this.ctx = this.canvas.getContext('2d');
+            this.hiddenInput = document.getElementById(hiddenInputId);
+            this.descInput = descInputId ? document.getElementById(descInputId) : null;
+            this.clearBtn = clearBtnId ? document.getElementById(clearBtnId) : null;
+            
+            this.rows = 3;
+            this.cols = 3;
+            this.dots = [];
+            this.selectedDots = [];
+            this.isDrawing = false;
+            this.currentPos = null;
+            
+            this.init();
+        }
+        
+        init() {
+            this.calculateDots();
+            this.draw();
+            this.bindEvents();
+            
+            if (this.clearBtn) {
+                this.clearBtn.onclick = (e) => {
+                    e.preventDefault();
+                    this.reset();
+                };
+            }
+        }
+        
+        calculateDots() {
+            this.dots = [];
+            const width = this.canvas.width;
+            const height = this.canvas.height;
+            const xStep = width / (this.cols + 1);
+            const yStep = height / (this.rows + 1);
+            
+            let id = 1;
+            for (let r = 0; r < this.rows; r++) {
+                for (let c = 0; c < this.cols; c++) {
+                    this.dots.push({
+                        id: id++,
+                        x: (c + 1) * xStep,
+                        y: (r + 1) * yStep,
+                        radius: 8
+                    });
+                }
+            }
+        }
+        
+        draw() {
+            const ctx = this.ctx;
+            // Dark sleek background matching user screenshot
+            ctx.fillStyle = '#181b1f';
+            ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            
+            // Draw connecting lines
+            if (this.selectedDots.length > 0) {
+                ctx.beginPath();
+                ctx.strokeStyle = '#38bdf8'; // Glowing neon cyan
+                ctx.lineWidth = 4.5;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                
+                ctx.moveTo(this.selectedDots[0].x, this.selectedDots[0].y);
+                for (let i = 1; i < this.selectedDots.length; i++) {
+                    ctx.lineTo(this.selectedDots[i].x, this.selectedDots[i].y);
+                }
+                
+                if (this.isDrawing && this.currentPos) {
+                    ctx.lineTo(this.currentPos.x, this.currentPos.y);
+                }
+                ctx.stroke();
+            }
+            
+            // Draw 9 dots (3x3)
+            this.dots.forEach(dot => {
+                const isSelected = this.selectedDots.some(d => d.id === dot.id);
+                
+                if (isSelected) {
+                    // Glowing cyan ring
+                    ctx.beginPath();
+                    ctx.arc(dot.x, dot.y, 22, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(56, 189, 248, 0.25)';
+                    ctx.fill();
+                    
+                    ctx.beginPath();
+                    ctx.arc(dot.x, dot.y, 22, 0, Math.PI * 2);
+                    ctx.strokeStyle = '#38bdf8';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    // Order number indicator
+                    const order = this.selectedDots.findIndex(d => d.id === dot.id) + 1;
+                    ctx.font = 'bold 11px sans-serif';
+                    ctx.fillStyle = '#bae6fd';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(order, dot.x + 15, dot.y - 15);
+                }
+                
+                // Dot center (white dot like screenshot 2)
+                ctx.beginPath();
+                ctx.arc(dot.x, dot.y, isSelected ? 8 : 6.5, 0, Math.PI * 2);
+                ctx.fillStyle = isSelected ? '#38bdf8' : '#ffffff';
+                ctx.fill();
+            });
+        }
+        
+        getCanvasPoint(e) {
+            const rect = this.canvas.getBoundingClientRect();
+            const clientX = (e.touches && e.touches.length > 0) ? e.touches[0].clientX : e.clientX;
+            const clientY = (e.touches && e.touches.length > 0) ? e.touches[0].clientY : e.clientY;
+            const scaleX = this.canvas.width / rect.width;
+            const scaleY = this.canvas.height / rect.height;
+            return {
+                x: (clientX - rect.left) * scaleX,
+                y: (clientY - rect.top) * scaleY
+            };
+        }
+        
+        checkDot(pos) {
+            const hitRadius = 24;
+            for (const dot of this.dots) {
+                const dist = Math.hypot(dot.x - pos.x, dot.y - pos.y);
+                if (dist <= hitRadius) {
+                    if (!this.selectedDots.some(d => d.id === dot.id)) {
+                        this.selectedDots.push(dot);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        
+        bindEvents() {
+            const start = (e) => {
+                e.preventDefault();
+                this.isDrawing = true;
+                this.selectedDots = [];
+                const pos = this.getCanvasPoint(e);
+                this.currentPos = pos;
+                this.checkDot(pos);
+                this.draw();
+            };
+            
+            const move = (e) => {
+                if (!this.isDrawing) return;
+                e.preventDefault();
+                const pos = this.getCanvasPoint(e);
+                this.currentPos = pos;
+                this.checkDot(pos);
+                this.draw();
+            };
+            
+            const end = (e) => {
+                if (!this.isDrawing) return;
+                this.isDrawing = false;
+                this.currentPos = null;
+                this.draw();
+                this.save();
+            };
+            
+            this.canvas.addEventListener('mousedown', start);
+            window.addEventListener('mousemove', move);
+            window.addEventListener('mouseup', end);
+            
+            this.canvas.addEventListener('touchstart', start, { passive: false });
+            window.addEventListener('touchmove', move, { passive: false });
+            window.addEventListener('touchend', end);
+        }
+        
+        save() {
+            if (this.selectedDots.length > 0) {
+                const dataUrl = this.canvas.toDataURL('image/png');
+                if (this.hiddenInput) {
+                    this.hiddenInput.value = dataUrl;
+                }
+                if (this.descInput && (!this.descInput.value.trim() || this.descInput.value.startsWith('Pola: '))) {
+                    const sequence = this.selectedDots.map(d => d.id).join(' -> ');
+                    this.descInput.value = 'Pola: ' + sequence;
+                }
+            }
+        }
+        
+        reset() {
+            this.selectedDots = [];
+            this.isDrawing = false;
+            this.currentPos = null;
+            if (this.hiddenInput) this.hiddenInput.value = '';
+            if (this.descInput && this.descInput.value.startsWith('Pola: ')) {
+                this.descInput.value = '';
+            }
+            this.draw();
+        }
+    }
+
+    let patternLockInstance = null;
+
+    function initPatternLock() {
+        if (!patternLockInstance) {
+            patternLockInstance = new PatternLock('patternCanvas', 'pswd_canvas', 'pswd_desc', 'btnClearPattern');
+        } else {
+            patternLockInstance.draw();
+        }
+    }
+
     function togglePswd(type) {
         if (type === 'text') {
             document.getElementById('pswd_text_div').style.display = 'block';
@@ -295,6 +536,7 @@
         } else {
             document.getElementById('pswd_text_div').style.display = 'none';
             document.getElementById('pswd_desc_div').style.display = 'block';
+            setTimeout(initPatternLock, 50);
         }
     }
 
@@ -303,7 +545,26 @@
         if ($tabLink.length) {
             $tabLink.trigger('click');
         }
+        if (tabId === '#unit') {
+            setTimeout(function() {
+                var pswdType = document.querySelector('input[name="pswd_type"]:checked');
+                if (pswdType && pswdType.value === 'pattern_desc') {
+                    initPatternLock();
+                }
+            }, 100);
+        }
     }
+
+    $(document).ready(function() {
+        $('.wizard a[data-target="#unit"]').on('click', function() {
+            setTimeout(function() {
+                var pswdType = document.querySelector('input[name="pswd_type"]:checked');
+                if (pswdType && pswdType.value === 'pattern_desc') {
+                    initPatternLock();
+                }
+            }, 100);
+        });
+    });
 
     function submitTransForm(form) {
         // Validate Step 1: Data Customer

@@ -186,7 +186,14 @@
                     <div class="font-bold text-gray-800 text-xs">{{ $transaksi->customer->cos_tipe ?? '-' }} {{ $transaksi->customer->cos_model ?? '' }}</div>
                     <div>Status: <span class="text-gray-700 font-semibold">{{ $transaksi->trans_status }}</span></div>
                     <div>SN: <span class="font-mono text-gray-700">{{ $transaksi->customer->cos_no_seri ?? '-' }}</span></div>
-                    <div>Password Device: <span class="text-gray-700">{{ $transaksi->customer->cos_pswd ?? '-' }}</span></div>
+                    <div>
+                        Password Device: <span class="text-gray-700 font-medium">{{ $transaksi->customer->cos_pswd ?? '-' }}</span>
+                        @if(!empty($transaksi->customer->cos_pswd_canvas))
+                            <button type="button" onclick="showPatternPreview('{{ $transaksi->customer->cos_pswd_canvas }}', '{{ addslashes($transaksi->customer->cos_pswd ?? '') }}')" class="ml-1.5 inline-flex items-center text-[10px] font-bold text-blue-600 hover:text-blue-800 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200 shadow-xs" title="Lihat Pola Kunci">
+                                <i data-feather="grid" class="w-3 h-3 mr-0.5"></i> Lihat Pola
+                            </button>
+                        @endif
+                    </div>
                 </div>
             </div>
 
@@ -518,6 +525,46 @@ function validateTindakanForm() {
         return false;
     }
     return true;
+}
+</script>
+<!-- Modal Preview Gambar Pola -->
+<div id="patternPreviewModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs hidden" style="display: none;">
+    <div class="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 shadow-2xl border border-gray-100">
+        <div class="flex items-center justify-between pb-3 border-b border-gray-100 mb-4">
+            <h4 class="font-bold text-gray-800 text-sm flex items-center gap-2">
+                <i data-feather="lock" class="w-4 h-4 text-blue-600"></i> Pola Kunci Customer
+            </h4>
+            <button type="button" onclick="closePatternPreview()" class="text-gray-400 hover:text-gray-600 p-1 rounded-lg">
+                <i data-feather="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+        <div class="flex flex-col items-center justify-center p-3 bg-slate-50 rounded-xl border border-dashed border-gray-200 mb-4">
+            <img id="patternPreviewImg" src="" alt="Pola Kunci" class="w-[200px] h-[200px] object-contain rounded-lg shadow-sm">
+        </div>
+        <div class="bg-blue-50 rounded-xl p-3 border border-blue-100 text-xs text-blue-900 mb-4">
+            <span class="font-semibold text-blue-800 block mb-0.5">Keterangan:</span>
+            <span id="patternPreviewDesc" class="font-mono text-gray-800 font-medium"></span>
+        </div>
+        <button type="button" onclick="closePatternPreview()" class="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl text-xs transition-colors">
+            Tutup
+        </button>
+    </div>
+</div>
+
+<script>
+function showPatternPreview(dataUrl, desc) {
+    document.getElementById('patternPreviewImg').src = dataUrl;
+    document.getElementById('patternPreviewDesc').textContent = desc || '-';
+    const modal = document.getElementById('patternPreviewModal');
+    modal.style.display = 'flex';
+    modal.classList.remove('hidden');
+    if (typeof feather !== 'undefined') feather.replace();
+}
+
+function closePatternPreview() {
+    const modal = document.getElementById('patternPreviewModal');
+    modal.style.display = 'none';
+    modal.classList.add('hidden');
 }
 </script>
 @endsection
