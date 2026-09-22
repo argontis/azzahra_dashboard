@@ -19,21 +19,23 @@ return new class extends Migration
                 $table->string('tipe')->default('maintenance'); // maintenance, penting, info
                 $table->dateTime('mulai_pada')->nullable();
                 $table->dateTime('selesai_pada')->nullable();
-                $table->unsignedBigInteger('created_by')->nullable();
+                $table->string('created_by')->nullable();
                 $table->string('status')->default('active'); // active, inactive
                 $table->timestamps();
             });
         }
 
-        Schema::create('announcement_reads', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('announcement_id');
-            $table->unsignedBigInteger('kry_kode');
-            $table->timestamp('read_at')->useCurrent();
+        if (! Schema::hasTable('announcement_reads')) {
+            Schema::create('announcement_reads', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('announcement_id');
+                $table->string('kry_kode');
+                $table->timestamp('read_at')->useCurrent();
 
-            $table->foreign('announcement_id')->references('id')->on('announcements')->onDelete('cascade');
-            $table->unique(['announcement_id', 'kry_kode']);
-        });
+                $table->foreign('announcement_id')->references('id')->on('announcements')->onDelete('cascade');
+                $table->unique(['announcement_id', 'kry_kode']);
+            });
+        }
     }
 
     /**

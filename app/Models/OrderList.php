@@ -14,6 +14,8 @@ class OrderList extends Model
 
     protected $keyType = 'string';
 
+    public $timestamps = true;
+
     protected $fillable = [
         'trans_kode', 'cos_kode', 'kry_kode', 'trans_total', 'trans_discount',
         'trans_tanggal', 'trans_status', 'merek', 'device', 'status_garansi',

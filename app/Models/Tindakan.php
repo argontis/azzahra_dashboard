@@ -13,6 +13,8 @@ class Tindakan extends Model
 
     protected $primaryKey = 'tdkn_kode';
 
+    public $timestamps = true;
+
     protected $fillable = [
         'trans_kode',
         'tdkn_barang',

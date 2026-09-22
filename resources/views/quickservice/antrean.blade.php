@@ -306,14 +306,17 @@
                                         <input type="radio" name="pswd_type" value="text" checked class="mr-1.5 focus:ring-blue-500" onchange="togglePswd('text')"> Text
                                     </label>
                                     <label class="flex items-center text-xs font-semibold text-gray-700 cursor-pointer">
+                                        <input type="radio" name="pswd_type" value="pin" class="mr-1.5 focus:ring-blue-500" onchange="togglePswd('pin')"> PIN
+                                    </label>
+                                    <label class="flex items-center text-xs font-semibold text-gray-700 cursor-pointer">
                                         <input type="radio" name="pswd_type" value="pattern_desc" class="mr-1.5 focus:ring-blue-500" onchange="togglePswd('desc')"> Pola
                                     </label>
                                 </div>
                             </div>
                             <!-- Conditional: Password Text -->
                             <div id="pswd_text_div">
-                                <label class="text-xs font-semibold text-gray-600 block mb-1">Password Text</label>
-                                <input type="text" class="input w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" name="pswd" placeholder="Masukan password text">
+                                <label class="text-xs font-semibold text-gray-600 block mb-1" id="qs_pswd_label">Password Text</label>
+                                <input type="text" class="input w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" name="pswd" id="qs_pswd_input" placeholder="Masukan password text">
                             </div>
                             <div>
                                 <label class="text-xs font-semibold text-gray-600 block mb-1">Asesoris</label>
@@ -640,12 +643,30 @@ function initQSPatternLock() {
 }
 
 function togglePswd(type) {
+    const textDiv = $('#pswd_text_div');
+    const descDiv = $('#pswd_desc_div');
+    const labelElem = $('#qs_pswd_label');
+    const inputElem = $('#qs_pswd_input');
+
     if (type === 'text') {
-        $('#pswd_text_div').show();
-        $('#pswd_desc_div').hide();
+        textDiv.show();
+        descDiv.hide();
+        if (labelElem.length) labelElem.text('Password Text');
+        if (inputElem.length) {
+            inputElem.attr('placeholder', 'Masukan password text');
+            inputElem.removeAttr('inputmode');
+        }
+    } else if (type === 'pin') {
+        textDiv.show();
+        descDiv.hide();
+        if (labelElem.length) labelElem.text('Password PIN');
+        if (inputElem.length) {
+            inputElem.attr('placeholder', 'Masukan PIN angka (misal: 1234 / 123456)');
+            inputElem.attr('inputmode', 'numeric');
+        }
     } else {
-        $('#pswd_text_div').hide();
-        $('#pswd_desc_div').show();
+        textDiv.hide();
+        descDiv.show();
         setTimeout(initQSPatternLock, 50);
     }
 }

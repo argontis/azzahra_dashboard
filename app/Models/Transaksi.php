@@ -10,11 +10,11 @@ class Transaksi extends Model
 
     protected $primaryKey = 'trans_kode';
 
-    public $incrementing = false;
+    public $incrementing = true;
 
-    protected $keyType = 'string';
+    protected $keyType = 'int';
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'trans_kode',

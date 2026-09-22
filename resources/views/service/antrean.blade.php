@@ -240,13 +240,16 @@
                                         <input type="radio" name="pswd_type" value="text" checked class="mr-2" onchange="togglePswd('text')"> Text
                                     </label>
                                     <label class="flex items-center cursor-pointer">
+                                        <input type="radio" name="pswd_type" value="pin" class="mr-2" onchange="togglePswd('pin')"> PIN
+                                    </label>
+                                    <label class="flex items-center cursor-pointer">
                                         <input type="radio" name="pswd_type" value="pattern_desc" class="mr-2" onchange="togglePswd('desc')"> Pola
                                     </label>
                                 </div>
                             </div>
                             <div class="intro-y col-span-12 sm:col-span-6 pswd_text" id="pswd_text_div">
-                                <div class="mb-2 font-medium">Password Text</div>
-                                <input type="text" class="input w-full border flex-1" name="pswd" placeholder="Masukan password text">
+                                <div class="mb-2 font-medium" id="pswd_label">Password Text</div>
+                                <input type="text" class="input w-full border flex-1" name="pswd" id="pswd_input" placeholder="Masukan password text">
                             </div>
                             <!-- Bagian Pola: Gambar Pola di Kiri & Keterangan Pola di Kanan -->
                             <div class="intro-y col-span-12 pswd_pattern_desc" id="pswd_desc_div" style="display: none;">
@@ -530,12 +533,32 @@
     }
 
     function togglePswd(type) {
+        const textDiv = document.getElementById('pswd_text_div');
+        const descDiv = document.getElementById('pswd_desc_div');
+        const labelElem = document.getElementById('pswd_label');
+        const inputElem = document.getElementById('pswd_input');
+
         if (type === 'text') {
-            document.getElementById('pswd_text_div').style.display = 'block';
-            document.getElementById('pswd_desc_div').style.display = 'none';
+            textDiv.style.display = 'block';
+            descDiv.style.display = 'none';
+            if (labelElem) labelElem.innerText = 'Password Text';
+            if (inputElem) {
+                inputElem.placeholder = 'Masukan password text';
+                inputElem.type = 'text';
+                inputElem.removeAttribute('inputmode');
+            }
+        } else if (type === 'pin') {
+            textDiv.style.display = 'block';
+            descDiv.style.display = 'none';
+            if (labelElem) labelElem.innerText = 'Password PIN';
+            if (inputElem) {
+                inputElem.placeholder = 'Masukan PIN angka (misal: 1234 / 123456)';
+                inputElem.type = 'text';
+                inputElem.setAttribute('inputmode', 'numeric');
+            }
         } else {
-            document.getElementById('pswd_text_div').style.display = 'none';
-            document.getElementById('pswd_desc_div').style.display = 'block';
+            textDiv.style.display = 'none';
+            descDiv.style.display = 'block';
             setTimeout(initPatternLock, 50);
         }
     }

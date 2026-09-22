@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
+
 class Karyawan extends Authenticatable
 {
     use Notifiable;
@@ -17,20 +17,9 @@ class Karyawan extends Authenticatable
 
     protected $keyType = 'string';
 
-    public $timestamps = false;
+    public $timestamps = true;
 
-    protected $fillable = [
-        'kry_kode',
-        'kry_nik',
-        'kry_username',
-        'kry_pswd',
-        'kry_nama',
-        'kry_level',
-        'kry_telp',
-        'kry_alamat',
-        'kry_join_date',
-        'kry_status',
-    ];
+    protected $guarded = [];
 
     protected static function booted()
     {
@@ -43,6 +32,20 @@ class Karyawan extends Authenticatable
                     $candidate = 'K'.str_pad($count, 2, '0', STR_PAD_LEFT);
                 }
                 $karyawan->kry_kode = $candidate;
+            }
+            if (empty($karyawan->kry_nik)) {
+                $karyawan->kry_nik = 'NIK-'.($karyawan->kry_kode ?? uniqid());
+            }
+            if (empty($karyawan->kry_telp) && ! empty($karyawan->kry_tlp)) {
+                $karyawan->kry_telp = $karyawan->kry_tlp;
+            }
+            if (empty($karyawan->kry_join_date) && ! empty($karyawan->kry_tgl_masuk)) {
+                $karyawan->kry_join_date = $karyawan->kry_tgl_masuk;
+            } elseif (empty($karyawan->kry_join_date)) {
+                $karyawan->kry_join_date = date('Y-m-d');
+            }
+            if (! isset($karyawan->kry_status)) {
+                $karyawan->kry_status = 1;
             }
         });
     }

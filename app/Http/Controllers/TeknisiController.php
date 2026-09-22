@@ -19,7 +19,8 @@ class TeknisiController extends Controller
         $search = $request->query('search');
 
         $query = Transaksi::with(['customer'])
-            ->orderBy('created_at', 'desc');
+            ->orderBy('trans_tanggal', 'desc')
+            ->orderBy('trans_kode', 'desc');
 
         // Status filter
         if ($status_filter === 'Order Baru') {
@@ -35,11 +36,11 @@ class TeknisiController extends Controller
 
         // Periode filter
         if ($periode_filter === 'Hari Ini') {
-            $query->whereDate('cos_tanggal', date('Y-m-d'));
+            $query->whereDate('trans_tanggal', date('Y-m-d'));
         } elseif ($periode_filter === '7 Hari Terakhir') {
-            $query->whereDate('cos_tanggal', '>=', date('Y-m-d', strtotime('-7 days')));
+            $query->whereDate('trans_tanggal', '>=', date('Y-m-d', strtotime('-7 days')));
         } elseif ($periode_filter === 'Bulan Ini') {
-            $query->whereMonth('cos_tanggal', date('m'))->whereYear('cos_tanggal', date('Y'));
+            $query->whereMonth('trans_tanggal', date('m'))->whereYear('trans_tanggal', date('Y'));
         }
 
         // Search keyword filter
@@ -120,8 +121,6 @@ class TeknisiController extends Controller
                     'tdkn_qty' => $qty,
                     'tdkn_subtot' => $subtot,
                     'tdkn_ket' => $ket ?: '-',
-                    'tdkn_tanggal' => now()->toDateString(),
-                    'tdkn_jam' => now()->toTimeString(),
                 ]);
 
                 $total_tindakan += $subtot;

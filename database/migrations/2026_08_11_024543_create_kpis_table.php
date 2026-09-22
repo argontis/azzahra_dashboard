@@ -14,7 +14,7 @@ return new class extends Migration
         if (! Schema::hasTable('kpi')) {
             Schema::create('kpi', function (Blueprint $table) {
                 $table->id('kpi_id');
-                $table->unsignedBigInteger('id_karyawan')->nullable();
+                $table->string('id_karyawan')->nullable();
                 $table->string('nama_karyawan')->nullable();
                 $table->string('posisi')->nullable();
                 $table->string('status_kerja')->nullable();

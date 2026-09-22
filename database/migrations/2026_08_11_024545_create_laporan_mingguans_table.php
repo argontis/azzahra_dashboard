@@ -14,7 +14,7 @@ return new class extends Migration
         if (! Schema::hasTable('laporan_mingguan')) {
             Schema::create('laporan_mingguan', function (Blueprint $table) {
                 $table->id('laporan_id');
-                $table->unsignedBigInteger('id_karyawan')->nullable();
+                $table->string('id_karyawan')->nullable();
                 $table->string('nama_karyawan')->nullable();
                 $table->string('posisi')->nullable();
                 $table->string('periode')->nullable();

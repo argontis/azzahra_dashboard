@@ -63,8 +63,8 @@ class QuickServiceController extends Controller
             });
         }
 
-        // Order by latest customer date (assuming trans_tanggal or cos_tanggal logic)
-        $transaksis = $query->orderBy('cos_tanggal', 'desc')
+        // Order by latest transaction date
+        $transaksis = $query->orderBy('trans_tanggal', 'desc')
             ->orderBy('trans_kode', 'desc')
             ->paginate(25)
             ->withQueryString();
@@ -107,13 +107,13 @@ class QuickServiceController extends Controller
             $id_costomer = $date_prefix.str_pad($next_num, 3, '0', STR_PAD_LEFT);
 
             // 2. Insert Customer
-            $password = $request->pswd_type === 'text' ? ($request->pswd ?? '') : ($request->pswd_type === 'pattern_desc' ? ($request->pswd_desc ?? '') : '');
+            $password = in_array($request->pswd_type, ['text', 'pin']) ? ($request->pswd ?? '') : ($request->pswd_type === 'pattern_desc' ? ($request->pswd_desc ?? '') : '');
 
             Customer::create([
                 'id_costomer' => $id_costomer,
                 'cos_nama' => $request->nama,
-                'username' => $id_costomer,
-                'password' => Hash::make($id_costomer),
+                'username' => $request->tlp ?? $request->nama,
+                'password' => Hash::make($request->tlp ?? '123456'),
                 'cos_tgl_lahir' => $request->cos_tgl_lahir,
                 'cos_alamat' => $request->alamat ?? '-',
                 'cos_cabang' => $request->cabang ?? 'Tegal',
@@ -134,36 +134,24 @@ class QuickServiceController extends Controller
                 'cos_poin' => 0,
             ]);
 
-            // 3. Generate trans_kode
-            $date_prefix_trans = 'TR'.date('dmy');
-            $latest_trans = Transaksi::where('trans_kode', 'like', $date_prefix_trans.'%')
-                ->orderBy('trans_kode', 'desc')
-                ->first();
-
-            $next_trans_num = 1;
-            if ($latest_trans) {
-                $last_trans_num = (int) substr($latest_trans->trans_kode, -3);
-                $next_trans_num = $last_trans_num + 1;
-            }
-            $trans_kode = $date_prefix_trans.str_pad($next_trans_num, 3, '0', STR_PAD_LEFT);
-
-            // 4. Insert Transaksi
-            Transaksi::create([
-                'trans_kode' => $trans_kode,
+            // 3. Insert Transaksi
+            $transaksi = Transaksi::create([
                 'cos_kode' => $id_costomer,
                 'kry_kode' => auth()->user()->kry_kode ?? null,
                 'trans_total' => 0,
                 'trans_discount' => 0,
                 'trans_status' => 'Pelunasan',
+                'trans_tanggal' => date('Y-m-d'),
                 'cos_tanggal' => date('Y-m-d'),
                 'cos_jam' => date('H:i:s'),
-                'trans_tanggal' => date('Y-m-d'),
             ]);
 
-            // 5. Insert default tindakan for Quick Service
+            $trans_kode = (string) $transaksi->trans_kode;
+
+            // 4. Insert default tindakan for Quick Service
             Tindakan::create([
                 'trans_kode' => $trans_kode,
-                'tdkn_barang' => 'SERVICE (QUICK)',
+                'tdkn_barang' => 'QUICK SERVICE',
                 'tdkn_harga' => 0,
                 'tdkn_qty' => 1,
                 'tdkn_subtot' => 0,

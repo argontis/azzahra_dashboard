@@ -15,7 +15,7 @@ return new class extends Migration
             Schema::create('absensi', function (Blueprint $table) {
                 $table->id('absensi_id');
                 $table->date('tanggal')->nullable();
-                $table->unsignedBigInteger('id_karyawan')->nullable();
+                $table->string('id_karyawan')->nullable();
                 $table->string('nama_karyawan')->nullable();
                 $table->string('posisi')->nullable();
                 $table->string('status')->nullable();

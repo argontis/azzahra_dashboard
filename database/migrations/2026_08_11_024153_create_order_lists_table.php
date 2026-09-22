@@ -16,7 +16,7 @@ return new class extends Migration
                 $table->id();
                 $table->unsignedBigInteger('trans_kode')->nullable();
                 $table->unsignedBigInteger('cos_kode')->nullable();
-                $table->unsignedBigInteger('kry_kode')->nullable();
+                $table->string('kry_kode')->nullable();
                 $table->decimal('trans_total', 15, 2)->default(0);
                 $table->decimal('trans_discount', 15, 2)->default(0);
                 $table->date('trans_tanggal')->nullable();

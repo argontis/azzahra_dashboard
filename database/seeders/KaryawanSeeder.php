@@ -15,11 +15,17 @@ class KaryawanSeeder extends Seeder
     {
         $roles = [
             ['username' => 'test_admin', 'level' => 'Admin', 'nama' => 'Test Admin'],
+            ['username' => 'testadmin', 'level' => 'Admin', 'nama' => 'Test Admin'],
             ['username' => 'test_pimpinan', 'level' => 'Pimpinan', 'nama' => 'Test Pimpinan'],
+            ['username' => 'testpimpinan', 'level' => 'Pimpinan', 'nama' => 'Test Pimpinan'],
             ['username' => 'test_hr', 'level' => 'HR', 'nama' => 'Test HR'],
+            ['username' => 'testhr', 'level' => 'HR', 'nama' => 'Test HR'],
             ['username' => 'test_teknisi', 'level' => 'Teknisi', 'nama' => 'Test Teknisi'],
+            ['username' => 'testteknisi', 'level' => 'Teknisi', 'nama' => 'Test Teknisi'],
             ['username' => 'test_kasir', 'level' => 'Kasir', 'nama' => 'Test Kasir'],
+            ['username' => 'testkasir', 'level' => 'Kasir', 'nama' => 'Test Kasir'],
             ['username' => 'test_cs', 'level' => 'Customer Service', 'nama' => 'Test CS'],
+            ['username' => 'testcs', 'level' => 'Customer Service', 'nama' => 'Test CS'],
             ['username' => 'test_magang', 'level' => 'Magang / PKL', 'nama' => 'Test Magang/PKL'],
         ];
 

@@ -59,7 +59,7 @@ class ServiceController extends Controller
         }
 
         $transaksis = $query->orderByRaw("CASE WHEN costomer.cos_tier = 'prioritas' OR costomer.cos_score >= 5 THEN 0 WHEN costomer.cos_tier = 'loyal' OR costomer.cos_score >= 3 THEN 1 ELSE 2 END ASC")
-            ->orderBy('transaksi.cos_tanggal', 'desc')
+            ->orderBy('costomer.cos_tanggal', 'desc')
             ->orderBy('transaksi.trans_kode', 'desc')
             ->paginate(25)
             ->withQueryString();
@@ -102,13 +102,13 @@ class ServiceController extends Controller
             $id_costomer = $date_prefix.str_pad($next_num, 3, '0', STR_PAD_LEFT);
 
             // 2. Insert Customer
-            $password = $request->pswd_type === 'text' ? $request->pswd : ($request->pswd_type === 'pattern_desc' ? $request->pswd_desc : '');
+            $password = in_array($request->pswd_type, ['text', 'pin']) ? $request->pswd : ($request->pswd_type === 'pattern_desc' ? $request->pswd_desc : '');
 
             Customer::create([
                 'id_costomer' => $id_costomer,
                 'cos_nama' => $request->nama,
-                'username' => $id_costomer,
-                'password' => Hash::make($id_costomer),
+                'username' => $request->tlp ?? $request->nama,
+                'password' => Hash::make($request->tlp ?? '123456'),
                 'cos_tgl_lahir' => $request->cos_tgl_lahir,
                 'cos_alamat' => $request->alamat,
                 'cos_cabang' => $request->cabang,
@@ -129,35 +129,23 @@ class ServiceController extends Controller
                 'cos_poin' => 0,
             ]);
 
-            // 3. Generate trans_kode
-            $date_prefix_trans = 'TR'.date('dmy');
-            $latest_trans = Transaksi::where('trans_kode', 'like', $date_prefix_trans.'%')
-                ->orderBy('trans_kode', 'desc')
-                ->first();
-
-            $next_trans_num = 1;
-            if ($latest_trans) {
-                $last_trans_num = (int) substr($latest_trans->trans_kode, -3);
-                $next_trans_num = $last_trans_num + 1;
-            }
-            $trans_kode = $date_prefix_trans.str_pad($next_trans_num, 3, '0', STR_PAD_LEFT);
-
             $is_quick_service = $request->has('is_quick_service');
 
-            // 4. Insert Transaksi
-            Transaksi::create([
-                'trans_kode' => $trans_kode,
+            // 3. Insert Transaksi
+            $transaksi = Transaksi::create([
                 'cos_kode' => $id_costomer,
                 'kry_kode' => auth()->user()->kry_kode ?? null,
                 'trans_total' => 0,
                 'trans_discount' => 0,
                 'trans_status' => $is_quick_service ? 'Pelunasan' : 'Baru',
+                'trans_tanggal' => date('Y-m-d'),
                 'cos_tanggal' => date('Y-m-d'),
                 'cos_jam' => date('H:i:s'),
-                'trans_tanggal' => date('Y-m-d'),
             ]);
 
-            // 5. If quick service, add default tindakan
+            $trans_kode = (string) $transaksi->trans_kode;
+
+            // 4. If quick service, add default tindakan
             if ($is_quick_service) {
                 Tindakan::create([
                     'trans_kode' => $trans_kode,
@@ -229,8 +217,6 @@ class ServiceController extends Controller
                 'tdkn_barang' => 'PENGECEKAN UNIT',
                 'tdkn_qty' => 1,
                 'tdkn_subtot' => 50000,
-                'tdkn_tanggal' => date('Y-m-d'),
-                'tdkn_jam' => date('H:i:s'),
             ]);
 
             Transaksi::where('trans_kode', $kode)->update([
@@ -261,8 +247,6 @@ class ServiceController extends Controller
                 'tdkn_barang' => 'PENGECEKAN UNIT',
                 'tdkn_qty' => 1,
                 'tdkn_subtot' => 50000,
-                'tdkn_tanggal' => date('Y-m-d'),
-                'tdkn_jam' => date('H:i:s'),
             ]);
 
             Transaksi::where('trans_kode', $kode)->update([
@@ -447,8 +431,6 @@ class ServiceController extends Controller
             'tdkn_harga' => $harga,
             'tdkn_qty' => $qty,
             'tdkn_subtot' => $harga * $qty,
-            'tdkn_tanggal' => date('Y-m-d'),
-            'tdkn_jam' => date('H:i:s'),
         ]);
 
         return back()->with('sukses', 'Tindakan perbaikan berhasil ditambahkan');
@@ -500,7 +482,7 @@ class ServiceController extends Controller
 
         if ($customer) {
             $pswd_type = $request->input('pswd_type', 'text');
-            $password = ($pswd_type == 'text') ? $request->input('pswd') : $request->input('pswd_desc');
+            $password = in_array($pswd_type, ['text', 'pin']) ? $request->input('pswd') : $request->input('pswd_desc');
 
             $customer->update([
                 'cos_nama' => $request->input('nama', $customer->cos_nama),
@@ -515,7 +497,7 @@ class ServiceController extends Controller
                 'cos_no_seri' => $request->input('seri', $customer->cos_no_seri),
                 'cos_pswd_type' => $pswd_type,
                 'cos_pswd' => $password,
-                'cos_pswd_canvas' => $request->filled('pswd_canvas') ? $request->input('pswd_canvas') : ($pswd_type == 'text' ? null : $customer->cos_pswd_canvas),
+                'cos_pswd_canvas' => $request->filled('pswd_canvas') ? $request->input('pswd_canvas') : (in_array($pswd_type, ['text', 'pin']) ? null : $customer->cos_pswd_canvas),
                 'cos_asesoris' => $request->input('asesoris', $customer->cos_asesoris),
                 'cos_keluhan' => $request->input('keluhan', $customer->cos_keluhan),
                 'cos_keterangan' => $request->input('ket', $customer->cos_keterangan),

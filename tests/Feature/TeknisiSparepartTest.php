@@ -6,12 +6,12 @@ use App\Models\Customer;
 use App\Models\Karyawan;
 use App\Models\KetersediaanSparepart;
 use App\Models\Transaksi;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class TeknisiSparepartTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     private function createCustomerAndTransaksi(string $transKode = 'TRX-101'): void
     {

@@ -187,7 +187,7 @@
                     <div>Status: <span class="text-gray-700 font-semibold">{{ $transaksi->trans_status }}</span></div>
                     <div>SN: <span class="font-mono text-gray-700">{{ $transaksi->customer->cos_no_seri ?? '-' }}</span></div>
                     <div>
-                        Password Device: <span class="text-gray-700 font-medium">{{ $transaksi->customer->cos_pswd ?? '-' }}</span>
+                        {{ ($transaksi->customer->cos_pswd_type ?? 'text') == 'pattern_desc' ? 'Pola' : (($transaksi->customer->cos_pswd_type ?? 'text') == 'pin' ? 'PIN' : 'Password') }} Device: <span class="text-gray-700 font-medium">{{ $transaksi->customer->cos_pswd ?? '-' }}</span>
                         @if(!empty($transaksi->customer->cos_pswd_canvas))
                             <button type="button" onclick="showPatternPreview('{{ $transaksi->customer->cos_pswd_canvas }}', '{{ addslashes($transaksi->customer->cos_pswd ?? '') }}')" class="ml-1.5 inline-flex items-center text-[10px] font-bold text-blue-600 hover:text-blue-800 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200 shadow-xs" title="Lihat Pola Kunci">
                                 <i data-feather="grid" class="w-3 h-3 mr-0.5"></i> Lihat Pola

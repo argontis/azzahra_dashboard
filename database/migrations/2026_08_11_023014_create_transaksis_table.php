@@ -15,7 +15,7 @@ return new class extends Migration
             Schema::create('transaksi', function (Blueprint $table) {
                 $table->id('trans_kode');
                 $table->unsignedBigInteger('cos_kode'); // costomer foreign key
-                $table->unsignedBigInteger('kry_kode')->nullable(); // karyawan foreign key
+                $table->string('kry_kode')->nullable(); // karyawan foreign key
                 $table->string('trans_status')->default('Baru');
                 $table->date('cos_tanggal')->nullable();
                 $table->time('cos_jam')->nullable();

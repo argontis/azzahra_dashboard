@@ -4,13 +4,13 @@ namespace Tests\Feature;
 
 use App\Models\Customer;
 use App\Models\Karyawan;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class CustomerScoringTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public function test_hr_user_can_update_customer_score_via_flask_api(): void
     {

@@ -4,12 +4,12 @@ namespace Tests\Feature;
 
 use App\Models\Karyawan;
 use App\Models\OrderList;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class OrderPickupTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public function test_admin_can_pickup_completed_item(): void
     {

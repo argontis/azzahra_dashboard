@@ -150,7 +150,7 @@
                         <div class="flex items-center gap-2">
                             <i data-feather="key" class="w-4 h-4 text-gray-400"></i>
                             <div class="flex items-center gap-2 flex-wrap">
-                                <span>{{ ($customer->cos_pswd_type ?? 'text') == 'pattern_desc' ? 'Pola' : 'Pass' }}: <strong class="text-gray-800">{{ $customer->cos_pswd ?? '-' }}</strong></span>
+                                <span>{{ ($customer->cos_pswd_type ?? 'text') == 'pattern_desc' ? 'Pola' : (($customer->cos_pswd_type ?? 'text') == 'pin' ? 'PIN' : 'Pass') }}: <strong class="text-gray-800">{{ $customer->cos_pswd ?? '-' }}</strong></span>
                                 @if(!empty($customer->cos_pswd_canvas))
                                     <button type="button" onclick="showPatternPreview('{{ $customer->cos_pswd_canvas }}', '{{ addslashes($customer->cos_pswd ?? '') }}')" class="inline-flex items-center text-[10px] font-bold text-blue-600 hover:text-blue-800 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200 shadow-xs" title="Lihat Gambar Pola">
                                         <i data-feather="grid" class="w-3 h-3 mr-0.5"></i> Lihat Pola
@@ -411,13 +411,16 @@
                                     <input type="radio" name="pswd_type" value="text" {{ ($customer->cos_pswd_type ?? 'text') == 'text' ? 'checked' : '' }} class="mr-1.5" onchange="toggleEditPswd('text')"> Text
                                 </label>
                                 <label class="flex items-center text-xs font-medium text-gray-700 cursor-pointer">
+                                    <input type="radio" name="pswd_type" value="pin" {{ ($customer->cos_pswd_type ?? '') == 'pin' ? 'checked' : '' }} class="mr-1.5" onchange="toggleEditPswd('pin')"> PIN
+                                </label>
+                                <label class="flex items-center text-xs font-medium text-gray-700 cursor-pointer">
                                     <input type="radio" name="pswd_type" value="pattern_desc" {{ ($customer->cos_pswd_type ?? '') == 'pattern_desc' ? 'checked' : '' }} class="mr-1.5" onchange="toggleEditPswd('desc')"> Pola
                                 </label>
                             </div>
                         </div>
                         <div class="col-span-12 sm:col-span-6" id="edit_pswd_text_div" style="{{ ($customer->cos_pswd_type ?? 'text') == 'pattern_desc' ? 'display:none;' : '' }}">
-                            <label class="block text-xs font-semibold text-gray-600 mb-1">Password Text</label>
-                            <input type="text" name="pswd" value="{{ $customer->cos_pswd_type == 'text' ? ($customer->cos_pswd ?? '') : '' }}" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-800 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Masukan password text">
+                            <label class="block text-xs font-semibold text-gray-600 mb-1" id="edit_pswd_label">{{ ($customer->cos_pswd_type ?? 'text') == 'pin' ? 'Password PIN' : 'Password Text' }}</label>
+                            <input type="text" name="pswd" id="edit_pswd_input" value="{{ in_array($customer->cos_pswd_type ?? 'text', ['text', 'pin']) ? ($customer->cos_pswd ?? '') : '' }}" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-800 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="{{ ($customer->cos_pswd_type ?? 'text') == 'pin' ? 'Masukan PIN angka (misal: 1234 / 123456)' : 'Masukan password text' }}">
                         </div>
                         <!-- Bagian Edit Pola: Gambar Pola di Kiri & Keterangan Pola di Kanan -->
                         <div class="col-span-12" id="edit_pswd_desc_div" style="{{ ($customer->cos_pswd_type ?? 'text') == 'pattern_desc' ? '' : 'display:none;' }}">
@@ -792,12 +795,32 @@
         }
     }
     function toggleEditPswd(type) {
+        const textDiv = document.getElementById('edit_pswd_text_div');
+        const descDiv = document.getElementById('edit_pswd_desc_div');
+        const labelElem = document.getElementById('edit_pswd_label');
+        const inputElem = document.getElementById('edit_pswd_input');
+
         if (type === 'text') {
-            document.getElementById('edit_pswd_text_div').style.display = 'block';
-            document.getElementById('edit_pswd_desc_div').style.display = 'none';
+            textDiv.style.display = 'block';
+            descDiv.style.display = 'none';
+            if (labelElem) labelElem.innerText = 'Password Text';
+            if (inputElem) {
+                inputElem.placeholder = 'Masukan password text';
+                inputElem.type = 'text';
+                inputElem.removeAttribute('inputmode');
+            }
+        } else if (type === 'pin') {
+            textDiv.style.display = 'block';
+            descDiv.style.display = 'none';
+            if (labelElem) labelElem.innerText = 'Password PIN';
+            if (inputElem) {
+                inputElem.placeholder = 'Masukan PIN angka (misal: 1234 / 123456)';
+                inputElem.type = 'text';
+                inputElem.setAttribute('inputmode', 'numeric');
+            }
         } else {
-            document.getElementById('edit_pswd_text_div').style.display = 'none';
-            document.getElementById('edit_pswd_desc_div').style.display = 'block';
+            textDiv.style.display = 'none';
+            descDiv.style.display = 'block';
             setTimeout(initEditPatternLock, 50);
         }
     }

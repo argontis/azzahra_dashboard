@@ -14,6 +14,8 @@ class Customer extends Model
 
     protected $keyType = 'string';
 
+    public $timestamps = true;
+
     protected $fillable = [
         'id_costomer',
         'cos_nama',
