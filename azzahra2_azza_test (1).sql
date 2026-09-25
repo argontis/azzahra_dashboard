@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 16 Sep 2026 pada 04.09
--- Versi server: 10.4.32-MariaDB
--- Versi PHP: 8.2.12
+-- Generation Time: Sep 25, 2026 at 06:12 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `absensi`
+-- Table structure for table `absensi`
 --
 
 CREATE TABLE `absensi` (
@@ -44,7 +44,7 @@ CREATE TABLE `absensi` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `absensi`
+-- Dumping data for table `absensi`
 --
 
 INSERT INTO `absensi` (`absensi_id`, `tanggal`, `id_karyawan`, `nama_karyawan`, `posisi`, `status`, `jam_masuk`, `jam_istirahat`, `jam_kembali_istirahat`, `jam_pulang`, `keterangan`, `created_at`, `updated_at`) VALUES
@@ -54,7 +54,7 @@ INSERT INTO `absensi` (`absensi_id`, `tanggal`, `id_karyawan`, `nama_karyawan`, 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `announcements`
+-- Table structure for table `announcements`
 --
 
 CREATE TABLE `announcements` (
@@ -73,7 +73,7 @@ CREATE TABLE `announcements` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `announcement_reads`
+-- Table structure for table `announcement_reads`
 --
 
 CREATE TABLE `announcement_reads` (
@@ -88,7 +88,7 @@ CREATE TABLE `announcement_reads` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `arsip`
+-- Table structure for table `arsip`
 --
 
 CREATE TABLE `arsip` (
@@ -105,7 +105,7 @@ CREATE TABLE `arsip` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `arsip`
+-- Dumping data for table `arsip`
 --
 
 INSERT INTO `arsip` (`arsip_id`, `tipe`, `nama`, `tanggal`, `no_hp`, `tipe_detail`, `kerusakan`, `alamat`, `created_at`, `updated_at`) VALUES
@@ -141,7 +141,7 @@ INSERT INTO `arsip` (`arsip_id`, `tipe`, `nama`, `tanggal`, `no_hp`, `tipe_detai
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `banners`
+-- Table structure for table `banners`
 --
 
 CREATE TABLE `banners` (
@@ -158,7 +158,7 @@ CREATE TABLE `banners` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `cabang`
+-- Table structure for table `cabang`
 --
 
 CREATE TABLE `cabang` (
@@ -169,7 +169,7 @@ CREATE TABLE `cabang` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `cabang`
+-- Dumping data for table `cabang`
 --
 
 INSERT INTO `cabang` (`id`, `cabang`, `created_at`, `updated_at`) VALUES
@@ -1725,7 +1725,7 @@ INSERT INTO `cabang` (`id`, `cabang`, `created_at`, `updated_at`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `cache`
+-- Table structure for table `cache`
 --
 
 CREATE TABLE `cache` (
@@ -1737,7 +1737,7 @@ CREATE TABLE `cache` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `cache_locks`
+-- Table structure for table `cache_locks`
 --
 
 CREATE TABLE `cache_locks` (
@@ -1751,7 +1751,7 @@ CREATE TABLE `cache_locks` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `checkout_orders`
+-- Table structure for table `checkout_orders`
 --
 
 CREATE TABLE `checkout_orders` (
@@ -1782,7 +1782,7 @@ CREATE TABLE `checkout_orders` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `checkout_orders`
+-- Dumping data for table `checkout_orders`
 --
 
 INSERT INTO `checkout_orders` (`id`, `id_costomer`, `order_code`, `total_price`, `shipping_cost`, `total_payment`, `distance_km`, `points_used`, `is_point_exchange`, `expedition_type`, `payment_method`, `payment_status`, `delivery_address`, `delivery_status`, `customer_lat`, `customer_lng`, `bukti_pembayaran`, `voucher_code`, `voucher_discount`, `midtrans_redirect_url`, `midtrans_transaction_id`, `payment_url_expires_at`, `created_at`, `updated_at`) VALUES
@@ -1814,7 +1814,7 @@ INSERT INTO `checkout_orders` (`id`, `id_costomer`, `order_code`, `total_price`,
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `checkout_order_items`
+-- Table structure for table `checkout_order_items`
 --
 
 CREATE TABLE `checkout_order_items` (
@@ -1830,7 +1830,7 @@ CREATE TABLE `checkout_order_items` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `checkout_order_items`
+-- Dumping data for table `checkout_order_items`
 --
 
 INSERT INTO `checkout_order_items` (`id`, `order_id`, `kode_barang`, `nama_produk`, `quantity`, `price`, `subtotal`, `created_at`, `updated_at`) VALUES
@@ -1862,7 +1862,7 @@ INSERT INTO `checkout_order_items` (`id`, `order_id`, `kode_barang`, `nama_produ
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `ci_sessions`
+-- Table structure for table `ci_sessions`
 --
 
 CREATE TABLE `ci_sessions` (
@@ -1877,7 +1877,7 @@ CREATE TABLE `ci_sessions` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `costomer`
+-- Table structure for table `costomer`
 --
 
 CREATE TABLE `costomer` (
@@ -1907,12 +1907,12 @@ CREATE TABLE `costomer` (
   `cos_gambar` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `cos_pswd_type` enum('text','pattern_desc','pattern_canvas') DEFAULT NULL,
+  `cos_pswd_type` varchar(50) DEFAULT 'text',
   `cos_pswd_canvas` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `costomer`
+-- Dumping data for table `costomer`
 --
 
 INSERT INTO `costomer` (`id_costomer`, `cos_nama`, `username`, `password`, `cos_tgl_lahir`, `cos_alamat`, `cos_cabang`, `cos_device`, `cos_hp`, `cos_tipe`, `cos_model`, `cos_no_seri`, `cos_asesoris`, `cos_status`, `cos_pswd`, `cos_keluhan`, `cos_keterangan`, `cos_tanggal`, `cos_jam`, `cos_poin`, `cos_score`, `cos_tier`, `total_transaksi`, `cos_gambar`, `created_at`, `updated_at`, `cos_pswd_type`, `cos_pswd_canvas`) VALUES
@@ -14938,7 +14938,7 @@ INSERT INTO `costomer` (`id_costomer`, `cos_nama`, `username`, `password`, `cos_
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `discounts`
+-- Table structure for table `discounts`
 --
 
 CREATE TABLE `discounts` (
@@ -14960,7 +14960,7 @@ CREATE TABLE `discounts` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `driver_locations`
+-- Table structure for table `driver_locations`
 --
 
 CREATE TABLE `driver_locations` (
@@ -14975,7 +14975,7 @@ CREATE TABLE `driver_locations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `driver_locations`
+-- Dumping data for table `driver_locations`
 --
 
 INSERT INTO `driver_locations` (`id`, `trans_kode`, `kry_kode`, `latitude`, `longitude`, `timestamp`, `created_at`, `updated_at`) VALUES
@@ -14988,7 +14988,7 @@ INSERT INTO `driver_locations` (`id`, `trans_kode`, `kry_kode`, `latitude`, `lon
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `failed_jobs`
+-- Table structure for table `failed_jobs`
 --
 
 CREATE TABLE `failed_jobs` (
@@ -15004,7 +15004,7 @@ CREATE TABLE `failed_jobs` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `interview`
+-- Table structure for table `interview`
 --
 
 CREATE TABLE `interview` (
@@ -15021,7 +15021,7 @@ CREATE TABLE `interview` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `interview`
+-- Dumping data for table `interview`
 --
 
 INSERT INTO `interview` (`interview_id`, `nama_kandidat`, `domisili`, `keterangan_domisili`, `no_hp`, `divisi`, `status`, `keterangan_konfirmasi`, `created_at`, `updated_at`) VALUES
@@ -15129,7 +15129,7 @@ INSERT INTO `interview` (`interview_id`, `nama_kandidat`, `domisili`, `keteranga
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `interviews`
+-- Table structure for table `interviews`
 --
 
 CREATE TABLE `interviews` (
@@ -15144,7 +15144,7 @@ CREATE TABLE `interviews` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `interviews`
+-- Dumping data for table `interviews`
 --
 
 INSERT INTO `interviews` (`id`, `nama_kandidat`, `posisi`, `tanggal_waktu`, `catatan`, `status`, `created_at`, `updated_at`) VALUES
@@ -15159,7 +15159,7 @@ INSERT INTO `interviews` (`id`, `nama_kandidat`, `posisi`, `tanggal_waktu`, `cat
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `jobs`
+-- Table structure for table `jobs`
 --
 
 CREATE TABLE `jobs` (
@@ -15175,7 +15175,7 @@ CREATE TABLE `jobs` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `job_batches`
+-- Table structure for table `job_batches`
 --
 
 CREATE TABLE `job_batches` (
@@ -15194,7 +15194,7 @@ CREATE TABLE `job_batches` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `karyawan`
+-- Table structure for table `karyawan`
 --
 
 CREATE TABLE `karyawan` (
@@ -15216,7 +15216,7 @@ CREATE TABLE `karyawan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `karyawan`
+-- Dumping data for table `karyawan`
 --
 
 INSERT INTO `karyawan` (`kry_kode`, `kry_nik`, `kry_nama`, `kry_tempat`, `kry_tgl_lahir`, `kry_alamat`, `kry_telp`, `kry_username`, `kry_pswd`, `kry_level`, `kry_join_date`, `kry_tgl_keluar`, `kry_status`, `created_at`, `updated_at`) VALUES
@@ -15238,18 +15238,25 @@ INSERT INTO `karyawan` (`kry_kode`, `kry_nik`, `kry_nama`, `kry_tempat`, `kry_tg
 ('20052605', '3374032506920007', 'Ripto', 'Cibubur', '2026-05-20', 'cibubur', '081567823419', 'riptoteknisi', '$2y$10$k3UjP0MBrQ/NiUGvPugBAelGlfZedEj6Si9QdM2mueDGbwgLmdv9S', 'Teknisi', '2026-05-20', NULL, 1, NULL, NULL),
 ('25052601', '087788778665', 'admin', 'admin', '2026-05-25', 'admin', '087788778665', 'admin1', '$2y$10$fxC5av3aK46243zta3dqUuP3RzeCmuHOiO/BHB/Tb8sZdH6ejigR.', 'HR', '2026-05-25', NULL, 1, NULL, NULL),
 ('K25', NULL, 'Najwa', NULL, NULL, 'Cileungsi', '082713781231', '0008582831', '$2y$12$AzNkLB2ZYA2iEJQ/W/8BzOuU70Kb8tw6vEC7kopIMiMZySnMHprmK', 'Magang / PKL', '2026-09-12', NULL, 1, '2026-09-12 03:27:25', '2026-09-12 03:29:17'),
-('KRY1001', '000000001', 'Test Admin', 'Tegal', '1990-01-01', 'Tegal', '0812000001', 'testadmin', '$2y$12$S81nUu5wlptdEYpEYmQJrelY5kYkAcOsNTvq8V/aNDJUj5HkE.nfa', 'Admin', '2026-09-09', NULL, 1, '2026-09-09 05:00:11', '2026-09-09 05:00:11'),
-('KRY1002', '000000002', 'Test Kasir', 'Tegal', '1990-01-01', 'Tegal', '0812000002', 'testkasir', '$2y$12$S81nUu5wlptdEYpEYmQJrelY5kYkAcOsNTvq8V/aNDJUj5HkE.nfa', 'Kasir', '2026-09-09', NULL, 1, '2026-09-09 05:00:11', '2026-09-09 05:00:11'),
-('KRY1003', '000000003', 'Test Customer Service', 'Tegal', '1990-01-01', 'Tegal', '0812000003', 'testcs', '$2y$12$S81nUu5wlptdEYpEYmQJrelY5kYkAcOsNTvq8V/aNDJUj5HkE.nfa', 'Customer Service', '2026-09-09', NULL, 1, '2026-09-09 05:00:11', '2026-09-09 05:00:11'),
-('KRY1004', '000000004', 'Test Teknisi', 'Tegal', '1990-01-01', 'Tegal', '0812000004', 'testteknisi', '$2y$12$S81nUu5wlptdEYpEYmQJrelY5kYkAcOsNTvq8V/aNDJUj5HkE.nfa', 'Teknisi', '2026-09-09', NULL, 1, '2026-09-09 05:00:11', '2026-09-09 05:00:11'),
-('KRY1005', '000000005', 'Test HR', 'Tegal', '1990-01-01', 'Tegal', '0812000005', 'testhr', '$2y$12$S81nUu5wlptdEYpEYmQJrelY5kYkAcOsNTvq8V/aNDJUj5HkE.nfa', 'HR', '2026-09-09', NULL, 1, '2026-09-09 05:00:11', '2026-09-09 05:00:11'),
-('KRY1006', '000000006', 'Test Pimpinan', 'Tegal', '1990-01-01', 'Tegal', '0812000006', 'testpimpinan', '$2y$12$S81nUu5wlptdEYpEYmQJrelY5kYkAcOsNTvq8V/aNDJUj5HkE.nfa', 'Pimpinan', '2026-09-09', NULL, 1, '2026-09-09 05:00:11', '2026-09-09 05:00:11'),
+('K26', 'NIK-K26', 'Test Admin', NULL, NULL, NULL, '081234567890', 'test_admin', '$2y$12$SsM9AvoaxlDfU5LHQD6b9eWowjmie8NT7crASfZA3J6.U3D0nb0sq', 'Admin', '2026-09-22', NULL, 1, '2026-09-22 07:52:47', '2026-09-22 07:52:47'),
+('K27', 'NIK-K27', 'Test Pimpinan', NULL, NULL, NULL, '081234567890', 'test_pimpinan', '$2y$12$YDM6U0fAtHSrsSMrFmYcZujxRgxei.93BtRqiBzvGV0n52OsMMiri', 'Pimpinan', '2026-09-22', NULL, 1, '2026-09-22 07:52:48', '2026-09-22 07:52:48'),
+('K28', 'NIK-K28', 'Test HR', NULL, NULL, NULL, '081234567890', 'test_hr', '$2y$12$AwBlkUVQVvDkDsySlkoBl.CcFe/uOCpLoRL/yJtIlNnpKpSlmgtyS', 'HR', '2026-09-22', NULL, 1, '2026-09-22 07:52:49', '2026-09-22 07:52:49'),
+('K29', 'NIK-K29', 'Test Teknisi', NULL, NULL, NULL, '081234567890', 'test_teknisi', '$2y$12$iL8dKEcYQFi4A1VeGMInA.2jKzBXes4FcZK/jxFON.uHpzq5Ma9ga', 'Teknisi', '2026-09-22', NULL, 1, '2026-09-22 07:52:50', '2026-09-22 07:52:50'),
+('K30', 'NIK-K30', 'Test Kasir', NULL, NULL, NULL, '081234567890', 'test_kasir', '$2y$12$BHiUzDnWi/gw3o2iIuWoX.ODQ4AyzSadjKm8xQhAL4DXvZVpkZl/C', 'Kasir', '2026-09-22', NULL, 1, '2026-09-22 07:52:50', '2026-09-22 07:52:50'),
+('K31', 'NIK-K31', 'Test CS', NULL, NULL, NULL, '081234567890', 'test_cs', '$2y$12$k6S92GvjYdd9fr.M/jgHrOaW2Ogkyj0rZY0Llpc3J/bFn8i0AhUQ2', 'Customer Service', '2026-09-22', NULL, 1, '2026-09-22 07:52:51', '2026-09-22 07:52:51'),
+('K32', 'NIK-K32', 'Test Magang/PKL', NULL, NULL, NULL, '081234567890', 'test_magang', '$2y$12$Yws22SSJqg/eEZaFm9n.7e5wFrsT9KRnSUoN0pixJasJkavIDEAo6', 'Magang / PKL', '2026-09-22', NULL, 1, '2026-09-22 07:52:52', '2026-09-22 07:52:52'),
+('KRY1001', '000000001', 'Test Admin', 'Tegal', '1990-01-01', 'Tegal', '081234567890', 'testadmin', '$2y$12$nc0.GQriDZWAkOOwEXTrmO0n5ziB61MLGg9M87lQHD6c4zGo/Us1i', 'Admin', '2026-09-22', NULL, 1, '2026-09-09 05:00:11', '2026-09-22 07:52:48'),
+('KRY1002', '000000002', 'Test Kasir', 'Tegal', '1990-01-01', 'Tegal', '081234567890', 'testkasir', '$2y$12$aS6sNs84JuGstfe8MLJGZeOidH3lZMkWhdJP6YC0cuMvJIkPy6Qka', 'Kasir', '2026-09-22', NULL, 1, '2026-09-09 05:00:11', '2026-09-22 07:52:51'),
+('KRY1003', '000000003', 'Test CS', 'Tegal', '1990-01-01', 'Tegal', '081234567890', 'testcs', '$2y$12$Dvd3f80ANBhaqIhbWg.lA.5magPxZMjlQbTKOhTFGR5GuzzGeBKI6', 'Customer Service', '2026-09-22', NULL, 1, '2026-09-09 05:00:11', '2026-09-22 07:52:51'),
+('KRY1004', '000000004', 'Test Teknisi', 'Tegal', '1990-01-01', 'Tegal', '081234567890', 'testteknisi', '$2y$12$UFqKNYgBdqcxDX8MiRJb.O82r.2ZmPexCj078b3AfWbohm2/AFyWG', 'Teknisi', '2026-09-22', NULL, 1, '2026-09-09 05:00:11', '2026-09-22 07:52:50'),
+('KRY1005', '000000005', 'Test HR', 'Tegal', '1990-01-01', 'Tegal', '081234567890', 'testhr', '$2y$12$AAzkip6JUbqvN/3.mEMO4e.mUrB5ybFjU6vKUADRGTKX6YIfdMS3m', 'HR', '2026-09-22', NULL, 1, '2026-09-09 05:00:11', '2026-09-22 07:52:49'),
+('KRY1006', '000000006', 'Test Pimpinan', 'Tegal', '1990-01-01', 'Tegal', '081234567890', 'testpimpinan', '$2y$12$ZI0r0b7FJO6bgwAxbZ.xSeW8JtMVZA7FIpyT2aWmSyruchZfqAk5.', 'Pimpinan', '2026-09-22', NULL, 1, '2026-09-09 05:00:11', '2026-09-22 07:52:48'),
 ('KRY999', '00000000', 'Super Admin', 'Jakarta', '2000-01-01', 'Jakarta', '08111111111', 'superadmin', '$2y$12$q35Hug8LpvGjtrfTJ13nVeUbacnGLmcqeD03JA4BNaGo3CqbG2tqm', 'Admin', '2026-09-09', NULL, 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `ketersediaan_sparepart`
+-- Table structure for table `ketersediaan_sparepart`
 --
 
 CREATE TABLE `ketersediaan_sparepart` (
@@ -15264,7 +15271,7 @@ CREATE TABLE `ketersediaan_sparepart` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `ketersediaan_sparepart`
+-- Dumping data for table `ketersediaan_sparepart`
 --
 
 INSERT INTO `ketersediaan_sparepart` (`id`, `trans_kode`, `cos_nama`, `barang_nama`, `ketersediaan`, `status`, `created_at`, `updated_at`) VALUES
@@ -15307,7 +15314,7 @@ INSERT INTO `ketersediaan_sparepart` (`id`, `trans_kode`, `cos_nama`, `barang_na
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `kpi`
+-- Table structure for table `kpi`
 --
 
 CREATE TABLE `kpi` (
@@ -15331,7 +15338,7 @@ CREATE TABLE `kpi` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `kpi`
+-- Dumping data for table `kpi`
 --
 
 INSERT INTO `kpi` (`kpi_id`, `id_karyawan`, `nama_karyawan`, `posisi`, `status_kerja`, `periode`, `siklus`, `kedisiplinan`, `kualitas_kerja`, `produktivitas`, `kerja_tim`, `total`, `rata_rata`, `kategori`, `catatan`, `created_at`, `updated_at`) VALUES
@@ -15342,8 +15349,8 @@ INSERT INTO `kpi` (`kpi_id`, `id_karyawan`, `nama_karyawan`, `posisi`, `status_k
 -- --------------------------------------------------------
 
 --
--- Stand-in struktur untuk tampilan `kpi_bulanan_view`
--- (Lihat di bawah untuk tampilan aktual)
+-- Stand-in structure for view `kpi_bulanan_view`
+-- (See below for the actual view)
 --
 CREATE TABLE `kpi_bulanan_view` (
 `id_karyawan` varchar(20)
@@ -15360,8 +15367,8 @@ CREATE TABLE `kpi_bulanan_view` (
 -- --------------------------------------------------------
 
 --
--- Stand-in struktur untuk tampilan `kpi_mingguan_view`
--- (Lihat di bawah untuk tampilan aktual)
+-- Stand-in structure for view `kpi_mingguan_view`
+-- (See below for the actual view)
 --
 CREATE TABLE `kpi_mingguan_view` (
 `id_karyawan` varchar(20)
@@ -15378,8 +15385,8 @@ CREATE TABLE `kpi_mingguan_view` (
 -- --------------------------------------------------------
 
 --
--- Stand-in struktur untuk tampilan `kpi_tahunan_view`
--- (Lihat di bawah untuk tampilan aktual)
+-- Stand-in structure for view `kpi_tahunan_view`
+-- (See below for the actual view)
 --
 CREATE TABLE `kpi_tahunan_view` (
 `id_karyawan` varchar(20)
@@ -15396,7 +15403,7 @@ CREATE TABLE `kpi_tahunan_view` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `laporan_mingguan`
+-- Table structure for table `laporan_mingguan`
 --
 
 CREATE TABLE `laporan_mingguan` (
@@ -15415,7 +15422,7 @@ CREATE TABLE `laporan_mingguan` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `laporan_mingguan`
+-- Dumping data for table `laporan_mingguan`
 --
 
 INSERT INTO `laporan_mingguan` (`laporan_id`, `id_karyawan`, `nama_karyawan`, `posisi`, `periode`, `target_mingguan`, `tugas_dilakukan`, `hasil`, `kendala`, `solusi`, `created_at`, `updated_at`) VALUES
@@ -15425,7 +15432,7 @@ INSERT INTO `laporan_mingguan` (`laporan_id`, `id_karyawan`, `nama_karyawan`, `p
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `messages`
+-- Table structure for table `messages`
 --
 
 CREATE TABLE `messages` (
@@ -15441,7 +15448,7 @@ CREATE TABLE `messages` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `messages`
+-- Dumping data for table `messages`
 --
 
 INSERT INTO `messages` (`id`, `sender_id`, `sender_nama`, `sender_level`, `target_role`, `judul`, `isi`, `created_at`, `updated_at`) VALUES
@@ -15504,7 +15511,7 @@ INSERT INTO `messages` (`id`, `sender_id`, `sender_nama`, `sender_level`, `targe
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `message_reads`
+-- Table structure for table `message_reads`
 --
 
 CREATE TABLE `message_reads` (
@@ -15517,7 +15524,7 @@ CREATE TABLE `message_reads` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `message_reads`
+-- Dumping data for table `message_reads`
 --
 
 INSERT INTO `message_reads` (`id`, `message_id`, `reader_id`, `read_at`, `created_at`, `updated_at`) VALUES
@@ -15634,7 +15641,7 @@ INSERT INTO `message_reads` (`id`, `message_id`, `reader_id`, `read_at`, `create
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `migrations`
+-- Table structure for table `migrations`
 --
 
 CREATE TABLE `migrations` (
@@ -15644,7 +15651,7 @@ CREATE TABLE `migrations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `migrations`
+-- Dumping data for table `migrations`
 --
 
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
@@ -15700,7 +15707,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `mou`
+-- Table structure for table `mou`
 --
 
 CREATE TABLE `mou` (
@@ -15718,7 +15725,7 @@ CREATE TABLE `mou` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `mou`
+-- Dumping data for table `mou`
 --
 
 INSERT INTO `mou` (`mou_id`, `file_name`, `lokasi`, `tanggal`, `customer`, `grand_total`, `kry_kode`, `intro_text`, `terms`, `created_at`, `updated_at`) VALUES
@@ -15760,7 +15767,7 @@ INSERT INTO `mou` (`mou_id`, `file_name`, `lokasi`, `tanggal`, `customer`, `gran
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `mou_items`
+-- Table structure for table `mou_items`
 --
 
 CREATE TABLE `mou_items` (
@@ -15776,7 +15783,7 @@ CREATE TABLE `mou_items` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `mou_items`
+-- Dumping data for table `mou_items`
 --
 
 INSERT INTO `mou_items` (`item_id`, `mou_id`, `item_no`, `spesifikasi`, `qty`, `harga`, `total`, `created_at`, `updated_at`) VALUES
@@ -15872,7 +15879,7 @@ INSERT INTO `mou_items` (`item_id`, `mou_id`, `item_no`, `spesifikasi`, `qty`, `
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `order_list`
+-- Table structure for table `order_list`
 --
 
 CREATE TABLE `order_list` (
@@ -15895,7 +15902,7 @@ CREATE TABLE `order_list` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `order_list`
+-- Dumping data for table `order_list`
 --
 
 INSERT INTO `order_list` (`trans_kode`, `cos_kode`, `kry_kode`, `trans_total`, `trans_discount`, `trans_tanggal`, `trans_status`, `merek`, `device`, `status_garansi`, `seri`, `ket_keluhan`, `email`, `alamat`, `created_at`, `updated_at`) VALUES
@@ -18084,7 +18091,7 @@ INSERT INTO `order_list` (`trans_kode`, `cos_kode`, `kry_kode`, `trans_total`, `
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `order_part_approvals`
+-- Table structure for table `order_part_approvals`
 --
 
 CREATE TABLE `order_part_approvals` (
@@ -18106,7 +18113,7 @@ CREATE TABLE `order_part_approvals` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `order_part_marking`
+-- Table structure for table `order_part_marking`
 --
 
 CREATE TABLE `order_part_marking` (
@@ -18121,7 +18128,7 @@ CREATE TABLE `order_part_marking` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `order_part_marking`
+-- Dumping data for table `order_part_marking`
 --
 
 INSERT INTO `order_part_marking` (`id`, `trans_kode`, `rma_number`, `end_warranty_date`, `is_ordered`, `created_at`, `updated_at`, `catatan`) VALUES
@@ -20284,7 +20291,7 @@ INSERT INTO `order_part_marking` (`id`, `trans_kode`, `rma_number`, `end_warrant
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `order_part_markings`
+-- Table structure for table `order_part_markings`
 --
 
 CREATE TABLE `order_part_markings` (
@@ -20301,7 +20308,7 @@ CREATE TABLE `order_part_markings` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `otps`
+-- Table structure for table `otps`
 --
 
 CREATE TABLE `otps` (
@@ -20317,7 +20324,7 @@ CREATE TABLE `otps` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `password_reset_tokens`
+-- Table structure for table `password_reset_tokens`
 --
 
 CREATE TABLE `password_reset_tokens` (
@@ -20329,7 +20336,7 @@ CREATE TABLE `password_reset_tokens` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `payments`
+-- Table structure for table `payments`
 --
 
 CREATE TABLE `payments` (
@@ -20350,7 +20357,7 @@ CREATE TABLE `payments` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `payment_transactions`
+-- Table structure for table `payment_transactions`
 --
 
 CREATE TABLE `payment_transactions` (
@@ -20367,7 +20374,7 @@ CREATE TABLE `payment_transactions` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `payment_transactions`
+-- Dumping data for table `payment_transactions`
 --
 
 INSERT INTO `payment_transactions` (`id`, `external_id`, `transaction_id`, `id_costomer`, `payment_method`, `amount`, `status`, `metadata`, `created_at`, `updated_at`) VALUES
@@ -20416,7 +20423,7 @@ INSERT INTO `payment_transactions` (`id`, `external_id`, `transaction_id`, `id_c
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `pencatatan`
+-- Table structure for table `pencatatan`
 --
 
 CREATE TABLE `pencatatan` (
@@ -20434,7 +20441,7 @@ CREATE TABLE `pencatatan` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `pencatatan`
+-- Dumping data for table `pencatatan`
 --
 
 INSERT INTO `pencatatan` (`pencatatan_id`, `batch_id`, `nama_barang`, `qty`, `harga_satuan`, `total`, `tanggal`, `gambar`, `kategori_global`, `created_at`, `updated_at`) VALUES
@@ -20462,7 +20469,7 @@ INSERT INTO `pencatatan` (`pencatatan_id`, `batch_id`, `nama_barang`, `qty`, `ha
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `performance_criteria`
+-- Table structure for table `performance_criteria`
 --
 
 CREATE TABLE `performance_criteria` (
@@ -20480,7 +20487,7 @@ CREATE TABLE `performance_criteria` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `performance_monthly`
+-- Table structure for table `performance_monthly`
 --
 
 CREATE TABLE `performance_monthly` (
@@ -20498,7 +20505,7 @@ CREATE TABLE `performance_monthly` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `performance_monthly`
+-- Dumping data for table `performance_monthly`
 --
 
 INSERT INTO `performance_monthly` (`monthly_id`, `kry_kode`, `periode`, `total_points`, `max_possible_points`, `percentage`, `level`, `ranking`, `notes`, `created_at`, `updated_at`) VALUES
@@ -20566,7 +20573,7 @@ INSERT INTO `performance_monthly` (`monthly_id`, `kry_kode`, `periode`, `total_p
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `performance_points`
+-- Table structure for table `performance_points`
 --
 
 CREATE TABLE `performance_points` (
@@ -20584,7 +20591,7 @@ CREATE TABLE `performance_points` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `personal_access_tokens`
+-- Table structure for table `personal_access_tokens`
 --
 
 CREATE TABLE `personal_access_tokens` (
@@ -20603,7 +20610,7 @@ CREATE TABLE `personal_access_tokens` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `personal_expedition_zones`
+-- Table structure for table `personal_expedition_zones`
 --
 
 CREATE TABLE `personal_expedition_zones` (
@@ -20617,7 +20624,7 @@ CREATE TABLE `personal_expedition_zones` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `personal_expedition_zones`
+-- Dumping data for table `personal_expedition_zones`
 --
 
 INSERT INTO `personal_expedition_zones` (`id`, `city`, `base_distance_km`, `base_price`, `price_per_km`, `created_at`, `updated_at`) VALUES
@@ -20628,7 +20635,7 @@ INSERT INTO `personal_expedition_zones` (`id`, `city`, `base_distance_km`, `base
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `point_transactions`
+-- Table structure for table `point_transactions`
 --
 
 CREATE TABLE `point_transactions` (
@@ -20643,7 +20650,7 @@ CREATE TABLE `point_transactions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `point_transactions`
+-- Dumping data for table `point_transactions`
 --
 
 INSERT INTO `point_transactions` (`id`, `id_costomer`, `transaction_type`, `amount`, `description`, `reference_id`, `created_at`, `updated_at`) VALUES
@@ -20675,7 +20682,7 @@ INSERT INTO `point_transactions` (`id`, `id_costomer`, `transaction_type`, `amou
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `produk`
+-- Table structure for table `produk`
 --
 
 CREATE TABLE `produk` (
@@ -20692,7 +20699,7 @@ CREATE TABLE `produk` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `produk`
+-- Dumping data for table `produk`
 --
 
 INSERT INTO `produk` (`kode_barang`, `nama_produk`, `deskripsi`, `dst`, `harga`, `rating`, `terjual`, `gambar`, `created_at`, `updated_at`) VALUES
@@ -21220,7 +21227,7 @@ INSERT INTO `produk` (`kode_barang`, `nama_produk`, `deskripsi`, `dst`, `harga`,
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `promo`
+-- Table structure for table `promo`
 --
 
 CREATE TABLE `promo` (
@@ -21235,7 +21242,7 @@ CREATE TABLE `promo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `promo`
+-- Dumping data for table `promo`
 --
 
 INSERT INTO `promo` (`kode_barang`, `tipe_produk`, `diskon`, `koin`, `gambar`, `ditempatkan`, `created_at`, `updated_at`) VALUES
@@ -21247,7 +21254,7 @@ INSERT INTO `promo` (`kode_barang`, `tipe_produk`, `diskon`, `koin`, `gambar`, `
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `sessions`
+-- Table structure for table `sessions`
 --
 
 CREATE TABLE `sessions` (
@@ -21260,7 +21267,7 @@ CREATE TABLE `sessions` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `sessions`
+-- Dumping data for table `sessions`
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
@@ -21270,7 +21277,7 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `tb_signature`
+-- Table structure for table `tb_signature`
 --
 
 CREATE TABLE `tb_signature` (
@@ -21282,7 +21289,7 @@ CREATE TABLE `tb_signature` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `tb_signature`
+-- Dumping data for table `tb_signature`
 --
 
 INSERT INTO `tb_signature` (`id`, `no_service`, `signature_url`, `created_at`, `updated_at`) VALUES
@@ -21295,7 +21302,7 @@ INSERT INTO `tb_signature` (`id`, `no_service`, `signature_url`, `created_at`, `
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `tindakan`
+-- Table structure for table `tindakan`
 --
 
 CREATE TABLE `tindakan` (
@@ -21313,7 +21320,7 @@ CREATE TABLE `tindakan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `tindakan`
+-- Dumping data for table `tindakan`
 --
 
 INSERT INTO `tindakan` (`tdkn_kode`, `trans_kode`, `tdkn_barang`, `tdkn_harga`, `tdkn_ket`, `tdkn_qty`, `tdkn_subtot`, `tdkn_tanggal`, `tdkn_jam`, `created_at`, `updated_at`) VALUES
@@ -44021,7 +44028,7 @@ INSERT INTO `tindakan` (`tdkn_kode`, `trans_kode`, `tdkn_barang`, `tdkn_harga`, 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `transaksi`
+-- Table structure for table `transaksi`
 --
 
 CREATE TABLE `transaksi` (
@@ -44042,7 +44049,7 @@ CREATE TABLE `transaksi` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `transaksi`
+-- Dumping data for table `transaksi`
 --
 
 INSERT INTO `transaksi` (`trans_kode`, `cos_kode`, `kry_kode`, `trans_total`, `trans_discount`, `trans_tanggal`, `trans_status`, `cos_tanggal`, `cos_jam`, `tipe_layanan`, `last_follow_up`, `follow_up_count`, `created_at`, `updated_at`) VALUES
@@ -56924,7 +56931,7 @@ INSERT INTO `transaksi` (`trans_kode`, `cos_kode`, `kry_kode`, `trans_total`, `t
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `transaksi_detail`
+-- Table structure for table `transaksi_detail`
 --
 
 CREATE TABLE `transaksi_detail` (
@@ -56945,7 +56952,7 @@ CREATE TABLE `transaksi_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `transaksi_detail`
+-- Dumping data for table `transaksi_detail`
 --
 
 INSERT INTO `transaksi_detail` (`dtl_kode`, `trans_kode`, `kry_kode`, `dtl_jml_bayar`, `dtl_jenis_bayar`, `dtl_bank`, `dtl_status`, `dtl_tanggal`, `dtl_jam`, `dtl_stt_stor`, `dtl_payment_method`, `dtl_transfer_status`, `created_at`, `updated_at`) VALUES
@@ -64439,7 +64446,7 @@ INSERT INTO `transaksi_detail` (`dtl_kode`, `trans_kode`, `kry_kode`, `dtl_jml_b
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `transaksi_return`
+-- Table structure for table `transaksi_return`
 --
 
 CREATE TABLE `transaksi_return` (
@@ -64454,7 +64461,7 @@ CREATE TABLE `transaksi_return` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `transaksi_return`
+-- Dumping data for table `transaksi_return`
 --
 
 INSERT INTO `transaksi_return` (`ret_kode`, `trans_kode`, `dtl_kode`, `ret_jml`, `ret_tanggal`, `ret_jam`, `created_at`, `updated_at`) VALUES
@@ -64464,7 +64471,7 @@ INSERT INTO `transaksi_return` (`ret_kode`, `trans_kode`, `dtl_kode`, `ret_jml`,
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `users`
+-- Table structure for table `users`
 --
 
 CREATE TABLE `users` (
@@ -64481,7 +64488,7 @@ CREATE TABLE `users` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `user_voucher`
+-- Table structure for table `user_voucher`
 --
 
 CREATE TABLE `user_voucher` (
@@ -64495,7 +64502,7 @@ CREATE TABLE `user_voucher` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `user_voucher`
+-- Dumping data for table `user_voucher`
 --
 
 INSERT INTO `user_voucher` (`id`, `id_costomer`, `voucher_id`, `claimed_date`, `used`, `created_at`, `updated_at`) VALUES
@@ -64505,7 +64512,7 @@ INSERT INTO `user_voucher` (`id`, `id_costomer`, `voucher_id`, `claimed_date`, `
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `vocer`
+-- Table structure for table `vocer`
 --
 
 CREATE TABLE `vocer` (
@@ -64520,7 +64527,7 @@ CREATE TABLE `vocer` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `vocer`
+-- Dumping data for table `vocer`
 --
 
 INSERT INTO `vocer` (`voc_kode`, `trans_kode`, `voc_jumlah`, `voc_tanggal`, `voc_jam`, `voc_status`, `created_at`, `updated_at`) VALUES
@@ -64619,7 +64626,7 @@ INSERT INTO `vocer` (`voc_kode`, `trans_kode`, `voc_jumlah`, `voc_tanggal`, `voc
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `voucher`
+-- Table structure for table `voucher`
 --
 
 CREATE TABLE `voucher` (
@@ -64637,7 +64644,7 @@ CREATE TABLE `voucher` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `voucher`
+-- Dumping data for table `voucher`
 --
 
 INSERT INTO `voucher` (`voucher_id`, `voucher_code`, `description`, `discount_percent`, `start_date`, `end_date`, `max_usage`, `status`, `voucher_gambar`, `created_at`, `updated_at`) VALUES
@@ -64647,7 +64654,7 @@ INSERT INTO `voucher` (`voucher_id`, `voucher_code`, `description`, `discount_pe
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `vouchers`
+-- Table structure for table `vouchers`
 --
 
 CREATE TABLE `vouchers` (
@@ -64665,7 +64672,7 @@ CREATE TABLE `vouchers` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `vouchers`
+-- Dumping data for table `vouchers`
 --
 
 INSERT INTO `vouchers` (`voucher_id`, `voucher_code`, `description`, `discount_percent`, `start_date`, `end_date`, `max_usage`, `voucher_gambar`, `status`, `created_at`, `updated_at`) VALUES
@@ -64680,7 +64687,7 @@ INSERT INTO `vouchers` (`voucher_id`, `voucher_code`, `description`, `discount_p
 -- --------------------------------------------------------
 
 --
--- Struktur untuk view `kpi_bulanan_view`
+-- Structure for view `kpi_bulanan_view`
 --
 DROP TABLE IF EXISTS `kpi_bulanan_view`;
 
@@ -64689,7 +64696,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`azzahra2`@`localhost` SQL SECURITY DEFINER V
 -- --------------------------------------------------------
 
 --
--- Struktur untuk view `kpi_mingguan_view`
+-- Structure for view `kpi_mingguan_view`
 --
 DROP TABLE IF EXISTS `kpi_mingguan_view`;
 
@@ -64698,7 +64705,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`azzahra2`@`localhost` SQL SECURITY DEFINER V
 -- --------------------------------------------------------
 
 --
--- Struktur untuk view `kpi_tahunan_view`
+-- Structure for view `kpi_tahunan_view`
 --
 DROP TABLE IF EXISTS `kpi_tahunan_view`;
 
@@ -64709,27 +64716,27 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`azzahra2`@`localhost` SQL SECURITY DEFINER V
 --
 
 --
--- Indeks untuk tabel `absensi`
+-- Indexes for table `absensi`
 --
 ALTER TABLE `absensi`
   ADD PRIMARY KEY (`absensi_id`),
   ADD KEY `absensi_id_karyawan_foreign` (`id_karyawan`);
 
 --
--- Indeks untuk tabel `announcements`
+-- Indexes for table `announcements`
 --
 ALTER TABLE `announcements`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `announcement_reads`
+-- Indexes for table `announcement_reads`
 --
 ALTER TABLE `announcement_reads`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `announcement_reads_announcement_id_kry_kode_unique` (`announcement_id`,`kry_kode`);
 
 --
--- Indeks untuk tabel `arsip`
+-- Indexes for table `arsip`
 --
 ALTER TABLE `arsip`
   ADD PRIMARY KEY (`arsip_id`),
@@ -64737,65 +64744,65 @@ ALTER TABLE `arsip`
   ADD KEY `tanggal` (`tanggal`);
 
 --
--- Indeks untuk tabel `banners`
+-- Indexes for table `banners`
 --
 ALTER TABLE `banners`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `cabang`
+-- Indexes for table `cabang`
 --
 ALTER TABLE `cabang`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `cache`
+-- Indexes for table `cache`
 --
 ALTER TABLE `cache`
   ADD PRIMARY KEY (`key`),
   ADD KEY `cache_expiration_index` (`expiration`);
 
 --
--- Indeks untuk tabel `cache_locks`
+-- Indexes for table `cache_locks`
 --
 ALTER TABLE `cache_locks`
   ADD PRIMARY KEY (`key`),
   ADD KEY `cache_locks_expiration_index` (`expiration`);
 
 --
--- Indeks untuk tabel `checkout_orders`
+-- Indexes for table `checkout_orders`
 --
 ALTER TABLE `checkout_orders`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `order_code` (`order_code`);
 
 --
--- Indeks untuk tabel `checkout_order_items`
+-- Indexes for table `checkout_order_items`
 --
 ALTER TABLE `checkout_order_items`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `ci_sessions`
+-- Indexes for table `ci_sessions`
 --
 ALTER TABLE `ci_sessions`
   ADD PRIMARY KEY (`id`),
   ADD KEY `ci_sessions_timestamp` (`timestamp`);
 
 --
--- Indeks untuk tabel `costomer`
+-- Indexes for table `costomer`
 --
 ALTER TABLE `costomer`
   ADD PRIMARY KEY (`id_costomer`);
 
 --
--- Indeks untuk tabel `discounts`
+-- Indexes for table `discounts`
 --
 ALTER TABLE `discounts`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `driver_locations`
+-- Indexes for table `driver_locations`
 --
 ALTER TABLE `driver_locations`
   ADD PRIMARY KEY (`id`),
@@ -64803,14 +64810,14 @@ ALTER TABLE `driver_locations`
   ADD KEY `idx_timestamp` (`timestamp`);
 
 --
--- Indeks untuk tabel `failed_jobs`
+-- Indexes for table `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`);
 
 --
--- Indeks untuk tabel `interview`
+-- Indexes for table `interview`
 --
 ALTER TABLE `interview`
   ADD PRIMARY KEY (`interview_id`),
@@ -64819,38 +64826,38 @@ ALTER TABLE `interview`
   ADD KEY `created_at` (`created_at`);
 
 --
--- Indeks untuk tabel `interviews`
+-- Indexes for table `interviews`
 --
 ALTER TABLE `interviews`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `jobs`
+-- Indexes for table `jobs`
 --
 ALTER TABLE `jobs`
   ADD PRIMARY KEY (`id`),
   ADD KEY `jobs_queue_index` (`queue`);
 
 --
--- Indeks untuk tabel `job_batches`
+-- Indexes for table `job_batches`
 --
 ALTER TABLE `job_batches`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `karyawan`
+-- Indexes for table `karyawan`
 --
 ALTER TABLE `karyawan`
   ADD PRIMARY KEY (`kry_kode`);
 
 --
--- Indeks untuk tabel `ketersediaan_sparepart`
+-- Indexes for table `ketersediaan_sparepart`
 --
 ALTER TABLE `ketersediaan_sparepart`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `kpi`
+-- Indexes for table `kpi`
 --
 ALTER TABLE `kpi`
   ADD PRIMARY KEY (`kpi_id`),
@@ -64860,7 +64867,7 @@ ALTER TABLE `kpi`
   ADD KEY `siklus` (`siklus`);
 
 --
--- Indeks untuk tabel `laporan_mingguan`
+-- Indexes for table `laporan_mingguan`
 --
 ALTER TABLE `laporan_mingguan`
   ADD PRIMARY KEY (`laporan_id`),
@@ -64869,84 +64876,84 @@ ALTER TABLE `laporan_mingguan`
   ADD KEY `periode` (`periode`);
 
 --
--- Indeks untuk tabel `messages`
+-- Indexes for table `messages`
 --
 ALTER TABLE `messages`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `message_reads`
+-- Indexes for table `message_reads`
 --
 ALTER TABLE `message_reads`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `message_reads_message_id_reader_id_unique` (`message_id`,`reader_id`);
 
 --
--- Indeks untuk tabel `migrations`
+-- Indexes for table `migrations`
 --
 ALTER TABLE `migrations`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `mou`
+-- Indexes for table `mou`
 --
 ALTER TABLE `mou`
   ADD PRIMARY KEY (`mou_id`),
   ADD KEY `kry_kode` (`kry_kode`);
 
 --
--- Indeks untuk tabel `mou_items`
+-- Indexes for table `mou_items`
 --
 ALTER TABLE `mou_items`
   ADD PRIMARY KEY (`item_id`),
   ADD KEY `mou_id` (`mou_id`);
 
 --
--- Indeks untuk tabel `order_list`
+-- Indexes for table `order_list`
 --
 ALTER TABLE `order_list`
   ADD PRIMARY KEY (`trans_kode`);
 
 --
--- Indeks untuk tabel `order_part_approvals`
+-- Indexes for table `order_part_approvals`
 --
 ALTER TABLE `order_part_approvals`
   ADD PRIMARY KEY (`approval_id`);
 
 --
--- Indeks untuk tabel `order_part_marking`
+-- Indexes for table `order_part_marking`
 --
 ALTER TABLE `order_part_marking`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_trans_kode_marking` (`trans_kode`);
 
 --
--- Indeks untuk tabel `order_part_markings`
+-- Indexes for table `order_part_markings`
 --
 ALTER TABLE `order_part_markings`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `otps`
+-- Indexes for table `otps`
 --
 ALTER TABLE `otps`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `password_reset_tokens`
+-- Indexes for table `password_reset_tokens`
 --
 ALTER TABLE `password_reset_tokens`
   ADD PRIMARY KEY (`email`);
 
 --
--- Indeks untuk tabel `payments`
+-- Indexes for table `payments`
 --
 ALTER TABLE `payments`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `payments_order_id_unique` (`order_id`);
 
 --
--- Indeks untuk tabel `payment_transactions`
+-- Indexes for table `payment_transactions`
 --
 ALTER TABLE `payment_transactions`
   ADD PRIMARY KEY (`id`),
@@ -64955,7 +64962,7 @@ ALTER TABLE `payment_transactions`
   ADD KEY `idx_status` (`status`);
 
 --
--- Indeks untuk tabel `pencatatan`
+-- Indexes for table `pencatatan`
 --
 ALTER TABLE `pencatatan`
   ADD PRIMARY KEY (`pencatatan_id`),
@@ -64964,7 +64971,7 @@ ALTER TABLE `pencatatan`
   ADD KEY `kategori_global` (`kategori_global`);
 
 --
--- Indeks untuk tabel `performance_criteria`
+-- Indexes for table `performance_criteria`
 --
 ALTER TABLE `performance_criteria`
   ADD PRIMARY KEY (`criteria_id`),
@@ -64972,7 +64979,7 @@ ALTER TABLE `performance_criteria`
   ADD KEY `is_active` (`is_active`);
 
 --
--- Indeks untuk tabel `performance_monthly`
+-- Indexes for table `performance_monthly`
 --
 ALTER TABLE `performance_monthly`
   ADD PRIMARY KEY (`monthly_id`),
@@ -64983,7 +64990,7 @@ ALTER TABLE `performance_monthly`
   ADD KEY `ranking` (`ranking`);
 
 --
--- Indeks untuk tabel `performance_points`
+-- Indexes for table `performance_points`
 --
 ALTER TABLE `performance_points`
   ADD PRIMARY KEY (`point_id`),
@@ -64993,7 +65000,7 @@ ALTER TABLE `performance_points`
   ADD KEY `criteria_id` (`criteria_id`);
 
 --
--- Indeks untuk tabel `personal_access_tokens`
+-- Indexes for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
   ADD PRIMARY KEY (`id`),
@@ -65001,31 +65008,31 @@ ALTER TABLE `personal_access_tokens`
   ADD KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`);
 
 --
--- Indeks untuk tabel `personal_expedition_zones`
+-- Indexes for table `personal_expedition_zones`
 --
 ALTER TABLE `personal_expedition_zones`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `point_transactions`
+-- Indexes for table `point_transactions`
 --
 ALTER TABLE `point_transactions`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `produk`
+-- Indexes for table `produk`
 --
 ALTER TABLE `produk`
   ADD PRIMARY KEY (`kode_barang`);
 
 --
--- Indeks untuk tabel `promo`
+-- Indexes for table `promo`
 --
 ALTER TABLE `promo`
   ADD PRIMARY KEY (`kode_barang`);
 
 --
--- Indeks untuk tabel `sessions`
+-- Indexes for table `sessions`
 --
 ALTER TABLE `sessions`
   ADD PRIMARY KEY (`id`),
@@ -65033,45 +65040,45 @@ ALTER TABLE `sessions`
   ADD KEY `sessions_last_activity_index` (`last_activity`);
 
 --
--- Indeks untuk tabel `tb_signature`
+-- Indexes for table `tb_signature`
 --
 ALTER TABLE `tb_signature`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `unique_service` (`no_service`);
 
 --
--- Indeks untuk tabel `tindakan`
+-- Indexes for table `tindakan`
 --
 ALTER TABLE `tindakan`
   ADD PRIMARY KEY (`tdkn_kode`);
 
 --
--- Indeks untuk tabel `transaksi`
+-- Indexes for table `transaksi`
 --
 ALTER TABLE `transaksi`
   ADD PRIMARY KEY (`trans_kode`);
 
 --
--- Indeks untuk tabel `transaksi_detail`
+-- Indexes for table `transaksi_detail`
 --
 ALTER TABLE `transaksi_detail`
   ADD PRIMARY KEY (`dtl_kode`);
 
 --
--- Indeks untuk tabel `transaksi_return`
+-- Indexes for table `transaksi_return`
 --
 ALTER TABLE `transaksi_return`
   ADD PRIMARY KEY (`ret_kode`);
 
 --
--- Indeks untuk tabel `users`
+-- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `users_email_unique` (`email`) USING HASH;
 
 --
--- Indeks untuk tabel `user_voucher`
+-- Indexes for table `user_voucher`
 --
 ALTER TABLE `user_voucher`
   ADD PRIMARY KEY (`id`),
@@ -65079,299 +65086,299 @@ ALTER TABLE `user_voucher`
   ADD KEY `voucher_id` (`voucher_id`);
 
 --
--- Indeks untuk tabel `vocer`
+-- Indexes for table `vocer`
 --
 ALTER TABLE `vocer`
   ADD PRIMARY KEY (`voc_kode`);
 
 --
--- Indeks untuk tabel `voucher`
+-- Indexes for table `voucher`
 --
 ALTER TABLE `voucher`
   ADD PRIMARY KEY (`voucher_id`),
   ADD UNIQUE KEY `voucher_code` (`voucher_code`);
 
 --
--- Indeks untuk tabel `vouchers`
+-- Indexes for table `vouchers`
 --
 ALTER TABLE `vouchers`
   ADD PRIMARY KEY (`voucher_id`),
   ADD UNIQUE KEY `vouchers_voucher_code_unique` (`voucher_code`);
 
 --
--- AUTO_INCREMENT untuk tabel yang dibuang
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT untuk tabel `absensi`
+-- AUTO_INCREMENT for table `absensi`
 --
 ALTER TABLE `absensi`
   MODIFY `absensi_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT untuk tabel `announcements`
+-- AUTO_INCREMENT for table `announcements`
 --
 ALTER TABLE `announcements`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `announcement_reads`
+-- AUTO_INCREMENT for table `announcement_reads`
 --
 ALTER TABLE `announcement_reads`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `arsip`
+-- AUTO_INCREMENT for table `arsip`
 --
 ALTER TABLE `arsip`
   MODIFY `arsip_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
--- AUTO_INCREMENT untuk tabel `banners`
+-- AUTO_INCREMENT for table `banners`
 --
 ALTER TABLE `banners`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `checkout_orders`
+-- AUTO_INCREMENT for table `checkout_orders`
 --
 ALTER TABLE `checkout_orders`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
 
 --
--- AUTO_INCREMENT untuk tabel `checkout_order_items`
+-- AUTO_INCREMENT for table `checkout_order_items`
 --
 ALTER TABLE `checkout_order_items`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=132;
 
 --
--- AUTO_INCREMENT untuk tabel `discounts`
+-- AUTO_INCREMENT for table `discounts`
 --
 ALTER TABLE `discounts`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `driver_locations`
+-- AUTO_INCREMENT for table `driver_locations`
 --
 ALTER TABLE `driver_locations`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
--- AUTO_INCREMENT untuk tabel `failed_jobs`
+-- AUTO_INCREMENT for table `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `interview`
+-- AUTO_INCREMENT for table `interview`
 --
 ALTER TABLE `interview`
   MODIFY `interview_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=291;
 
 --
--- AUTO_INCREMENT untuk tabel `interviews`
+-- AUTO_INCREMENT for table `interviews`
 --
 ALTER TABLE `interviews`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT untuk tabel `jobs`
+-- AUTO_INCREMENT for table `jobs`
 --
 ALTER TABLE `jobs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `ketersediaan_sparepart`
+-- AUTO_INCREMENT for table `ketersediaan_sparepart`
 --
 ALTER TABLE `ketersediaan_sparepart`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
--- AUTO_INCREMENT untuk tabel `kpi`
+-- AUTO_INCREMENT for table `kpi`
 --
 ALTER TABLE `kpi`
   MODIFY `kpi_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT untuk tabel `laporan_mingguan`
+-- AUTO_INCREMENT for table `laporan_mingguan`
 --
 ALTER TABLE `laporan_mingguan`
   MODIFY `laporan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT untuk tabel `messages`
+-- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
--- AUTO_INCREMENT untuk tabel `message_reads`
+-- AUTO_INCREMENT for table `message_reads`
 --
 ALTER TABLE `message_reads`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
 
 --
--- AUTO_INCREMENT untuk tabel `migrations`
+-- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
 
 --
--- AUTO_INCREMENT untuk tabel `mou`
+-- AUTO_INCREMENT for table `mou`
 --
 ALTER TABLE `mou`
   MODIFY `mou_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
--- AUTO_INCREMENT untuk tabel `mou_items`
+-- AUTO_INCREMENT for table `mou_items`
 --
 ALTER TABLE `mou_items`
   MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=287;
 
 --
--- AUTO_INCREMENT untuk tabel `order_part_approvals`
+-- AUTO_INCREMENT for table `order_part_approvals`
 --
 ALTER TABLE `order_part_approvals`
   MODIFY `approval_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `order_part_marking`
+-- AUTO_INCREMENT for table `order_part_marking`
 --
 ALTER TABLE `order_part_marking`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2164;
 
 --
--- AUTO_INCREMENT untuk tabel `order_part_markings`
+-- AUTO_INCREMENT for table `order_part_markings`
 --
 ALTER TABLE `order_part_markings`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `otps`
+-- AUTO_INCREMENT for table `otps`
 --
 ALTER TABLE `otps`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `payments`
+-- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
--- AUTO_INCREMENT untuk tabel `payment_transactions`
+-- AUTO_INCREMENT for table `payment_transactions`
 --
 ALTER TABLE `payment_transactions`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
--- AUTO_INCREMENT untuk tabel `pencatatan`
+-- AUTO_INCREMENT for table `pencatatan`
 --
 ALTER TABLE `pencatatan`
   MODIFY `pencatatan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
--- AUTO_INCREMENT untuk tabel `performance_criteria`
+-- AUTO_INCREMENT for table `performance_criteria`
 --
 ALTER TABLE `performance_criteria`
   MODIFY `criteria_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `performance_monthly`
+-- AUTO_INCREMENT for table `performance_monthly`
 --
 ALTER TABLE `performance_monthly`
   MODIFY `monthly_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
--- AUTO_INCREMENT untuk tabel `performance_points`
+-- AUTO_INCREMENT for table `performance_points`
 --
 ALTER TABLE `performance_points`
   MODIFY `point_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `personal_access_tokens`
+-- AUTO_INCREMENT for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `personal_expedition_zones`
+-- AUTO_INCREMENT for table `personal_expedition_zones`
 --
 ALTER TABLE `personal_expedition_zones`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
--- AUTO_INCREMENT untuk tabel `point_transactions`
+-- AUTO_INCREMENT for table `point_transactions`
 --
 ALTER TABLE `point_transactions`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
--- AUTO_INCREMENT untuk tabel `tb_signature`
+-- AUTO_INCREMENT for table `tb_signature`
 --
 ALTER TABLE `tb_signature`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT untuk tabel `tindakan`
+-- AUTO_INCREMENT for table `tindakan`
 --
 ALTER TABLE `tindakan`
   MODIFY `tdkn_kode` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22911;
 
 --
--- AUTO_INCREMENT untuk tabel `transaksi`
+-- AUTO_INCREMENT for table `transaksi`
 --
 ALTER TABLE `transaksi`
-  MODIFY `trans_kode` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12848;
+  MODIFY `trans_kode` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12850;
 
 --
--- AUTO_INCREMENT untuk tabel `transaksi_detail`
+-- AUTO_INCREMENT for table `transaksi_detail`
 --
 ALTER TABLE `transaksi_detail`
   MODIFY `dtl_kode` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7490;
 
 --
--- AUTO_INCREMENT untuk tabel `transaksi_return`
+-- AUTO_INCREMENT for table `transaksi_return`
 --
 ALTER TABLE `transaksi_return`
   MODIFY `ret_kode` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT untuk tabel `users`
+-- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `user_voucher`
+-- AUTO_INCREMENT for table `user_voucher`
 --
 ALTER TABLE `user_voucher`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT untuk tabel `vocer`
+-- AUTO_INCREMENT for table `vocer`
 --
 ALTER TABLE `vocer`
   MODIFY `voc_kode` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
 
 --
--- AUTO_INCREMENT untuk tabel `voucher`
+-- AUTO_INCREMENT for table `voucher`
 --
 ALTER TABLE `voucher`
   MODIFY `voucher_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
--- AUTO_INCREMENT untuk tabel `vouchers`
+-- AUTO_INCREMENT for table `vouchers`
 --
 ALTER TABLE `vouchers`
   MODIFY `voucher_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
+-- Constraints for dumped tables
 --
 
 --
--- Ketidakleluasaan untuk tabel `user_voucher`
+-- Constraints for table `user_voucher`
 --
 ALTER TABLE `user_voucher`
   ADD CONSTRAINT `user_voucher_ibfk_1` FOREIGN KEY (`id_costomer`) REFERENCES `costomer` (`id_costomer`),
